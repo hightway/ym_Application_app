@@ -1,0 +1,10 @@
+{
+  "app_http":"https://api.orzwe.com/api/",
+  "sign":"shs92f92nf9hufjwifnwifh",
+  "WX_APP_ID":"wxd0f1718b34affeb4",
+  "WX_SECRET":"c0a0b5b2704742089a766baf74615eb6",
+  "HUA_WEI":"103828261",
+  "XIAOMI_ID":"2882303761518396520",
+  "XIAOMI_PWD":"5141839696520",
+  "WX_PAY":"http://txxt.taoxbao.com.cn"
+}

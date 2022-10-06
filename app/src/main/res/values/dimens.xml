@@ -1,0 +1,32 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    
+    <!-- 文字大小 -->
+    <dimen name="textsize35">35.0sp</dimen>
+    <dimen name="textsize30">30.0sp</dimen>
+    <dimen name="textsize25">25.0sp</dimen>
+    <dimen name="textsize24">24.0sp</dimen>
+    <dimen name="textsize22">22.0sp</dimen>
+    <dimen name="textsize20">20.0sp</dimen>
+    <dimen name="textsize19">19.0sp</dimen>
+    <dimen name="textsize17">17.0sp</dimen>
+    <dimen name="textsize18">18.0sp</dimen>
+    <dimen name="textsize16">16.0sp</dimen>
+    <dimen name="textsize15">15.0sp</dimen>
+    <dimen name="textsize14">14.0sp</dimen>
+    <dimen name="textsize13">13.0sp</dimen>
+    <dimen name="textsize12">12.0sp</dimen>
+    <dimen name="textsize11">11.0sp</dimen>
+    <dimen name="textsize10">10.0sp</dimen>
+    <dimen name="textsize9">9.0sp</dimen>
+
+    
+    <dimen name="title_height">44dp</dimen>
+    <dimen name="search_height">48dp</dimen>
+
+    <dimen name="textsizi">16.0sp</dimen>
+
+</resources>

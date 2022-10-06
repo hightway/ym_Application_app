@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="46dp"
+    android:background="@color/transparent"
+    android:gravity="bottom"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:background="@color/gray_lift_meua">
+
+        <ImageView
+            android:id="@+id/tabicon"
+            android:layout_width="22dp"
+            android:layout_height="22dp" />
+
+        <TextView
+            android:id="@+id/tabtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="首页"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textsize10"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

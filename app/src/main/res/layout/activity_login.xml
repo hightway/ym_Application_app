@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_margin="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="欢迎使用阿里巴巴一键登录服务"
+        android:textColor="#ff5000"
+        android:textSize="20sp"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:layout_centerInParent="true"
+        >
+        <TextView
+            android:id="@+id/tv_result"
+            android:layout_marginHorizontal="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="未登录"/>
+    </ScrollView>
+
+</RelativeLayout>

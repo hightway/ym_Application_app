@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 下面这些事使用到缓存的时候需要用的 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- 短信验证登陆功能需要添加次权限来自动填充验证码，用不到可以去掉 -->
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 检查wifi网络状态 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 检查网络状态 -->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> <!-- 切换网络通道 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 本地信息缓存 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- 开关Wi-Fi状态，解决中国内地机型移动网络权限问题需要 -->
+
+
+    <application
+        android:name="com.example.myapplication.MyApp"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+
+        <activity
+            android:name="com.example.myapplication.activity.WelcomeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:launchMode="singleTop"
+            tools:ignore="IntentFilterExportedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!--协议页面webview-->
+        <activity
+            android:name="com.example.myapplication.activity.AuthWebVeiwActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="behind" />
+
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+
+            <!--<meta-data
+                android:name="android.app.lib_name"
+                android:value="" />-->
+        </activity>
+
+
+        <activity
+            android:name=".config.MessageActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="sensorPortrait" />
+
+
+        <activity
+            android:name=".config.OneKeyLoginActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|uiMode|fontScale"
+            android:screenOrientation="sensorPortrait" />
+
+
+        <activity
+            android:name="com.mobile.auth.gatewayauth.LoginAuthActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="behind"
+            android:theme="@style/authsdk_activity_dialog" />
+
+
+        <activity
+            android:name="com.example.myapplication.activity.Password_Login_Activity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.example.myapplication.activity.Password_Register_Activity"
+            android:screenOrientation="portrait" />
+
+
+    </application>
+
+</manifest>

@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">助眠app</string>
+    <string name="copy_success">复制成功</string>
+    <string name="tab_1">tab_1</string>
+    <string name="tab_2">tab_2</string>
+    <string name="tab_3">tab_3</string>
+    <string name="tab_4">tab_4</string>
+
+    <string name="switch_msg">切换到短信登录页面</string>
+    <string name="custom_title">自定义标题</string>
+    <string name="custom_slogan">自定义Slogan</string>
+    <string name="custom_toast">同意服务条款才可以登录</string>
+    <string name="yzm_login">验证码登录</string>
+    <string name="login">登 陆</string>
+    <string name="phoneNumber_null">手机号码不能为空</string>
+    <string name="keyCode_null">验证码不能为空</string>
+    <string name="password_login">账号密码登录</string>
+    <string name="password_register">新用户注册</string>
+    <string name="roule">服务条款</string>
+    <string name="login_msg">登录注册即表示您同意</string>
+    <string name="code_length">请输入8-15位数字或者字母的密码</string>
+    <string name="code_same">密码必须一致</string>
+</resources>

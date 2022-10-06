@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="ymapp_userId">ymapp_userId</string>
+    <string name="ymapp_userAge">ymapp_userAge</string>
+    <string name="ymapp_userName">ymapp_userName</string>
+    <string name="ymapp_userPhone">ymapp_userPhone</string>
+    <string name="ymapp_userAccess_token">ymapp_userAccess_token</string>
+    <string name="ymapp_userToken_type">ymapp_userToken_type</string>
+    <string name="ymapp_userExpires_in">ymapp_userExpires_in</string>
+    <string name="ymapp_userRegister_type">ymapp_userRegister_type</string>
+    <string name="ymapp_userAvatar">ymapp_userAvatar</string>
+    <string name="ymapp_userEmail">ymapp_userEmail</string>
+
+</resources>
