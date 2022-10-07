@@ -97,6 +97,14 @@
             android:name="com.example.myapplication.activity.Password_Register_Activity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.example.myapplication"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+
 
     </application>
 

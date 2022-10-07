@@ -24,6 +24,7 @@ import com.example.myapplication.http.Api;
 import com.example.myapplication.http.UserConfig;
 import com.example.myapplication.tools.DialogUtils;
 import com.example.myapplication.tools.OkHttpUtil;
+import com.example.myapplication.tools.WxLogin;
 import com.google.gson.Gson;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
@@ -47,6 +48,9 @@ public class WelcomeActivity extends BaseActivity {
     TextView tv_result;
     @BindView(R.id.wx_login)
     TextView wx_login;
+
+    private WX_LoginBrocast wxBrocast;
+    private UserConfig userConfig;
 
     @Override
     protected int getLayoutID() {
@@ -75,11 +79,12 @@ public class WelcomeActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        userConfig = UserConfig.instance();
         ButterKnife.bind(this);
         MyApp.getInstance().addActivity(this);
 
-        //初始化，向微信终端注册 id
-        //initWX();
+        //注册广播，接受微信登录返回的数据
+        regieBrocast();
     }
 
 
@@ -162,14 +167,94 @@ public class WelcomeActivity extends BaseActivity {
 
     }
 
-
-    /*@OnClick(R.id.wx_login)
+    @OnClick(R.id.wx_login)
     public void wx_login(){
-        SendAuth.Req req = new SendAuth.Req();
-        //scope 应用授权作用域，如获取用户个人信息则填写 snsapi_userinfo
-        req.scope = "snsapi_userinfo";
-        req.state = "wechat_sdk_demo_test";
-        api.sendReq(req);
-    }*/
+        WxLogin.longWx();
+    }
+
+    private void regieBrocast() {
+        IntentFilter inten = new IntentFilter();
+        inten.addAction("WX_LOGIN");
+        wxBrocast = new WX_LoginBrocast();
+        registerReceiver(wxBrocast, inten);
+    }
+
+    public class WX_LoginBrocast extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (!TextUtils.isEmpty(action) && action.equals("WX_LOGIN")) {
+                String openid = intent.getStringExtra("openid");
+                String unionid = intent.getStringExtra("unionid");
+                String nickname = intent.getStringExtra("nickname");
+                String headimgurl = intent.getStringExtra("headimgurl");
+                wx_login(openid, unionid, nickname, headimgurl);
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        onUnBindReceiver();
+    }
+
+    private void onUnBindReceiver() {
+        if (wxBrocast != null) {
+            unregisterReceiver(wxBrocast);
+        }
+    }
+
+    public void wx_login(String oid, String uid, String name, String icon) {
+        //微信返回的 openid   unionid   nickname   headimgurl
+        userConfig.wx_openId = oid;
+        userConfig.wx_unionId = uid;
+        userConfig.wx_nickname = name;
+        userConfig.wx_user_icon = icon;
+
+        wxLogin(oid, uid, name, icon);
+    }
+
+    public void wxLogin(String oid, String uid, String name, String icon){
+        DialogUtils.getInstance().showDialog(this, "登录中...");
+        HashMap<String, String> map = new HashMap<>();
+        /*map.put("phone", phone);
+        map.put("code", key);*/
+        OkHttpUtil.postRequest(Api.HEAD + "login_code", map, new OkHttpUtil.OnRequestNetWorkListener() {
+            @Override
+            public void notOk(String err) {
+                new Throwable("请求失败");
+            }
+
+            @Override
+            public void ok(String response) {
+                JSONObject jsonObject;
+                try {
+                    jsonObject = new JSONObject(response);
+                    int code = jsonObject.getInt("errCode");
+                    toast(jsonObject.getString("errMsg"));
+                    if(code == 200){
+                        UserBean userBean = mGson.fromJson(response, UserBean.class);
+                        UserBean.DataBean dataBean = userBean.getData();
+
+                        userConfig.name = dataBean.getName();
+                        userConfig.phone = dataBean.getPhone();
+                        userConfig.access_token = dataBean.getAccess_token();
+                        userConfig.user_id = dataBean.getUser_id();
+                        userConfig.expires_in = dataBean.getExpires_in();
+                        userConfig.token_type = dataBean.getToken_type();
+                        //保存
+                        UserConfig.instance().saveUserConfig(WelcomeActivity.this);
+
+                        //跳转主页面
+                        startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
+                        finish();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
 }

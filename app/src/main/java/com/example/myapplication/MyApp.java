@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import com.example.myapplication.config.Get_AssetsUtil;
 import com.example.myapplication.http.Api;
 import com.example.myapplication.http.UserConfig;
+import com.example.myapplication.tools.WxLogin;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.log.LoggerInterceptor;
 
@@ -58,7 +59,6 @@ public class MyApp extends Application {
         //获取APP参数
         Get_AssetsUtil.setCode("dynamic", this);
 
-
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(new LoggerInterceptor("TAG"))
                 .connectTimeout(10000L, TimeUnit.MILLISECONDS)
@@ -79,6 +79,10 @@ public class MyApp extends Application {
         } catch (PackageManager.NameNotFoundException e) {
 
         }
+
+        //初始化微信SDK
+        WxLogin.initWx(this);
+
     }
 
 

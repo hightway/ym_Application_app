@@ -21,6 +21,11 @@ public class UserConfig {
 	public String email;
 	public int age;
 
+	public String wx_openId;
+	public String wx_unionId;
+	public String wx_nickname;
+	public String wx_user_icon;
+
 
 	private static UserConfig instance;
 	private UserConfig(){
