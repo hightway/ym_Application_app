@@ -105,6 +105,12 @@
             android:taskAffinity="com.example.myapplication"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
 
+        <activity
+            android:name="com.example.myapplication.wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"></activity>
+
 
     </application>
 

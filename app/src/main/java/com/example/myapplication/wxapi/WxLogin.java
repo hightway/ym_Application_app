@@ -1,4 +1,4 @@
-package com.example.myapplication.tools;
+package com.example.myapplication.wxapi;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -39,7 +39,7 @@ public class WxLogin {
 
     public static void longWx() {
         if (mContext == null) {
-            Toast.makeText(mContext, "你没有初始化,请在Application中做初始化动作,请调用 initWx(context)方法", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "你没有初始化,请在Application中做初始化动作", Toast.LENGTH_SHORT).show();
             return;
         }
         if (!api.isWXAppInstalled()) {

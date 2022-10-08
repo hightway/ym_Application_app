@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f2f2f2"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true" >
+
+    <include layout="@layout/title_layout"></include>
+
+
+
+    <LinearLayout
+        android:id="@+id/ll_pay_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="#00000000"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="66dp"
+            android:background="@mipmap/charge_wechat" />
+
+        <TextView
+            android:id="@+id/tv_pay_reault"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="请稍等，正在向服务器支付..."
+            android:textColor="#000000"
+            android:textSize="23sp" />
+    </LinearLayout>
+
+</RelativeLayout>

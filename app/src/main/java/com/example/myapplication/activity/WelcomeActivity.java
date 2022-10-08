@@ -7,10 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.MyApp;
@@ -18,16 +16,13 @@ import com.example.myapplication.R;
 import com.example.myapplication.base.BaseActivity;
 import com.example.myapplication.bean.UserBean;
 import com.example.myapplication.bean.User_Msg_Bean;
-import com.example.myapplication.config.MessageActivity;
 import com.example.myapplication.config.OneKeyLoginActivity;
 import com.example.myapplication.http.Api;
 import com.example.myapplication.http.UserConfig;
 import com.example.myapplication.tools.DialogUtils;
 import com.example.myapplication.tools.OkHttpUtil;
-import com.example.myapplication.tools.WxLogin;
-import com.google.gson.Gson;
-import com.tencent.mm.opensdk.constants.ConstantsAPI;
-import com.tencent.mm.opensdk.modelmsg.SendAuth;
+import com.example.myapplication.wxapi.WxLogin;
+import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
@@ -171,6 +166,24 @@ public class WelcomeActivity extends BaseActivity {
     public void wx_login(){
         WxLogin.longWx();
     }
+
+
+    //微信支付
+    private void go_wx_pay(String data) {
+        IWXAPI api = WXAPIFactory.createWXAPI(WelcomeActivity.this, Api.WX_APP_ID, true);
+        if (api != null) {
+            //将应用的appid注册到微信
+            api.registerApp(Api.WX_APP_ID);
+            if(!TextUtils.isEmpty(data)){
+                /*PayReq req = Wx_Pay_Util.init_json(data, mGson);
+                if(req != null){
+                    api.sendReq(req);
+                }*/
+            }
+        }
+    }
+
+
 
     private void regieBrocast() {
         IntentFilter inten = new IntentFilter();

@@ -29,4 +29,5 @@
     <color name="text_color1">#333333</color>
     <color name="gray_del">#666666</color>
     <color name="gray_new">#C6C6C7</color>
+    <color name="main_app_color">#FF8836</color>
 </resources>

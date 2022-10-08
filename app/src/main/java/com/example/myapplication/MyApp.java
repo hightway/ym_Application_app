@@ -9,7 +9,7 @@ import android.text.TextUtils;
 import com.example.myapplication.config.Get_AssetsUtil;
 import com.example.myapplication.http.Api;
 import com.example.myapplication.http.UserConfig;
-import com.example.myapplication.tools.WxLogin;
+import com.example.myapplication.wxapi.WxLogin;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.log.LoggerInterceptor;
 
