@@ -6,6 +6,7 @@ import android.app.Application;
 import android.content.pm.PackageManager;
 import android.text.TextUtils;
 
+import com.example.myapplication.aliyun_oss.AliyunOSSUtils;
 import com.example.myapplication.config.Get_AssetsUtil;
 import com.example.myapplication.http.Api;
 import com.example.myapplication.http.UserConfig;
@@ -82,7 +83,6 @@ public class MyApp extends Application {
 
         //初始化微信SDK
         WxLogin.initWx(this);
-
     }
 
 

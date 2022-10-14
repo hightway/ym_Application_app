@@ -2,13 +2,19 @@ package com.example.myapplication.activity;
 
 import static com.example.myapplication.config.Constant.THEME_KEY;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.MyApp;
@@ -47,6 +53,13 @@ public class WelcomeActivity extends BaseActivity {
     private WX_LoginBrocast wxBrocast;
     private UserConfig userConfig;
 
+
+    private static final String[] PERMISSION = new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.RECORD_AUDIO
+    };
+
     @Override
     protected int getLayoutID() {
         return R.layout.welcome_lay;
@@ -80,7 +93,22 @@ public class WelcomeActivity extends BaseActivity {
 
         //注册广播，接受微信登录返回的数据
         regieBrocast();
+
+        //动态获取权限
+        askPermission();
     }
+
+
+    private void askPermission(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            //Android 6.0申请权限
+            ActivityCompat.requestPermissions(this, PERMISSION, 1);
+        } else {
+            //Toast.makeText(this, "成功", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 
 
     /*private IWXAPI api;

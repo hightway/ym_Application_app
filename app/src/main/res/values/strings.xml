@@ -20,4 +20,12 @@
     <string name="login_msg">登录注册即表示您同意</string>
     <string name="code_length">请输入8-15位数字或者字母的密码</string>
     <string name="code_same">密码必须一致</string>
+
+    <string-array name="camer_item">
+        <item>从相册选择</item>
+        <item>拍一张</item>
+    </string-array>
+    <string name="ensure">"确 定"</string>
+    <string name="cancel">"取 消"</string>
+
 </resources>

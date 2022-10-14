@@ -3,6 +3,7 @@ package com.example.myapplication;
 import androidx.fragment.app.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
@@ -10,16 +11,27 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.myapplication.adapter.Mainpage_Adapter;
+import com.example.myapplication.aliyun_oss.AliyunOSSUtils;
 import com.example.myapplication.base.BaseActivity;
+import com.example.myapplication.bean.Oss_Bean;
+import com.example.myapplication.bean.UserBean;
+import com.example.myapplication.config.MessageActivity;
 import com.example.myapplication.custom.MyViewPage;
 import com.example.myapplication.fragment.TabFragment;
 import com.example.myapplication.fragment.TabFragment_2;
 import com.example.myapplication.fragment.TabFragment_3;
 import com.example.myapplication.fragment.TabFragment_4;
+import com.example.myapplication.http.Api;
 import com.example.myapplication.http.UserConfig;
+import com.example.myapplication.tools.DialogUtils;
+import com.example.myapplication.tools.OkHttpUtil;
 import com.google.android.material.tabs.TabLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -60,6 +72,52 @@ public class MainActivity extends BaseActivity {
         //加入当前页面到Activity集合中
         MyApp.getInstance().addActivity(this);
         initFragment();
+
+        //获取ossl临时凭证并缓存两个小时
+        getOssStsToken();
+    }
+
+    private void getOssStsToken() {
+        DialogUtils.getInstance().showDialog(this, "初始化中...");
+        OkHttpUtil.postRequest(Api.HEAD + "getOssStsToken", new OkHttpUtil.OnRequestNetWorkListener() {
+            @Override
+            public void notOk(String err) {
+                new Throwable("请求失败");
+            }
+
+            @Override
+            public void ok(String response) {
+                JSONObject jsonObject;
+                try {
+                    jsonObject = new JSONObject(response);
+                    int code = jsonObject.getInt("errCode");
+                    toast(jsonObject.getString("errMsg"));
+                    if(code == 200){
+                        Oss_Bean userBean = mGson.fromJson(response, Oss_Bean.class);
+                        Oss_Bean.Oss_Bean_Data dataBean = userBean.getData();
+
+                        UserConfig.instance().AssumedRoleId = dataBean.getAssumedRoleId();
+                        UserConfig.instance().Bucket = dataBean.getBucket();
+                        UserConfig.instance().OssRegion = dataBean.getOssRegion();
+
+                        UserConfig.instance().AccessKeyId = dataBean.getAccessKeyId();
+                        UserConfig.instance().AccessKeySecret = dataBean.getAccessKeySecret();
+                        UserConfig.instance().Expiration = dataBean.getExpiration();
+                        UserConfig.instance().SecurityToken = dataBean.getSecurityToken();
+
+                        UserConfig.instance().SecurityToken = dataBean.getSecurityToken();
+
+                        //初始化OSS
+                        AliyunOSSUtils.getInstance(instance);
+
+                        //保存
+                        //UserConfig.instance().saveUserConfig(instance);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void initFragment() {

@@ -16,6 +16,15 @@ public class UserConfig {
 	public String token_type;
 	public int expires_in;
 
+	//oss数据
+	public String AssumedRoleId;
+	public String Bucket;
+	public String OssRegion;
+	public String AccessKeyId;
+	public String AccessKeySecret;
+	public String Expiration;
+	public String SecurityToken;
+
 	public String register_type;
 	public String avatar;
 	public String email;

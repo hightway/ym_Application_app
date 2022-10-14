@@ -1,18 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="lab_3"
-        android:textColor="@color/black"
-        android:textSize="@dimen/textsize14"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.example.myapplication.custom.BottomDrawerLayout
+        android:id="@+id/bottom_drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/layout_price_detail"
+                android:layout_width="match_parent"
+                android:background="@color/red3"
+                android:orientation="vertical"
+                android:layout_height="1800dp">
+
+            </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/layout_bottom_bar"
+            android:layout_width="match_parent"
+            android:background="@color/transparent"
+            android:orientation="horizontal"
+            android:layout_height="80dp">
+
+        </LinearLayout>
+
+    </com.example.myapplication.custom.BottomDrawerLayout>
+
+</RelativeLayout>

@@ -52,3 +52,8 @@
 -keep class com.tencent.mm.sdk.** {
     *;
 }
+
+#oss
+-keep class com.alibaba.sdk.android.oss.** { *; }
+-dontwarn okio.**
+-dontwarn org.apache.commons.codec.binary.**

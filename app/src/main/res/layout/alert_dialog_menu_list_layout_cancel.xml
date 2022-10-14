@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/popup_layout"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:paddingTop="15dp"
+	android:paddingBottom="12dp"
+	android:paddingLeft="15dip"
+	android:paddingRight="15dip">
+	<TextView
+		android:id="@+id/popup_text"
+		android:layout_width="fill_parent"
+		android:layout_height="40dip"
+		android:gravity="center"
+		android:layout_gravity="center_horizontal"
+		android:textSize="18dip"
+		android:textColor="#767676"
+		android:background="#d0d0d0" />
+	
+</LinearLayout>

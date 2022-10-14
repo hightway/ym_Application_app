@@ -23,7 +23,7 @@ import com.google.gson.Gson;
 public abstract class BaseFragment extends Fragment {
 
     public LayoutInflater inflater;
-    protected Activity mActivity;
+    public Activity mActivity;
     private LoadingDialog progressDialog;
     public Handler mhandler;
     public Gson mgson;

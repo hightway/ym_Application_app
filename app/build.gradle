@@ -54,16 +54,24 @@ dependencies {
     implementation files('libs\\logger-2.1.4-release.aar')
     implementation files('libs\\main-2.1.4-release.aar')
 
-    //implementation 'com.android.support:design:28.0.0'
-
     //okhttp3
-    implementation 'com.squareup.okhttp3:mockwebserver:3.11.0'
-    implementation 'com.squareup.okio:okio:2.0.0'
+    //implementation 'com.squareup.okhttp3:mockwebserver:3.11.0'
+    //implementation 'com.squareup.okio:okio:2.0.0'
     //okhttputils
     implementation 'com.zhy:okhttputils:2.6.2'
+
+    //oss
+    implementation 'com.aliyun.dpa:oss-android-sdk:2.9.11'
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+    implementation 'com.squareup.okio:okio:3.2.0'
 
 
     //微信登录
     dependencies {api 'com.tencent.mm.opensdk:wechat-sdk-android:+'}
+
+
+    //上下抽屉拖拽
+    implementation 'com.github.moraisigor:slidingdrawer:1.7.1'
+    implementation 'com.yinglan.scrolllayout:scrolllayout:1.0.2'
 
 }
