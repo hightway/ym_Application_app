@@ -2,45 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#ffffff"
-        android:gravity="center"
-        android:text="温馨提示"
-        android:textColor="#FFD306"
-        android:textSize="20dp"/>
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scollview"
-        android:scrollbars="none"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:id="@+id/layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="600dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/up_tv"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:background="#8f8f8f"
-                android:gravity="center"
-                android:text="向上滑动显示地图"
-                android:textSize="20dp"/>
-
-            <ImageView
-                android:id="@+id/images"
-                android:layout_width="match_parent"
-                android:layout_height="800dp"
-                android:background="#ED1B24"/>
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
 </RelativeLayout>

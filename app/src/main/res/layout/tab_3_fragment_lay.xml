@@ -1,33 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-
-    <com.example.myapplication.custom.BottomDrawerLayout
-        android:id="@+id/bottom_drawer_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-            <LinearLayout
-                android:id="@+id/layout_price_detail"
-                android:layout_width="match_parent"
-                android:background="@color/red3"
-                android:orientation="vertical"
-                android:layout_height="1800dp">
-
-            </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/layout_bottom_bar"
-            android:layout_width="match_parent"
-            android:background="@color/transparent"
-            android:orientation="horizontal"
-            android:layout_height="80dp">
-
-        </LinearLayout>
-
-    </com.example.myapplication.custom.BottomDrawerLayout>
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
 </RelativeLayout>

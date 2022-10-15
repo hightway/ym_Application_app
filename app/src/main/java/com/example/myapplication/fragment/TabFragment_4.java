@@ -2,6 +2,7 @@ package com.example.myapplication.fragment;
 
 import android.content.Intent;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
@@ -34,10 +35,15 @@ public class TabFragment_4 extends BaseLazyFragment {
     TextView tx_unlogin;*/
     @BindView(R.id.scroll_down_layout)
     ScrollLayout mScrollLayout;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    /*@BindView(R.id.toolbar)
+    Toolbar toolbar;*/
     @BindView(R.id.text_view)
     TextView text_view;
+    @BindView(R.id.tx_top)
+    TextView tx_top;
+    @BindView(R.id.rel_search_bar)
+    RelativeLayout rel_search_bar;
+
 
     @Override
     protected int setLayout() {
@@ -56,18 +62,20 @@ public class TabFragment_4 extends BaseLazyFragment {
 
             }
         });*/
-        toolbar.setOnClickListener(new View.OnClickListener() {
+
+        /*toolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mScrollLayout.getCurrentStatus() == ScrollLayout.Status.OPENED) {
                     mScrollLayout.scrollToClose();
                 }
             }
-        });
+        });*/
 
-        mScrollLayout.setMinOffset(Dp_Px_Util.Dp2Px(getActivity(), 50));
-        mScrollLayout.setMaxOffset(400);
-        mScrollLayout.setExitOffset(400);
+        //mScrollLayout.setMinOffset(Dp_Px_Util.Dp2Px(getActivity(), 50));
+        mScrollLayout.setMinOffset(0);
+        mScrollLayout.setMaxOffset(700);
+        mScrollLayout.setExitOffset(700);
         //mScrollLayout.setMaxOffset((int) (Dp_Px_Util.getScreenHeight(getActivity()) * 0.5));
         //mScrollLayout.setExitOffset(Dp_Px_Util.dip2px(getActivity(), 50));
         //mScrollLayout.setToOpen();
@@ -117,6 +125,7 @@ public class TabFragment_4 extends BaseLazyFragment {
     }
 
 
+    private ScrollLayout.Status status = ScrollLayout.Status.EXIT;
     private ScrollLayout.OnScrollChangedListener mOnScrollChangedListener = new ScrollLayout.OnScrollChangedListener() {
         @Override
         public void onScrollProgressChanged(float currentProgress) {
@@ -135,12 +144,19 @@ public class TabFragment_4 extends BaseLazyFragment {
         @Override
         public void onScrollFinished(ScrollLayout.Status currentStatus) {
             if (currentStatus.equals(ScrollLayout.Status.EXIT)) {
-                //finish();
+                status = ScrollLayout.Status.EXIT;
+            }else if(currentStatus.equals(ScrollLayout.Status.OPENED)){
+                status = ScrollLayout.Status.OPENED;
+            }else if(currentStatus.equals(ScrollLayout.Status.CLOSED)){
+                status = ScrollLayout.Status.CLOSED;
             }
         }
 
         @Override
         public void onChildScroll(int top) {
+            if(status.equals(ScrollLayout.Status.CLOSED)){
+                rel_search_bar.scrollTo(0, top);
+            }
         }
     };
 

@@ -132,10 +132,10 @@ public class MainActivity extends BaseActivity {
         tab_icon_sel.add(R.mipmap.ic_home_pressed);
         tab_icon.add(R.mipmap.ic_home_normal);
 
-        TabFragment_2 tabFragment_2 = new TabFragment_2();
+        /*TabFragment_2 tabFragment_2 = new TabFragment_2();
         tab_name.add(getString(R.string.tab_2));
         tab_icon_sel.add(R.mipmap.ic_home_pressed);
-        tab_icon.add(R.mipmap.ic_home_normal);
+        tab_icon.add(R.mipmap.ic_home_normal);*/
 
         TabFragment_3 tabFragment_3 = new TabFragment_3();
         tab_name.add(getString(R.string.tab_3));
@@ -148,7 +148,7 @@ public class MainActivity extends BaseActivity {
         tab_icon.add(R.mipmap.ic_home_normal);
 
         fragmentList.add(tabFragment);
-        fragmentList.add(tabFragment_2);
+        //fragmentList.add(tabFragment_2);
         fragmentList.add(tabFragment_3);
         fragmentList.add(tabFragment_4);
 

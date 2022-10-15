@@ -73,5 +73,4 @@ dependencies {
     //上下抽屉拖拽
     implementation 'com.github.moraisigor:slidingdrawer:1.7.1'
     implementation 'com.yinglan.scrolllayout:scrolllayout:1.0.2'
-
 }

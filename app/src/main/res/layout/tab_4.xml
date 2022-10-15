@@ -1,10 +1,30 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout class="androidx.appcompat.app.AlertController$RecycleListView" xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
-    android:background="@color/white"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+
+    <RelativeLayout
+        android:id="@+id/rel_search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+
+        <TextView
+            android:id="@+id/tx_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:text="上午好"
+            android:textStyle="bold"
+            android:textColor="@color/gray_del"
+            android:textSize="@dimen/textsize18" />
+
+    </RelativeLayout>
+
 
     <com.yinglan.scrolllayout.ScrollLayout
         android:id="@+id/scroll_down_layout"
@@ -17,30 +37,43 @@
         <com.yinglan.scrolllayout.content.ContentScrollView
             android:id="@+id/content_scroll_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/white">
+            android:layout_height="match_parent">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingBottom="50dp"
                 android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/tx_top"
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center_vertical"
+                    android:textStyle="bold"
+                    android:background="@color/transparent"
+                    android:textColor="@color/gray_del"
+                    android:textSize="@dimen/textsize16" />
+
 
                 <TextView
                     android:id="@+id/tx_code"
                     android:layout_width="match_parent"
                     android:layout_height="1200dp"
-                    android:text="是当时的时代"
+                    android:background="@color/red3"
+                    android:layout_below="@+id/tx_top"
                     android:gravity="center"
-                    android:textSize="@dimen/textsize18"
+                    android:text="是当时的时代"
                     android:textColor="@color/white"
-                    android:background="@color/red3"/>
+                    android:textSize="@dimen/textsize18" />
 
                 <TextView
                     android:id="@+id/text_view"
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="90dp"
                     android:gravity="center"
+                    android:layout_below="@+id/tx_top"
                     android:text="点击或上滑打开"
                     android:textColor="@color/white"
                     android:textSize="@dimen/textsize16" />
@@ -51,7 +84,7 @@
 
     </com.yinglan.scrolllayout.ScrollLayout>
 
-    <androidx.appcompat.widget.Toolbar
+    <!--<androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -60,8 +93,9 @@
         app:title="所得到的"
         android:titleTextColor="@android:color/white"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+        app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:visibility="gone">
 
-    </androidx.appcompat.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>-->
 
-</FrameLayout>
+</RelativeLayout>
