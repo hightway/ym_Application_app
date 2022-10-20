@@ -23,6 +23,7 @@ import com.yinglan.scrolllayout.ScrollLayout;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
 import java.util.HashMap;
 
 import butterknife.BindView;
@@ -41,6 +42,8 @@ public class TabFragment_4 extends BaseLazyFragment {
     TextView text_view;
     @BindView(R.id.tx_top)
     TextView tx_top;
+    @BindView(R.id.tx_search)
+    TextView tx_search;
     @BindView(R.id.rel_search_bar)
     RelativeLayout rel_search_bar;
 
@@ -85,7 +88,68 @@ public class TabFragment_4 extends BaseLazyFragment {
 
         mScrollLayout.setOnScrollChangedListener(mOnScrollChangedListener);
         //mScrollLayout.getBackground().setAlpha(0);
+
+        //获取时间段
+        //tx_search.setText(getString(getTodayFlag()));
+        if(mhandler != null){
+            mhandler.postDelayed(runnable, 1000*60*5);
+        }
     }
+
+
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            //获取时间段
+            if(tx_search != null){
+                tx_search.setText(getString(getTodayFlag()));
+            }
+
+            mhandler.postDelayed(runnable, 1000*60*5);
+        }
+    };
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //获取时间段
+        if(tx_search != null){
+            tx_search.setText(getString(getTodayFlag()));
+        }
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mhandler != null){
+            mhandler.removeCallbacks(runnable);
+        }
+    }
+
+    public static int getTodayFlag(){
+        // 获取系统时间
+        Calendar c = Calendar.getInstance();
+        // 提取他的时钟值，int型
+        int hour = c.get(Calendar.HOUR_OF_DAY);
+        if(hour < 5){
+            return R.string.date_1;
+        }else if(hour < 12){
+            return R.string.date_2;
+        }else if(hour < 13){
+            return R.string.date_3;
+        }else if(hour < 16){
+            return R.string.date_4;
+        }else if(hour < 18){
+            return R.string.date_5;
+        }else if(hour < 24){
+            return R.string.date_6;
+        }
+        return R.string.date_1;
+    }
+
+
 
 
     /*@OnClick(R.id.tx_unlogin)

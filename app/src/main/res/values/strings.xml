@@ -21,6 +21,13 @@
     <string name="code_length">请输入8-15位数字或者字母的密码</string>
     <string name="code_same">密码必须一致</string>
 
+    <string name="date_1">凌晨好</string>
+    <string name="date_2">上午好</string>
+    <string name="date_3">中午好</string>
+    <string name="date_4">下午好</string>
+    <string name="date_5">黄昏好</string>
+    <string name="date_6">晚上好</string>
+
     <string-array name="camer_item">
         <item>从相册选择</item>
         <item>拍一张</item>

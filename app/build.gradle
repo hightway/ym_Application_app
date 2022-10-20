@@ -73,4 +73,7 @@ dependencies {
     //上下抽屉拖拽
     implementation 'com.github.moraisigor:slidingdrawer:1.7.1'
     implementation 'com.yinglan.scrolllayout:scrolllayout:1.0.2'
+
+    //获取权限的第三方库
+    implementation 'pub.devrel:easypermissions:3.0.0'
 }

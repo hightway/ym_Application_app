@@ -100,11 +100,18 @@ public class WelcomeActivity extends BaseActivity {
 
 
     private void askPermission(){
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             //Android 6.0申请权限
             ActivityCompat.requestPermissions(this, PERMISSION, 1);
         } else {
-            //Toast.makeText(this, "成功", Toast.LENGTH_SHORT).show();
+
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            //Android 6.0申请权限
+            ActivityCompat.requestPermissions(this, PERMISSION, 1);
+        } else {
+
         }
     }
 
