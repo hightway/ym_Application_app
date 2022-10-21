@@ -76,6 +76,10 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
+    protected void toast_long(CharSequence msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+
 
     protected abstract int getLayoutID();
     public abstract void viewClick(View v);

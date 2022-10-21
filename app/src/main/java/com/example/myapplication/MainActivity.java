@@ -10,6 +10,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -17,10 +18,12 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.myapplication.adapter.Mainpage_Adapter;
 import com.example.myapplication.aliyun_oss.AliyunOSSUtils;
@@ -39,14 +42,19 @@ import com.example.myapplication.tools.DialogUtils;
 import com.example.myapplication.tools.Location_Util;
 import com.example.myapplication.tools.OkHttpUtil;
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -70,6 +78,8 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     private Context instance;
     private LocationManager locationManager;
     private LocationListener locationListener;
+    private HashMap<String, String> city_code_map;
+    private String city_code;
 
     @Override
     protected int getLayoutID() {
@@ -100,6 +110,28 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
         askPermission();
         //判断是否开启了手机定位服务
         //Location_Util.isLocationProviderEnabled(instance);
+
+        getJson_data("city_code", instance);
+    }
+
+    public void getJson_data(String fileName, Context context) {
+        //将json数据变成字符串
+        //StringBuilder stringBuilder = new StringBuilder();
+        city_code_map = new HashMap<>();
+        try {
+            //获取assets资源管理器
+            AssetManager assetManager = context.getAssets();
+            //通过管理器打开文件并读取
+            BufferedReader bf = new BufferedReader(new InputStreamReader(assetManager.open(fileName)));
+            String line;
+            while ((line = bf.readLine()) != null) {
+                String[] arr = line.split("\t");
+                city_code_map.put(arr[1].trim(), arr[0].trim());
+                //stringBuilder.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -417,20 +449,21 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
     // 处理地址信息 address = {Address@14043}
     // "Address[addressLines=[0:"广东省广州市增城区新塘镇广深大道东161号广侨时代"],
-    // feature=新塘镇广深大道东161号广侨时代,
+    // feature=新塘镇广深大道东161号广侨时代,address = {Address@14044} "Address[addressLines=[0:"广东省广州市增城区新塘镇广深大道东161号广侨时代"],feature=新塘镇广深大道东161号广侨时代,admin=广东省,sub-admin=新塘镇,locality=广州市,thoroughfare=广深大道东,postalCode=null,countryCode=CN,countryName=中国,hasLatitude=true,latitude=23.123588,hasLongitude=true,longitude=113.619181,phone=null,url=null,extras=Bundle[mParcelledData.dataSize=88]]"
     // admin=广东省,
     // sub-admin=新塘镇,
     // locality=广州市,
     // thoroughfare=广深大道东,
     // postalCode=null,countryCode=CN,countryName=中国,hasLatitude=true,latitude=23.123588,hasLongitude=true,longitude=113.619181,
-    // phone=null,url=null,extras=Bundle[mParcelledData.dataSize=88]]"
+    // phone=null,url=null,extras=Bundle[mParcelledData.dataSize=88]]"address = {Address@14044} "Address[addressLines=[0:"广东省广州市增城区新塘镇广深大道东161号广侨时代"],feature=新塘镇广深大道东161号广侨时代,admin=广东省,sub-admin=新塘镇,locality=广州市,thoroughfare=广深大道东,postalCode=null,countryCode=CN,countryName=中国,hasLatitude=true,latitude=23.123588,hasLongitude=true,longitude=113.619181,phone=null,url=null,extras=Bundle[mParcelledData.dataSize=88]]"
     public void handleCountryAndArea(Address address) {
         if(address != null){
-            String addressLine = address.getCountryCode();
-            String phone = address.getPhone();
-            Locale locat = address.getLocale();
-            String name = address.getCountryName();
+            String locality = address.getSubLocality();
             String lin_1 = address.getAddressLine(0);
+
+            if(!TextUtils.isEmpty(locality) && TextUtils.isEmpty(city_code)){
+                getCity_code(locality);
+            }
 
             //获取成功后取消监听
             removeLocationListener();
@@ -438,5 +471,17 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     }
 
 
+    private void getCity_code(String locality) {
+        if(city_code_map != null && !city_code_map.isEmpty()){
+            for (String key : city_code_map.keySet()) {
+                if(key.equals(locality)){
+                    city_code = city_code_map.get(key);
+                    toast_long(locality + " : " + city_code);
+                    //停止循环
+                    return;
+                }
+            }
+        }
+    }
 
 }
