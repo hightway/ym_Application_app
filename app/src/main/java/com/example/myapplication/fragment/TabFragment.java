@@ -333,8 +333,8 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
 
     @Override
     public void onScrolledToTop() {
-        if(drawer.isOpened()){
+        /*if(drawer.isOpened()){
             drawer.animateClose();
-        }
+        }*/
     }
 }

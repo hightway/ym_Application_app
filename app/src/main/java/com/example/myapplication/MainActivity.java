@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import static com.example.myapplication.config.MockRequest.getPhoneNumber;
+
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -7,6 +9,7 @@ import androidx.fragment.app.Fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,20 +19,28 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
+import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.myapplication.activity.WelcomeActivity;
 import com.example.myapplication.adapter.Mainpage_Adapter;
 import com.example.myapplication.aliyun_oss.AliyunOSSUtils;
 import com.example.myapplication.base.BaseActivity;
 import com.example.myapplication.bean.Oss_Bean;
 import com.example.myapplication.bean.UserBean;
+import com.example.myapplication.bean.User_Msg_Bean;
+import com.example.myapplication.bean.Weather_Bean;
+import com.example.myapplication.config.BaseUIConfig;
+import com.example.myapplication.config.ExecutorManager;
 import com.example.myapplication.config.MessageActivity;
 import com.example.myapplication.custom.MyViewPage;
 import com.example.myapplication.fragment.TabFragment;
@@ -40,9 +51,17 @@ import com.example.myapplication.http.Api;
 import com.example.myapplication.http.UserConfig;
 import com.example.myapplication.tools.DialogUtils;
 import com.example.myapplication.tools.Location_Util;
+import com.example.myapplication.tools.Login_Util;
 import com.example.myapplication.tools.OkHttpUtil;
+import com.example.myapplication.tools.WindowUtils;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
+import com.mobile.auth.gatewayauth.PhoneNumberAuthHelper;
+import com.mobile.auth.gatewayauth.ResultCode;
+import com.mobile.auth.gatewayauth.TokenResultListener;
+import com.mobile.auth.gatewayauth.model.TokenRet;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -75,11 +94,26 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     private List<Integer> tab_icon = new ArrayList<>();
     private List<Fragment> fragmentList;
     private Mainpage_Adapter adapter;
-    private Context instance;
+    private static MainActivity instance;
     private LocationManager locationManager;
     private LocationListener locationListener;
     private HashMap<String, String> city_code_map;
     private String city_code;
+    private String city_id;
+    public static PhoneNumberAuthHelper mPhoneNumberAuthHelper;
+    public static TokenResultListener mTokenResultListener;
+    public static BaseUIConfig mUIConfig;
+    private static final String[] PERMISSION = new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.RECORD_AUDIO
+    };
+
+
+    public static MainActivity getInstance(){
+        return instance;
+    }
+
 
     @Override
     protected int getLayoutID() {
@@ -93,9 +127,17 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if(mUIConfig != null){
+            mUIConfig.onResume();
+        }
+    }
+
+    @Override
     protected void initView() {
         ButterKnife.bind(MainActivity.this);
-        //清楚余存的登录界面
+        //清除余存的登录界面
         MyApp.getInstance().close_Activity();
 
         //加入当前页面到Activity集合中
@@ -108,11 +150,228 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
         //获取定位权限
         askPermission();
+
         //判断是否开启了手机定位服务
         //Location_Util.isLocationProviderEnabled(instance);
 
         getJson_data("city_code", instance);
+        //getCity_ID("city_id", instance);
+
+
+        //初始化aliyun SDK
+        /*sdkInit(Api.aliyun_key);
+        //1
+        mUIConfig = BaseUIConfig.init(6, this, mPhoneNumberAuthHelper);
+        //2
+        mPhoneNumberAuthHelper = PhoneNumberAuthHelper.getInstance(getApplicationContext(), mTokenResultListener);
+        mPhoneNumberAuthHelper.checkEnvAvailable();
+        mUIConfig.configAuthPage();*/
+
+
+        // WindowUtils
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Settings.canDrawOverlays(MainActivity.this)) {
+                WindowUtils.showPopupWindow(this);
+            } else {
+                //若没有权限，提示获取.
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                Toast.makeText(MainActivity.this,"需要取得权限以使用悬浮窗",Toast.LENGTH_SHORT).show();
+                startActivity(intent);
+            }
+        }else {
+            //SDK在23以下，不用管.
+            WindowUtils.showPopupWindow(this);
+        }*/
+
+        //获取用户信息（已登录情况）
+        getUser_info();
+
     }
+
+    private void getUser_info() {
+        if(TextUtils.isEmpty(UserConfig.instance().access_token)){
+            return;
+        }
+
+        OkHttpUtil.postRequest(Api.HEAD + "user/info", new OkHttpUtil.OnRequestNetWorkListener() {
+            @Override
+            public void notOk(String err) {
+                new Throwable("请求失败");
+            }
+
+            @Override
+            public void un_login_err() {
+                //Login_Util.go_Login(WelcomeActivity.this);
+            }
+
+            @Override
+            public void ok(String response, JSONObject jsonObject) {
+                try {
+                    int code = jsonObject.getInt("errCode");
+                    if(code == 200){
+                        User_Msg_Bean user_msg_bean = mGson.fromJson(response, User_Msg_Bean.class);
+                        User_Msg_Bean.DataBean dataBean = user_msg_bean.getData();
+                        UserConfig.instance().age = dataBean.getAge();
+                        UserConfig.instance().user_id = dataBean.getId();
+                        UserConfig.instance().avatar = dataBean.getAvatar();
+                        UserConfig.instance().name = dataBean.getName();
+                        UserConfig.instance().phone = dataBean.getPhone();
+                        //保存
+                        UserConfig.instance().saveUserConfig(instance);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+
+    /*public void sdkInit(String secretInfo) {
+        mTokenResultListener = new TokenResultListener() {
+            @Override
+            public void onTokenSuccess(String s) {
+                TokenRet tokenRet = null;
+                try {
+                    tokenRet = TokenRet.fromJson(s);
+                    *//*if (ResultCode.CODE_ERROR_ENV_CHECK_SUCCESS.equals(tokenRet.getCode())) {
+                        //获取预取号
+                        //accelerateLoginPage(5000);
+                    }
+                    if (ResultCode.CODE_START_AUTHPAGE_SUCCESS.equals(tokenRet.getCode())) {
+                        Log.i("TAG", "唤起授权页成功：" + s);
+                    }*//*
+                    if (ResultCode.CODE_SUCCESS.equals(tokenRet.getCode())) {
+                        Log.i("TAG", "获取token成功：" + s);
+                        getResultWithToken(tokenRet.getToken());
+                        mPhoneNumberAuthHelper.setAuthListener(null);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onTokenFailed(String s) {
+                mPhoneNumberAuthHelper.hideLoginLoading();
+                TokenRet tokenRet = null;
+                try {
+                    tokenRet = TokenRet.fromJson(s);
+                    if (ResultCode.CODE_ERROR_USER_CANCEL.equals(tokenRet.getCode())) {
+                        //取消登录
+
+                    } else {
+                        //跳转短信验证登录
+                        //msm_login();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                mPhoneNumberAuthHelper.setAuthListener(null);
+            }
+        };
+        mPhoneNumberAuthHelper = PhoneNumberAuthHelper.getInstance(this, mTokenResultListener);
+        mPhoneNumberAuthHelper.getReporter().setLoggerEnable(true);
+        mPhoneNumberAuthHelper.setAuthSDKInfo(secretInfo);
+    }*/
+
+
+    /**
+     * 拉起授权页
+     * @param
+     */
+    /*public void getLoginToken(int timeout) {
+        mPhoneNumberAuthHelper.getLoginToken(this, timeout);
+        //showLoadingDialog("正在唤起授权页");
+    }
+
+    public void getResultWithToken(final String token) {
+        ExecutorManager.run(new Runnable() {
+            @Override
+            public void run() {
+                final String result = getPhoneNumber(token);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mPhoneNumberAuthHelper.quitLoginPage();
+                    }
+                });
+            }
+        });
+
+        //上传服务器
+        if(!token.isEmpty()){
+            post_data(token);
+        }
+    }
+
+
+    private void post_data(String token) {
+        DialogUtils.getInstance().showDialog(this, "加载中...");
+        HashMap<String, String> map = new HashMap<>();
+        map.put("access_token", token);
+
+        OkHttpUtil.postRequest(Api.HEAD + "login_token", map, new OkHttpUtil.OnRequestNetWorkListener() {
+            @Override
+            public void notOk(String err) {
+                new Throwable("请求失败");
+            }
+
+            @Override
+            public void un_login_err() {
+
+            }
+
+            @Override
+            public void ok(String response, JSONObject jsonObject) {
+                try {
+                    int code = jsonObject.getInt("errCode");
+                    toast(jsonObject.getString("errMsg"));
+                    if(code == 200){
+                        UserBean userBean = new Gson().fromJson(response, UserBean.class);
+                        UserBean.DataBean dataBean = userBean.getData();
+
+                        UserConfig.instance().name = dataBean.getName();
+                        UserConfig.instance().phone = dataBean.getPhone();
+                        UserConfig.instance().access_token = dataBean.getAccess_token();
+                        UserConfig.instance().user_id = dataBean.getUser_id();
+                        UserConfig.instance().expires_in = dataBean.getExpires_in();
+                        UserConfig.instance().token_type = dataBean.getToken_type();
+                        //保存
+                        UserConfig.instance().saveUserConfig(instance);
+
+                        //刷新数据
+
+
+                        //跳转主页面
+                        //startActivity(new Intent(instance, MainActivity.class));
+                        //finish();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }*/
+
+
+    /*private void getCity_ID(String fileName, Context context) {
+        city_id_list = new ArrayList<>();
+        try {
+            //获取assets资源管理器
+            AssetManager assetManager = context.getAssets();
+            //通过管理器打开文件并读取
+            BufferedReader bf = new BufferedReader(new InputStreamReader(assetManager.open(fileName)));
+            String line;
+            while ((line = bf.readLine()) != null) {
+                if(!TextUtils.isEmpty(line)){
+                    city_id_list.add(line);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }*/
 
     public void getJson_data(String fileName, Context context) {
         //将json数据变成字符串
@@ -144,10 +403,13 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
             }
 
             @Override
-            public void ok(String response) {
-                JSONObject jsonObject;
+            public void un_login_err() {
+                Login_Util.go_Login(instance);
+            }
+
+            @Override
+            public void ok(String response, JSONObject jsonObject) {
                 try {
-                    jsonObject = new JSONObject(response);
                     int code = jsonObject.getInt("errCode");
                     toast(jsonObject.getString("errMsg"));
                     if (code == 200) {
@@ -313,14 +575,10 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
     // 申请权限
     private String[] locationPermission = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+    private String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO};
 
     private void askPermission() {
-        /*if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //Android 6.0申请权限
-            ActivityCompat.requestPermissions(this, locationPermission, 1);
-        } else {
-
-        }*/
+        //askPermission_more();
 
         if (EasyPermissions.hasPermissions(this, locationPermission)) {
             //有全部的权限，做对应的操作
@@ -328,13 +586,46 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
         } else {
             PermissionRequest request = new PermissionRequest.Builder(this, 1, locationPermission)
                     .setRationale("该App正常使用需要用到的权限")
-                    .setNegativeButtonText("不可以哟")
+                    .setNegativeButtonText("不允许")
+                    .setPositiveButtonText("允许")
+                    //.setTheme(R.style.myPermissionStyle)
+                    .build();
+            EasyPermissions.requestPermissions(request);
+        }
+
+
+        if (EasyPermissions.hasPermissions(this, permissions)) {
+            //有全部的权限，做对应的操作
+            //initLocation();
+        } else {
+            PermissionRequest request = new PermissionRequest.Builder(this, 2, permissions)
+                    .setRationale("该App正常使用需要用到的权限")
+                    .setNegativeButtonText("不允许")
                     .setPositiveButtonText("允许")
                     //.setTheme(R.style.myPermissionStyle)
                     .build();
             EasyPermissions.requestPermissions(request);
         }
     }
+
+
+
+    /*private void askPermission_more(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            //Android 6.0申请权限
+            ActivityCompat.requestPermissions(this, PERMISSION, 2);
+        } else {
+
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            //Android 6.0申请权限
+            ActivityCompat.requestPermissions(this, PERMISSION, 3);
+        } else {
+
+        }
+    }*/
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -348,12 +639,15 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
         //权限申请成功
         if (perms != null && perms.size() > 0) {
-            StringBuffer stringBuffer = new StringBuffer();
+            /*StringBuffer stringBuffer = new StringBuffer();
             for (String item : perms) {
                 stringBuffer.append(item).append(",");
             }
-            //Toast.makeText(this, "该应用已允许权限:" + stringBuffer.toString().trim(), Toast.LENGTH_SHORT).show();
-            initLocation();
+            Toast.makeText(this, "该应用已允许权限:" + stringBuffer.toString().trim(), Toast.LENGTH_SHORT).show();*/
+
+            if(requestCode == 1){
+                initLocation();
+            }
         }
     }
 
@@ -460,10 +754,18 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
         if(address != null){
             String locality = address.getSubLocality();
             String lin_1 = address.getAddressLine(0);
+            Locale locale = address.getLocale();
+            String city = address.getLocality();
 
+            //获取六位数的区域码
             if(!TextUtils.isEmpty(locality) && TextUtils.isEmpty(city_code)){
                 getCity_code(locality);
             }
+
+            //获取9位数的城市id
+            /*if(!TextUtils.isEmpty(city) && TextUtils.isEmpty(city_id)){
+                getCity_id_num("广州");
+            }*/
 
             //获取成功后取消监听
             removeLocationListener();
@@ -477,11 +779,89 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                 if(key.equals(locality)){
                     city_code = city_code_map.get(key);
                     toast_long(locality + " : " + city_code);
+                    //根据区域码获取天气情况
+                    getCurrent_weather(city_code);
                     //停止循环
                     return;
                 }
             }
         }
     }
+
+
+    private void getCurrent_weather(String city_code) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("districtCode", city_code);
+        OkHttpUtil.postRequestNoDialog(Api.HEAD + "current_weather", map, new OkHttpUtil.OnRequestNetWorkListener() {
+            @Override
+            public void notOk(String err) {
+
+            }
+
+            @Override
+            public void ok(String response, JSONObject jsonObject) {
+                try {
+                    int code = jsonObject.getInt("errCode");
+                    if(code == 200){
+                        Weather_Bean weather_bean = mGson.fromJson(response, Weather_Bean.class);
+                        Weather_Bean.DataBean.ResultBean resultBean = weather_bean.data.result;
+                        Weather_Bean.DataBean.ResultBean.NowBean nowBean =  resultBean.now;
+                        toast_long("天气："+ nowBean.text +"\n温度：" + nowBean.temp + "\n体感温度："+ nowBean.feels_like +"\n风况：" + nowBean.wind_class + nowBean.wind_dir);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void un_login_err() {
+                //去登录
+                Login_Util.go_Login(instance);
+            }
+        });
+    }
+
+
+    /*private void getCity_id_num(String locality) {
+        if(city_id_list != null && city_id_list.size()>0){
+            for (String key : city_id_list) {
+                if(key.contains(locality)){
+                    String[] arr_id = key.split(":");
+                    city_id = arr_id[1];
+                    if(!TextUtils.isEmpty(city_id)){
+                        //获取城市天气
+                        getWeather(city_id);
+                    }
+                    //停止循环
+                    return;
+                }
+            }
+        }
+    }
+
+    private void getWeather(String city_id) {
+        String url = "http://www.weather.com.cn/data/sk/"+ city_id + ".html";
+        //
+        OkHttpUtils.get()
+                .url(url)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(okhttp3.Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            Weather_Bean weather_bean = mGson.fromJson(response, Weather_Bean.class);
+                            Weather_Bean.WeatherinfoBean weatherinfo = weather_bean.getWeatherinfo();
+                            toast_long("温度是：" + weatherinfo.getTemp() + "-------风况为：" + weatherinfo.getWS() + weatherinfo.getWD());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }*/
 
 }

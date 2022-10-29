@@ -25,8 +25,19 @@
     <string name="date_2">上午好</string>
     <string name="date_3">中午好</string>
     <string name="date_4">下午好</string>
-    <string name="date_5">黄昏好</string>
+    <string name="date_5">傍晚好</string>
     <string name="date_6">晚上好</string>
+
+
+    <string name="msg">已阅读并同意</string>
+    <string name="msg_1">用户协议</string>
+    <string name="and">和</string>
+    <string name="msg_2">隐私政策</string>
+    <string name="title">提示</string>
+    <string name="content">若需要注册或登录意境app，请先阅读并同意下方相关条款</string>
+    <string name="ok">同意并继续</string>
+    <string name="login_txt">登录享受更多专属特权</string>
+    <string name="other_way">其他登录方式</string>
 
     <string-array name="camer_item">
         <item>从相册选择</item>

@@ -37,18 +37,13 @@ public class User_Msg_Bean {
     public static class DataBean {
         private Integer id;
         private String name;
-        private String email;
         private String phone;
         private String avatar;
-        private String register_type;
         private Integer status;
         private Integer gender;
         private Integer age;
-        private String last_token;
         private String created_at;
         private String updated_at;
-        private String last_login_time;
-        private Integer expires_in;
 
         public Integer getId() {
             return id;
@@ -66,14 +61,6 @@ public class User_Msg_Bean {
             this.name = name;
         }
 
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
         public String getPhone() {
             return phone;
         }
@@ -88,14 +75,6 @@ public class User_Msg_Bean {
 
         public void setAvatar(String avatar) {
             this.avatar = avatar;
-        }
-
-        public String getRegister_type() {
-            return register_type;
-        }
-
-        public void setRegister_type(String register_type) {
-            this.register_type = register_type;
         }
 
         public Integer getStatus() {
@@ -122,14 +101,6 @@ public class User_Msg_Bean {
             this.age = age;
         }
 
-        public String getLast_token() {
-            return last_token;
-        }
-
-        public void setLast_token(String last_token) {
-            this.last_token = last_token;
-        }
-
         public String getCreated_at() {
             return created_at;
         }
@@ -146,20 +117,5 @@ public class User_Msg_Bean {
             this.updated_at = updated_at;
         }
 
-        public String getLast_login_time() {
-            return last_login_time;
-        }
-
-        public void setLast_login_time(String last_login_time) {
-            this.last_login_time = last_login_time;
-        }
-
-        public Integer getExpires_in() {
-            return expires_in;
-        }
-
-        public void setExpires_in(Integer expires_in) {
-            this.expires_in = expires_in;
-        }
     }
 }

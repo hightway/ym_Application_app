@@ -1,5 +1,7 @@
 package com.example.myapplication.config;
 
+import static com.nirvana.tools.core.ComponentSdkCore.getApplicationContext;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +31,7 @@ import com.example.myapplication.http.UserConfig;
 import com.example.myapplication.tools.DialogUtils;
 import com.example.myapplication.tools.OkHttpUtil;
 import com.example.myapplication.tools.VarCodeCountDownTimerUtil;
+import com.mobile.auth.gatewayauth.PhoneNumberAuthHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -125,10 +128,13 @@ public class MessageActivity extends BaseActivity {
             }
 
             @Override
-            public void ok(String response) {
-                JSONObject jsonObject;
+            public void un_login_err() {
+
+            }
+
+            @Override
+            public void ok(String response, JSONObject jsonObject) {
                 try {
-                    jsonObject = new JSONObject(response);
                     toast(jsonObject.getString("errMsg"));
 
                     register_key.setClickable(false);
@@ -168,10 +174,13 @@ public class MessageActivity extends BaseActivity {
             }
 
             @Override
-            public void ok(String response) {
-                JSONObject jsonObject;
+            public void un_login_err() {
+
+            }
+
+            @Override
+            public void ok(String response, JSONObject jsonObject) {
                 try {
-                    jsonObject = new JSONObject(response);
                     int code = jsonObject.getInt("errCode");
                     toast(jsonObject.getString("errMsg"));
                     if(code == 200){

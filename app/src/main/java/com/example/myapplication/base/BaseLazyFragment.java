@@ -38,7 +38,6 @@ public abstract class BaseLazyFragment extends BaseFragment{
         return view;
     }
 
-
     //初始化控件
     protected abstract void initView(View view);
 

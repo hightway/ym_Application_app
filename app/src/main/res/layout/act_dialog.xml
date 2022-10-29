@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/free_dialog_bg">
+
+    <RelativeLayout
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/free_dialog_bg"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/dialog_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textsize16"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/dialog_text_about"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/dialog_text"
+            android:gravity="center"
+            android:maxLines="4"
+            android:layout_marginRight="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textsize14" />
+
+
+        <TextView
+            android:id="@+id/dialog_text_msg"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/dialog_text_about"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            android:maxLines="3"
+            android:textColor="@color/gray_"
+            android:textSize="@dimen/textsize14"
+            android:visibility="gone" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/dialog_text_msg"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.8dp"
+                android:background="@color/gray" />
+
+            <LinearLayout
+                android:id="@+id/lin_bt"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/dialog_cancel"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/white"
+                    android:text="@string/cancel"
+                    android:textColor="@color/gray_"
+                    android:textSize="@dimen/textsize14" />
+
+                <View
+                    android:layout_width="0.8dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/gray" />
+
+                <Button
+                    android:id="@+id/dialog_ok"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:background="@color/white"
+                    android:textColor="@color/red3"
+                    android:textSize="@dimen/textsize14" />
+
+            </LinearLayout>
+
+            <!--<Button
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:id="@+id/dialog_ok_one"
+                    android:textSize="@dimen/textsize16"
+                    android:background="@drawable/ba_dialog_sel"
+                    android:layout_weight="1"
+                    android:textColor="@color/blue"
+                    android:gravity="center"
+                    android:visibility="gone"/>-->
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

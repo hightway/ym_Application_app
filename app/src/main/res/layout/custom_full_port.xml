@@ -1,36 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/white">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@color/navColor">
+            android:layout_height="50dp">
 
             <ImageView
                 android:id="@+id/btn_back"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:background="@drawable/icon_close"
-                android:scaleType="center"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/icon_close"
+                android:padding="20dp"
                 android:layout_centerVertical="true"
-                android:cropToPadding="true"
-                android:layout_marginLeft="12dp"/>
+                android:layout_alignParentRight="true" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:textSize="18sp"
-                android:textColor="@color/white"
-                android:text="@string/custom_title"/>
+                android:text="@string/login_txt"
+                android:textColor="@color/black"
+                android:textSize="@dimen/textsize14" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -43,7 +42,8 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/phone" />
+                android:background="@drawable/phone"
+                android:visibility="gone"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -52,16 +52,17 @@
                 android:layout_marginTop="70dp"
                 android:text="@string/custom_slogan"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/tv_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="350dp"
-                android:text="@string/switch_msg"
-                android:textSize="18sp" />
+                android:layout_marginTop="160dp"
+                android:text="@string/other_way"
+                android:textSize="15sp" />
 
         </RelativeLayout>
 

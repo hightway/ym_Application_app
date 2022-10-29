@@ -15,6 +15,7 @@ public class UserConfig {
 	public String access_token;
 	public String token_type;
 	public int expires_in;
+	public boolean isloaded = false;
 
 	//oss数据
 	public String AssumedRoleId;
@@ -101,6 +102,7 @@ public class UserConfig {
 		this.register_type = "";
 		this.avatar = "";
 		this.email = "";
+		this.isloaded = false;
 
 		editor.putInt(context.getString(R.string.ymapp_userId), user_id);
 		editor.putInt(context.getString(R.string.ymapp_userExpires_in), expires_in);

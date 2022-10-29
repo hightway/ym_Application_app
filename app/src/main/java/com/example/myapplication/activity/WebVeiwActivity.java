@@ -6,7 +6,7 @@ import android.webkit.WebView;
 import com.example.myapplication.R;
 import com.example.myapplication.base.BaseActivity;
 
-public class AuthWebVeiwActivity extends BaseActivity {
+public class WebVeiwActivity extends BaseActivity {
 
     @Override
     protected int getLayoutID() {

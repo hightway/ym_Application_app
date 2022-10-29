@@ -24,6 +24,31 @@
             android:textColor="@color/gray_del"
             android:textSize="@dimen/textsize18" />
 
+        <TextView
+            android:id="@+id/tx_unlogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp"
+            android:text="退出登录"
+            android:textStyle="bold"
+            android:textColor="@color/gray_del"
+            android:textSize="@dimen/textsize16" />
+
+        <TextView
+            android:id="@+id/tx_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp"
+            android:text="去登录Go"
+            android:textStyle="bold"
+            android:textColor="@color/gray_del"
+            android:textSize="@dimen/textsize16"
+            android:visibility="gone"/>
+
     </RelativeLayout>
 
 

@@ -30,4 +30,9 @@
     <color name="gray_del">#666666</color>
     <color name="gray_new">#C6C6C7</color>
     <color name="main_app_color">#FF8836</color>
+    <color name="app_color">#787EE8</color>
+    <color name="app_dark">#2C2C2C</color>
+    <color name="gray_">#999999</color>
+    <color name="gray">#efefef</color>
+    <color name="blue">#ff33b5e5</color>
 </resources>

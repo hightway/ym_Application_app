@@ -23,6 +23,7 @@ import com.example.myapplication.http.Api;
 import com.example.myapplication.http.UserConfig;
 import com.example.myapplication.tools.DialogUtils;
 import com.example.myapplication.tools.IcallUtils;
+import com.example.myapplication.tools.Login_Util;
 import com.example.myapplication.tools.OkHttpUtil;
 
 import org.json.JSONException;
@@ -126,10 +127,13 @@ public class Password_Login_Activity extends BaseActivity {
             }
 
             @Override
-            public void ok(String response) {
-                JSONObject jsonObject;
+            public void un_login_err() {
+
+            }
+
+            @Override
+            public void ok(String response, JSONObject jsonObject) {
                 try {
-                    jsonObject = new JSONObject(response);
                     toast(jsonObject.getString("errMsg"));
                     if(jsonObject.getInt("errCode") == 200){
                         //注册成功，返回账号密码至登录页面

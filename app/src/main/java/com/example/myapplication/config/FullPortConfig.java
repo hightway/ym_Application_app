@@ -46,7 +46,7 @@ public class FullPortConfig extends BaseUIConfig {
                     case ResultCode.CODE_ERROR_USER_CANCEL:
                         Log.e(TAG, "点击了授权页默认返回按钮");
                         mAuthHelper.quitLoginPage();
-                        mActivity.finish();
+                        //mActivity.finish();
                         break;
                     //点击授权页默认样式的切换其他登录方式 会关闭授权页
                     //如果不希望关闭授权页那就setSwitchAccHidden(true)隐藏默认的  通过自定义view添加自己的

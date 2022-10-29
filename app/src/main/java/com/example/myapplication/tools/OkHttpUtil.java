@@ -15,6 +15,9 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.builder.PostFormBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,7 +33,7 @@ public class OkHttpUtil {
     public static final String TYPE_DOC = "doc";
     public String sError = "网络连接失败";
 
-    public static void getRequest(String url, final OnRequestNetWorkListener mListener) {
+    /*public static void getRequest(String url, final OnRequestNetWorkListener mListener) {
         OkHttpUtils
                 .get()
                 .url(url)
@@ -48,7 +51,7 @@ public class OkHttpUtil {
                         DialogUtils.getInstance().dismiss();
                     }
                 });
-    }
+    }*/
 
 
     public static void postRequest(String url, HashMap<String, String> params, final OnRequestNetWorkListener listener) {
@@ -74,8 +77,19 @@ public class OkHttpUtil {
 
             @Override
             public void onResponse(String response, int id) {
-                listener.ok(response);
-                DialogUtils.getInstance().dismiss();
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    int code = jsonObject.getInt("errCode");
+                    if (code == 422) {
+                        //未登录
+                        listener.un_login_err();
+                    } else {
+                        listener.ok(response, jsonObject);
+                    }
+                    DialogUtils.getInstance().dismiss();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -96,8 +110,19 @@ public class OkHttpUtil {
 
             @Override
             public void onResponse(String response, int id) {
-                listener.ok(response);
-                DialogUtils.getInstance().dismiss();
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    int code = jsonObject.getInt("errCode");
+                    if (code == 422) {
+                        //未登录
+                        listener.un_login_err();
+                    } else {
+                        listener.ok(response, jsonObject);
+                    }
+                    DialogUtils.getInstance().dismiss();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -151,8 +176,19 @@ public class OkHttpUtil {
 
             @Override
             public void onResponse(String response, int id) {
-                listener.ok(response);
-                DialogUtils.getInstance().dismiss();
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    int code = jsonObject.getInt("errCode");
+                    if (code == 422) {
+                        //未登录
+                        listener.un_login_err();
+                    } else {
+                        listener.ok(response, jsonObject);
+                    }
+                    DialogUtils.getInstance().dismiss();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -185,7 +221,18 @@ public class OkHttpUtil {
 
             @Override
             public void onResponse(String response, int id) {
-                listener.ok(response);
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    int code = jsonObject.getInt("errCode");
+                    if (code == 422) {
+                        //未登录
+                        listener.un_login_err();
+                    } else {
+                        listener.ok(response, jsonObject);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -275,8 +322,8 @@ public class OkHttpUtil {
 
     public interface OnRequestNetWorkListener {
         void notOk(String err);
-
-        void ok(String response);
+        void ok(String response, JSONObject jsonObject);
+        void un_login_err();
     }
 
 }

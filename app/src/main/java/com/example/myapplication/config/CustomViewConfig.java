@@ -60,7 +60,7 @@ public class CustomViewConfig extends BaseUIConfig {
                     @Override
                     public void onClick(Context context) {
                         mAuthHelper.quitLoginPage();
-                        mActivity.finish();
+                        //mActivity.finish();
                     }
                 }).build());
 

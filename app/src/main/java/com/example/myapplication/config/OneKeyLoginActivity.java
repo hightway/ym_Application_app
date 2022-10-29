@@ -109,7 +109,7 @@ public class OneKeyLoginActivity extends Activity {
                     tokenRet = TokenRet.fromJson(s);
                     if (ResultCode.CODE_ERROR_USER_CANCEL.equals(tokenRet.getCode())) {
                         //模拟的是必须登录 否则直接退出app的场景
-                        finish();
+                        //finish();
                     } else {
                         //跳转短信验证登录
                         Toast.makeText(getApplicationContext(), "一键登录失败切换到短信验证登录方式", Toast.LENGTH_SHORT).show();
@@ -229,10 +229,13 @@ public class OneKeyLoginActivity extends Activity {
             }
 
             @Override
-            public void ok(String response) {
-                JSONObject jsonObject;
+            public void un_login_err() {
+
+            }
+
+            @Override
+            public void ok(String response, JSONObject jsonObject) {
                 try {
-                    jsonObject = new JSONObject(response);
                     int code = jsonObject.getInt("errCode");
                     Toast.makeText(OneKeyLoginActivity.this, jsonObject.getString("errMsg"), Toast.LENGTH_SHORT).show();
                     if(code == 200){

@@ -37,6 +37,8 @@ public class DialogBottomConfig extends BaseUIConfig {
         int designHeight = dialogHeight - 50;
         int unit = designHeight / 10;
         int logBtnHeight = (int) (unit * 1.2);
+
+
         mAuthHelper.addAuthRegistViewConfig("switch_msg", new AuthRegisterViewConfig.Builder()
                 .setView(initSwitchView(unit * 6))
                 .setRootViewId(AuthRegisterViewConfig.RootViewId.ROOT_VIEW_ID_BODY)
@@ -58,7 +60,7 @@ public class DialogBottomConfig extends BaseUIConfig {
                             @Override
                             public void onClick(View v) {
                                 mAuthHelper.quitLoginPage();
-                                mActivity.finish();
+                                //mActivity.finish();
                             }
                         });
                     }
