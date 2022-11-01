@@ -1,5 +1,6 @@
 package com.example.myapplication.base;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,11 +48,20 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
 
         //竖屏锁定
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setBar_color(R.color.black);
 
         //抽象方法
         initView();
         setListener();
         initData();
+    }
+
+    @SuppressLint("NewApi")
+    public void setBar_color(int id) {
+        //需要设置这个 flag 才能调用 setStatusBarColor 来设置状态栏颜色
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        //设置状态栏颜色
+        getWindow().setStatusBarColor(getResources().getColor(id));
     }
 
 

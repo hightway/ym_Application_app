@@ -110,4 +110,22 @@
         <item name="android:windowEnterAnimation">@anim/pop_in</item>
     </style>
 
+
+    <!--<style name="MainMatch">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+    <style name="MainMatch.White">
+        <item name="android:background">#ffffff</item>
+    </style>
+    <style name="MainMatch.Black">
+        <item name="android:background">#000000</item>
+    </style>
+    <style name="MainMatch.Vertical">
+        <item name="android:orientation">vertical</item>
+    </style>
+    <style name="MainMatch.Horizontal">
+        <item name="android:orientation">horizontal</item>
+    </style>-->
+
 </resources>

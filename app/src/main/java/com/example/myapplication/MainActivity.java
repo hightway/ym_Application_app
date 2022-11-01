@@ -1,67 +1,46 @@
 package com.example.myapplication;
 
-import static com.example.myapplication.config.MockRequest.getPhoneNumber;
-
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
-import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.myapplication.activity.WelcomeActivity;
 import com.example.myapplication.adapter.Mainpage_Adapter;
 import com.example.myapplication.aliyun_oss.AliyunOSSUtils;
 import com.example.myapplication.base.BaseActivity;
+import com.example.myapplication.base.BaseLazyFragment;
 import com.example.myapplication.bean.Oss_Bean;
-import com.example.myapplication.bean.UserBean;
 import com.example.myapplication.bean.User_Msg_Bean;
 import com.example.myapplication.bean.Weather_Bean;
 import com.example.myapplication.config.BaseUIConfig;
-import com.example.myapplication.config.ExecutorManager;
-import com.example.myapplication.config.MessageActivity;
 import com.example.myapplication.custom.MyViewPage;
 import com.example.myapplication.fragment.TabFragment;
-import com.example.myapplication.fragment.TabFragment_2;
 import com.example.myapplication.fragment.TabFragment_3;
 import com.example.myapplication.fragment.TabFragment_4;
 import com.example.myapplication.http.Api;
 import com.example.myapplication.http.UserConfig;
+import com.example.myapplication.plmd.BackHandledInterface;
 import com.example.myapplication.tools.DialogUtils;
-import com.example.myapplication.tools.Location_Util;
 import com.example.myapplication.tools.Login_Util;
 import com.example.myapplication.tools.OkHttpUtil;
-import com.example.myapplication.tools.WindowUtils;
 import com.google.android.material.tabs.TabLayout;
-import com.google.gson.Gson;
 import com.mobile.auth.gatewayauth.PhoneNumberAuthHelper;
-import com.mobile.auth.gatewayauth.ResultCode;
 import com.mobile.auth.gatewayauth.TokenResultListener;
-import com.mobile.auth.gatewayauth.model.TokenRet;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,7 +52,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -81,7 +59,7 @@ import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 import pub.devrel.easypermissions.PermissionRequest;
 
-public class MainActivity extends BaseActivity implements EasyPermissions.PermissionCallbacks {
+public class MainActivity extends BaseActivity implements EasyPermissions.PermissionCallbacks, BackHandledInterface {
 
     @BindView(R.id.tl_tabs)
     TabLayout tl_tabs;
@@ -553,7 +531,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
 
     //双击退出
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    /*public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (!isExit) {
                 isExit = true;
@@ -570,7 +548,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
             return false;
         }
         return super.onKeyDown(keyCode, event);
-    }
+    }*/
 
 
     // 申请权限
@@ -821,6 +799,36 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
         });
     }
 
+
+    private BaseLazyFragment mBackHandedFragment;
+    @Override
+    public void setSelectedFragment(BaseLazyFragment selectedFragment) {
+        this.mBackHandedFragment = selectedFragment;
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if(mBackHandedFragment == null || !mBackHandedFragment.onBackPressed()){
+            if(getSupportFragmentManager().getBackStackEntryCount() == 0){
+                //super.onBackPressed();
+                if (!isExit) {
+                    isExit = true;
+                    toast("再按一次退出程序");
+                    // 利用handler延迟发送更改状态信息
+                    Message msg = new Message();
+                    msg.what = EXIT_INFO;
+                    mHandle.sendMessageDelayed(msg, 2000);
+                } else {
+                    MyApp.getInstance().close_Activity();
+                    finish();
+                    System.exit(0);
+                }
+            }else{
+                getSupportFragmentManager().popBackStack();
+            }
+        }
+    }
 
     /*private void getCity_id_num(String locality) {
         if(city_id_list != null && city_id_list.size()>0){

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--线性布局-orientation="horizontal"水平方向-->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/txtCode1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/pwd_set_bg"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="26sp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/txtCode2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/pwd_set_bg"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="26sp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/txtCode3"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/pwd_set_bg"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="26sp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/txtCode4"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/pwd_set_bg"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="26sp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/txtCode5"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/pwd_set_bg"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="26sp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/editCode"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@android:color/transparent"
+        android:inputType="number" />
+</RelativeLayout>

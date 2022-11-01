@@ -9,6 +9,7 @@ import android.util.Log;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.myapplication.R;
 import com.example.myapplication.base.BaseLazyFragment;
 import com.example.myapplication.config.BaseUIConfig;
 import com.example.myapplication.config.ExecutorManager;
@@ -94,6 +95,7 @@ public class Aliyun_Login_Util {
                     } else {
                         //跳转短信验证登录
                         //msm_login();
+                        PopWindowUtil.getInstance().getPopupWindow(mActivity, null, 0, 0, R.style.showPopupAnimation);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

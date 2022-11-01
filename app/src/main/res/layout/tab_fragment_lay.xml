@@ -1,48 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:layout="http://schemas.android.com/apk/res-auto"
-    xmlns:ywl="http://schemas.android.com/apk/res-auto">
+    xmlns:sd="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:ywl="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <com.example.myapplication.custom.DownLoadProgressbar
         android:id="@+id/dp_game_progress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="20dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         ywl:dptextsize="14sp" />
 
     <TextView
         android:id="@+id/tx_upload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
         android:text="上传文件"
         android:textColor="@color/black"
         android:textSize="@dimen/textsize18"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="120dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <TextView
         android:id="@+id/tx_upload_video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
         android:text="上传视频"
         android:textColor="@color/black"
         android:textSize="@dimen/textsize18"
-        android:layout_marginTop="60dp"
-        app:layout_constraintTop_toBottomOf="@+id/tx_upload"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
-
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tx_upload" />
 
 
     <!--<hollowsoft.slidingdrawer.SlidingDrawer-->
@@ -51,8 +52,8 @@
         android:id="@+id/drawer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        layout:content="@+id/content"
         app:allowSingleTap="false"
+        layout:content="@+id/content"
         layout:handle="@+id/handle">
 
         <TextView
@@ -67,11 +68,88 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <com.example.myapplication.custom.SmartScrollView
+
+        <!--<androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </androidx.recyclerview.widget.RecyclerView>-->
+
+
+        <com.example.myapplication.swipeDrawer_view.SwipeDrawer
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/red3" >
+            android:layout_below="@+id/top_bar"
+            android:background="@color/white"
+
+            sd:bottomLayout="@+id/bottomLayout"
+            sd:mainScroll="@+id/mainList"
+            sd:topLayout="@+id/topLayout">
+
+            <LinearLayout
+                android:id="@+id/topLayout"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/reTopIcon"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@mipmap/icon_down" />
+
+                <TextView
+                    android:id="@+id/reTopText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="下拉刷新"
+                    android:textColor="#666666"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/bottomLayout"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/reBottomIcon"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@mipmap/icon_up" />
+
+                <TextView
+                    android:id="@+id/reBottomText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="上拉加载"
+                    android:textColor="#666666"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/mainList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white" />
+
+
+        </com.example.myapplication.swipeDrawer_view.SwipeDrawer>
+
+
+        <!--<com.example.myapplication.custom.SmartScrollView
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/red3">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -81,10 +159,10 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="1200dp"
+                    android:layout_marginTop="30dp"
                     android:background="@color/white"
                     android:gravity="center"
                     android:text="body"
-                    android:layout_marginTop="30dp"
                     android:textAllCaps="true"
                     android:textColor="@android:color/black"
                     android:textSize="20sp"
@@ -93,10 +171,10 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="1200dp"
+                    android:layout_marginTop="30dp"
                     android:background="@color/white"
                     android:gravity="center"
                     android:text="body2"
-                    android:layout_marginTop="30dp"
                     android:textAllCaps="true"
                     android:textColor="@android:color/black"
                     android:textSize="20sp"
@@ -104,7 +182,7 @@
 
             </LinearLayout>
 
-        </com.example.myapplication.custom.SmartScrollView>
+        </com.example.myapplication.custom.SmartScrollView>-->
 
     </com.example.myapplication.custom.WrapSlidingDrawer>
 

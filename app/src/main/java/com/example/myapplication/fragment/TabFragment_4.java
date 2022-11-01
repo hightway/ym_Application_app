@@ -43,7 +43,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class TabFragment_4 extends BaseLazyFragment implements Pop_Show_Interface {
+public class TabFragment_4 extends BaseLazyFragment {
 
     @BindView(R.id.tx_unlogin)
     TextView tx_unlogin;
@@ -67,6 +67,11 @@ public class TabFragment_4 extends BaseLazyFragment implements Pop_Show_Interfac
     protected int setLayout() {
         //return R.layout.tab_4_fragment_lay;
         return R.layout.tab_4;
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return false;
     }
 
     @Override
@@ -111,7 +116,7 @@ public class TabFragment_4 extends BaseLazyFragment implements Pop_Show_Interfac
         }
 
         //设置回调
-        Pop_Show_Set.setCallBack(this);
+        //Pop_Show_Set.setCallBack(this);
     }
 
 
@@ -269,10 +274,10 @@ public class TabFragment_4 extends BaseLazyFragment implements Pop_Show_Interfac
     };
 
 
-    @Override
+    /*@Override
     public void pop_show() {
-        PopupWindow popupWindow = PopWindowUtil.getInstance().getPopupWindow(getActivity(), rel_search_bar, 0, 500, R.style.showPopupAnimation);
-    }
+        PopupWindow popupWindow = PopWindowUtil.getInstance().getPopupWindow(getActivity(), rel_search_bar, 0, 0, R.style.showPopupAnimation);
+    }*/
 
 
     public void put_Token(String token){

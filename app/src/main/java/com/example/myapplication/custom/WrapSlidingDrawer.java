@@ -7,21 +7,21 @@ import android.view.View;
 import hollowsoft.slidingdrawer.SlidingDrawer;
 
 public class WrapSlidingDrawer extends SlidingDrawer {
-    private boolean mVertical;
+    private boolean mVertical = true;
     private int mTopOffset;
 
     public WrapSlidingDrawer(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         int orientation = attrs.getAttributeIntValue("android", "orientation", 1);
         mTopOffset = attrs.getAttributeIntValue("android", "topOffset", 0);
-        mVertical = (orientation == 1);
+        //mVertical = (orientation == 1);
     }
 
     public WrapSlidingDrawer(Context context, AttributeSet attrs) {
         super(context, attrs);
         int orientation = attrs.getAttributeIntValue("android", "orientation", 1);
         mTopOffset = attrs.getAttributeIntValue("android", "topOffset", 0);
-        mVertical = (orientation == 1);
+        //mVertical = (orientation == 1);
     }
 
     @Override
@@ -41,8 +41,7 @@ public class WrapSlidingDrawer extends SlidingDrawer {
             heightSpecSize = handle.getMeasuredHeight() + mTopOffset + content.getMeasuredHeight();
             widthSpecSize = content.getMeasuredWidth();
             if (handle.getMeasuredWidth() > widthSpecSize) widthSpecSize = handle.getMeasuredWidth();
-        }
-        else {
+        } else {
             int width = widthSpecSize - handle.getMeasuredWidth() - mTopOffset;
             getContent().measure(MeasureSpec.makeMeasureSpec(width, widthSpecMode), heightMeasureSpec);
             widthSpecSize = handle.getMeasuredWidth() + mTopOffset + content.getMeasuredWidth();

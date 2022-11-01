@@ -16,6 +16,11 @@ public class TabFragment_3 extends BaseLazyFragment {
     }
 
     @Override
+    public boolean onBackPressed() {
+        return false;
+    }
+
+    @Override
     protected void initView(View view) {
         ButterKnife.bind(this, view);
     }

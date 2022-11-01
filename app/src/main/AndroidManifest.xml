@@ -131,6 +131,14 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name="com.example.myapplication.activity.PWD_Forget_Activity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.example.myapplication.activity.PWD_Forget_Key_Activity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".wxapi.WXEntryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"

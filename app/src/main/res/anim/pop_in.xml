@@ -3,9 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android" >
     <!-- 持续时间 -->
 
-    <translate android:fromYDelta="100%p" android:toYDelta="0" android:duration="800"/>
+    <translate android:fromYDelta="100%p" android:toYDelta="0" android:duration="500"/>
     <alpha
-        android:duration="800"
+        android:duration="500"
         android:fromAlpha="0.0"
         android:toAlpha="1.0" />
 </set>

@@ -9,9 +9,13 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.myapplication.plmd.BackHandledInterface;
 import com.google.gson.Gson;
 
 public abstract class BaseLazyFragment extends BaseFragment{
+
+    protected BackHandledInterface mBackHandledInterface;
+    public abstract boolean onBackPressed();
 
     /**
      * 描述: 赖加载：子类传递id
@@ -26,6 +30,14 @@ public abstract class BaseLazyFragment extends BaseFragment{
         if(mgson == null){
             mgson = new Gson();
         }
+
+        if(!(getActivity() instanceof BackHandledInterface)){
+            throw new ClassCastException("Hosting Activity must implement BackHandledInterface");
+        }else{
+            this.mBackHandledInterface = (BackHandledInterface)getActivity();
+        }
+
+
         if (null != view) {
             ViewGroup parent = (ViewGroup) view.getParent();
             if (null != parent) {
@@ -40,5 +52,13 @@ public abstract class BaseLazyFragment extends BaseFragment{
 
     //初始化控件
     protected abstract void initView(View view);
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        //告诉FragmentActivity，当前Fragment在栈顶
+        mBackHandledInterface.setSelectedFragment(this);
+    }
 
 }

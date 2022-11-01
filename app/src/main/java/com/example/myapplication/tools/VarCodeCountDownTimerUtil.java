@@ -15,7 +15,7 @@ public class VarCodeCountDownTimerUtil extends CountDownTimer{
 
         @Override
         public void onTick(long millisUntilFinished) {
-            register_key.setText("倒计时(" + millisUntilFinished / 1000 + ")");
+            register_key.setText("倒计时(" + millisUntilFinished / 1000 + "s)");
         }
 
         @Override
