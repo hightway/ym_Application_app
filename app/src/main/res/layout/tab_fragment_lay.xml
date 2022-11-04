@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:layout="http://schemas.android.com/apk/res-auto"
     xmlns:sd="http://schemas.android.com/apk/res-auto"
@@ -7,6 +8,57 @@
     xmlns:ywl="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/video_viewpage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <RelativeLayout
+            android:id="@+id/rel_all_msg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:background="@color/trans"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tx_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="下午好"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="40dp"
+                android:layout_above="@+id/tx_temperature"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize32"
+                android:visibility="invisible"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tx_temperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="25°C"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="100dp"
+                android:textColor="@color/white"
+                android:visibility="invisible"
+                android:textSize="60sp" />
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
 
     <com.example.myapplication.custom.DownLoadProgressbar
         android:id="@+id/dp_game_progress"
@@ -18,7 +70,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        ywl:dptextsize="14sp" />
+        ywl:dptextsize="14sp"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/tx_upload"
@@ -30,7 +83,8 @@
         android:textSize="@dimen/textsize18"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
 
 
     <TextView
@@ -43,7 +97,8 @@
         android:textSize="@dimen/textsize18"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tx_upload" />
+        app:layout_constraintTop_toBottomOf="@+id/tx_upload"
+        android:visibility="gone"/>
 
 
     <!--<hollowsoft.slidingdrawer.SlidingDrawer-->
@@ -59,8 +114,8 @@
         <TextView
             android:id="@+id/handle"
             android:layout_width="match_parent"
-            android:layout_height="75dp"
-            android:background="#122631"
+            android:layout_height="70dp"
+            android:background="@color/trans"
             android:gravity="center"
             android:text="Handle"
             android:textAllCaps="true"
@@ -134,55 +189,13 @@
                     android:textSize="14sp" />
             </LinearLayout>
 
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/mainList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/white" />
 
-
         </com.example.myapplication.swipeDrawer_view.SwipeDrawer>
-
-
-        <!--<com.example.myapplication.custom.SmartScrollView
-            android:id="@+id/content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/red3">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="1200dp"
-                    android:layout_marginTop="30dp"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:text="body"
-                    android:textAllCaps="true"
-                    android:textColor="@android:color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="1200dp"
-                    android:layout_marginTop="30dp"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:text="body2"
-                    android:textAllCaps="true"
-                    android:textColor="@android:color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-        </com.example.myapplication.custom.SmartScrollView>-->
 
     </com.example.myapplication.custom.WrapSlidingDrawer>
 

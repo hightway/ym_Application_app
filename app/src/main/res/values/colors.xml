@@ -31,11 +31,18 @@
     <color name="gray_new">#C6C6C7</color>
     <color name="main_app_color">#FF8836</color>
     <color name="app_color">#787EE8</color>
-    <color name="app_dark">#2C2C2C</color>
+    <color name="app_dark">#ff2C2C2C</color>
+    <color name="app_dark_l">#282828</color>
+    <color name="app_dark_2">#242424</color>
     <color name="gray_">#999999</color>
     <color name="gray">#efefef</color>
     <color name="blue">#ff33b5e5</color>
-    <color name="new_black">#2C2C2C</color>
+    <color name="new_black">#ff2C2C2C</color>
     <color name="code_cocle">#E0E0E0</color>
-    <color name="get_code_cocle">#EBEBF5</color>
+    <color name="get_code_cocle">#ffffff</color>
+    <color name="get_code_cocle_un">#99ebebf5</color>
+    <color name="divider">#D1D1D1</color>
+    <color name="click_bg_dark">#ff000000</color>
+    <color name="click_bg_dark_light">#E0E0E0</color>
+    <color name="key_board_bg">#ff6f6f70</color>
 </resources>

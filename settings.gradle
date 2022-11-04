@@ -36,6 +36,9 @@ dependencyResolutionManagement {
             url 'http://maven.aliyun.com/nexus/content/repositories/gradle-plugin'
         }
 
+        //阿里云播放器
+        maven {url 'https://maven.aliyun.com/repository/releases'}
+
         google()
         mavenCentral()
         maven { url 'https://jitpack.io' }

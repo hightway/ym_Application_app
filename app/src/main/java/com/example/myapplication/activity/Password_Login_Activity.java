@@ -110,7 +110,7 @@ public class Password_Login_Activity extends BaseActivity {
             toast(getString(R.string.phoneNumber_null));
             return;
         }
-        if (password.length() < 8 || password.length() > 15 || !IcallUtils.isPwd(password)) {
+        if (password.length() < 8 || password.length() > 20 || !IcallUtils.isPwd(password)) {
             toast(getString(R.string.code_length));
             return;
         }

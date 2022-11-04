@@ -9,6 +9,10 @@ buildscript {
             allowInsecureProtocol = true
             url 'http://maven.aliyun.com/nexus/content/groups/public/'
         }
+
+        //阿里云播放器
+        maven {url 'https://maven.aliyun.com/repository/releases'}
+
         google()
         mavenCentral()
     }

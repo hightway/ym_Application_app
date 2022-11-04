@@ -6,6 +6,7 @@
     
     <!-- 文字大小 -->
     <dimen name="textsize35">35.0sp</dimen>
+    <dimen name="textsize32">32.0sp</dimen>
     <dimen name="textsize30">30.0sp</dimen>
     <dimen name="textsize25">25.0sp</dimen>
     <dimen name="textsize24">24.0sp</dimen>

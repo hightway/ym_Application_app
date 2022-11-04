@@ -148,7 +148,7 @@ public class Password_Register_Activity extends BaseActivity {
 
         String password = edit_passworld.getText().toString();
         String repass = edit_repassworld.getText().toString();
-        if (password.length() < 8 || password.length() > 15 || !IcallUtils.isPwd(password)) {
+        if (password.length() < 8 || password.length() > 20 || !IcallUtils.isPwd(password)) {
             toast(getString(R.string.code_length));
             return;
         }

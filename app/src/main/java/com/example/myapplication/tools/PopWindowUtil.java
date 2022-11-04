@@ -1,11 +1,14 @@
 package com.example.myapplication.tools;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -138,10 +141,17 @@ public class PopWindowUtil {
 
     private VarCodeCountDownTimerUtil mVarCodeCountDownTimer;
     private boolean isPwd_Login = false;
-    private boolean is_sel;
-    private int login_type = 1;
+    private boolean is_sel = false;
+    private boolean phone_sure = false;
+    private boolean key_sure = false;
+    private boolean pwd_sure = false;
 
     public PopupWindow getPopupWindow(Context mContext, View view, int xOff, int yOff, int anim) {
+        is_sel = false;
+        isPwd_Login = false;
+        phone_sure = false;
+        key_sure = false;
+        pwd_sure = false;
         View inflate = LayoutInflater.from(mContext).inflate(R.layout.layout_pop, null, false);
         PopupWindow popupWindow = new PopupWindow(inflate, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         //点击非菜单部分退出
@@ -164,17 +174,24 @@ public class PopWindowUtil {
             }
         });
 
+        TextView tx_login_go = inflate.findViewById(R.id.tx_login_go);
+        tx_login_go.setBackgroundResource(R.drawable.button_unsel_bg);
+        tx_login_go.setTextColor(mContext.getResources().getColor(R.color.get_code_cocle_un));
+        tx_login_go.setEnabled(false);
+
         EditText edit_phone = inflate.findViewById(R.id.edit_phone);
         EditText edit_key = inflate.findViewById(R.id.edit_key);
+        EditText edit_passworld = inflate.findViewById(R.id.edit_passworld);
+        addTxt_Watch(edit_phone, edit_key, edit_passworld, tx_login_go, mContext);
+
         LinearLayout lin_agree_txt = inflate.findViewById(R.id.lin_agree_txt);
         TextView tx_title = inflate.findViewById(R.id.tx_title);
-        TextView tx_login_go = inflate.findViewById(R.id.tx_login_go);
         TextView tx_pwd_forget = inflate.findViewById(R.id.tx_pwd_forget);
         tx_pwd_forget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mContext.startActivity(new Intent(mContext, PWD_Forget_Activity.class));
-                popupWindow.dismiss();
+                //popupWindow.dismiss();
             }
         });
 
@@ -202,7 +219,6 @@ public class PopWindowUtil {
             }
         });
 
-        EditText edit_passworld = inflate.findViewById(R.id.edit_passworld);
         TextView tx_longin_set = inflate.findViewById(R.id.tx_longin_set);
         tx_longin_set.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,16 +229,17 @@ public class PopWindowUtil {
                     tx_title.setText(mContext.getString(R.string.login_way));
                     tx_login_go.setText(mContext.getString(R.string.login_regis));
                     tx_longin_set.setText(mContext.getString(R.string.pwd_login));
-                    tx_pwd_forget.setVisibility(View.VISIBLE);
+                    tx_pwd_forget.setVisibility(View.GONE);
                 } else {
                     login_input_key.setVisibility(View.GONE);
                     login_input_pwd.setVisibility(View.VISIBLE);
                     tx_title.setText(mContext.getString(R.string.account_login));
                     tx_login_go.setText(mContext.getString(R.string.login));
                     tx_longin_set.setText(mContext.getString(R.string.yzm_login));
-                    tx_pwd_forget.setVisibility(View.GONE);
+                    tx_pwd_forget.setVisibility(View.VISIBLE);
                 }
                 isPwd_Login = !isPwd_Login;
+                check_btn(tx_login_go, mContext);
             }
         });
 
@@ -237,7 +254,11 @@ public class PopWindowUtil {
                         toast(mContext, mContext.getString(R.string.phoneNumber_null));
                         return;
                     }
-                    if (password.length() < 8 || password.length() > 15 || !IcallUtils.isPwd(password)) {
+                    if (!NumberUtil.isCellPhone(phone)) {
+                        toast(mContext, mContext.getString(R.string.phoneNumber_type));
+                        return;
+                    }
+                    if (password.length() < 8 || password.length() > 20 || !IcallUtils.isPwd(password)) {
                         toast(mContext, mContext.getString(R.string.code_length));
                         return;
                     }
@@ -262,6 +283,10 @@ public class PopWindowUtil {
                     String key = edit_key.getText().toString().trim();
                     if (TextUtils.isEmpty(phone)) {
                         toast(mContext, mContext.getString(R.string.phoneNumber_null));
+                        return;
+                    }
+                    if (!NumberUtil.isCellPhone(phone)) {
+                        toast(mContext, mContext.getString(R.string.phoneNumber_type));
                         return;
                     }
                     if (TextUtils.isEmpty(key)) {
@@ -317,6 +342,149 @@ public class PopWindowUtil {
         //popupWindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
         popupWindow.showAtLocation(inflate, Gravity.NO_GRAVITY, 0, 0);
         return mPopupWindow;
+    }
+
+
+    private void check_btn(TextView tx_login_go, Context mContext) {
+        if(isPwd_Login){
+            if(phone_sure && pwd_sure){
+                tx_login_go.setBackgroundResource(R.drawable.button_bg);
+                tx_login_go.setTextColor(mContext.getResources().getColor(R.color.get_code_cocle));
+                tx_login_go.setEnabled(true);
+            }else{
+                tx_login_go.setBackgroundResource(R.drawable.button_unsel_bg);
+                tx_login_go.setTextColor(mContext.getResources().getColor(R.color.get_code_cocle_un));
+                tx_login_go.setEnabled(false);
+            }
+        }else{
+            if(phone_sure && key_sure){
+                tx_login_go.setBackgroundResource(R.drawable.button_bg);
+                tx_login_go.setTextColor(mContext.getResources().getColor(R.color.get_code_cocle));
+                tx_login_go.setEnabled(true);
+            }else{
+                tx_login_go.setBackgroundResource(R.drawable.button_unsel_bg);
+                tx_login_go.setTextColor(mContext.getResources().getColor(R.color.get_code_cocle_un));
+                tx_login_go.setEnabled(false);
+            }
+        }
+    }
+
+
+    private void addTxt_Watch(EditText edit_phone, EditText edit_key, EditText edit_passworld, TextView tx_login_go, Context mContext) {
+        edit_phone.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                phone_sure = false;
+                if (editable != null) {
+                    String code = editable.toString().trim();
+                    if (!TextUtils.isEmpty(code)) {
+                        if (NumberUtil.isCellPhone(code)) {
+                            phone_sure = true;
+                            //密码
+                            if (isPwd_Login) {
+                                if (pwd_sure) {
+                                    tx_login_go.setBackgroundResource(R.drawable.button_bg);
+                                    tx_login_go.setTextColor(mContext.getResources().getColor(R.color.get_code_cocle));
+                                    tx_login_go.setEnabled(true);
+                                }
+                            } else {
+                                //验证码
+                                if (key_sure) {
+                                    tx_login_go.setBackgroundResource(R.drawable.button_bg);
+                                    tx_login_go.setTextColor(mContext.getResources().getColor(R.color.get_code_cocle));
+                                    tx_login_go.setEnabled(true);
+                                }
+                            }
+                        } else {
+                            phone_sure = false;
+                            tx_login_go.setBackgroundResource(R.drawable.button_unsel_bg);
+                            tx_login_go.setTextColor(mContext.getResources().getColor(R.color.get_code_cocle_un));
+                            tx_login_go.setEnabled(false);
+                        }
+                    }
+                }
+            }
+        });
+
+
+        edit_passworld.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                pwd_sure = false;
+                if (editable != null) {
+                    String code = editable.toString().trim();
+                    //8位数起的密码
+                    if (!TextUtils.isEmpty(code) && code.length() >= 8) {
+                        pwd_sure = true;
+                        if(isPwd_Login && phone_sure){
+                            tx_login_go.setBackgroundResource(R.drawable.button_bg);
+                            tx_login_go.setTextColor(mContext.getResources().getColor(R.color.get_code_cocle));
+                            tx_login_go.setEnabled(true);
+                        }
+                    }else{
+                        pwd_sure = false;
+                        tx_login_go.setBackgroundResource(R.drawable.button_unsel_bg);
+                        tx_login_go.setTextColor(mContext.getResources().getColor(R.color.get_code_cocle_un));
+                        tx_login_go.setEnabled(false);
+                    }
+                }
+            }
+        });
+
+
+        edit_key.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                key_sure = false;
+                if (editable != null) {
+                    String code = editable.toString().trim();
+                    //五位数验证码
+                    if (!TextUtils.isEmpty(code) && code.length() == 5) {
+                        key_sure = true;
+                        if(!isPwd_Login && phone_sure){
+                            tx_login_go.setBackgroundResource(R.drawable.button_bg);
+                            tx_login_go.setTextColor(mContext.getResources().getColor(R.color.get_code_cocle));
+                            tx_login_go.setEnabled(true);
+                        }
+                    }else{
+                        key_sure = false;
+                        tx_login_go.setBackgroundResource(R.drawable.button_unsel_bg);
+                        tx_login_go.setTextColor(mContext.getResources().getColor(R.color.get_code_cocle_un));
+                        tx_login_go.setEnabled(false);
+                    }
+                }
+            }
+        });
     }
 
 

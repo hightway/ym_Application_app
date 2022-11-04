@@ -1,5 +1,7 @@
 package com.example.myapplication.tools;
 
+import android.text.TextUtils;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -144,5 +146,34 @@ public class NumberUtil {
 
         return rtNum;
     }
+
+
+    //151 1111 1111 -> 151 **** 1111
+    public static String dealPhoneNumber(String phoneNumber) {
+        if (!TextUtils.isEmpty(phoneNumber)) {
+
+            /*phoneNumber = phoneNumber.substring(0, 3) + "****" + phoneNumber.substring(7, 11);
+            return phoneNumber;*/
+
+
+            int len = phoneNumber.length();
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < len; i++) {
+                if (i > 2 && i < 7) {
+                    builder.append("*");
+                } else {
+                    builder.append(phoneNumber.charAt(i));
+                }
+
+                if (i == 2 || i == 6) {
+                    if (i != len - 1)
+                        builder.append(" ");
+                }
+            }
+            return builder.toString();
+        }
+        return null;
+    }
+
 
 }

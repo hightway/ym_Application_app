@@ -25,6 +25,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <!-- 短信验证登陆功能需要添加次权限来自动填充验证码，用不到可以去掉 -->
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
 
 
     <application
@@ -136,6 +138,10 @@
 
         <activity
             android:name="com.example.myapplication.activity.PWD_Forget_Key_Activity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.example.myapplication.activity.PWD_Forget_Set_Activity"
             android:screenOrientation="portrait" />
 
         <activity

@@ -116,10 +116,10 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     protected void initView() {
         ButterKnife.bind(MainActivity.this);
         //清除余存的登录界面
-        MyApp.getInstance().close_Activity();
-
+        //MyApp.getInstance().close_Activity();
         //加入当前页面到Activity集合中
-        MyApp.getInstance().addActivity(this);
+        //MyApp.getInstance().addActivity(this);
+
         initFragment();
 
         //获取ossl临时凭证并缓存两个小时
@@ -437,13 +437,13 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
         TabFragment_3 tabFragment_3 = new TabFragment_3();
         tab_name.add(getString(R.string.tab_3));
-        tab_icon_sel.add(R.mipmap.ic_home_pressed);
-        tab_icon.add(R.mipmap.ic_home_normal);
+        tab_icon_sel.add(R.mipmap.ic_home_pressed2);
+        tab_icon.add(R.mipmap.ic_home_normal2);
 
         TabFragment_4 tabFragment_4 = new TabFragment_4();
         tab_name.add(getString(R.string.tab_4));
-        tab_icon_sel.add(R.mipmap.ic_home_pressed);
-        tab_icon.add(R.mipmap.ic_home_normal);
+        tab_icon_sel.add(R.mipmap.ic_home_pressed3);
+        tab_icon.add(R.mipmap.ic_home_normal3);
 
         fragmentList.add(tabFragment);
         //fragmentList.add(tabFragment_2);
@@ -478,8 +478,9 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                     int index = tab.getPosition();
                     TextView textView = tab.getCustomView().findViewById(R.id.tabtext);
                     ImageView tabicon = tab.getCustomView().findViewById(R.id.tabicon);
-                    textView.setTextColor(getResources().getColor(R.color.red3));
-                    tabicon.setBackgroundResource(tab_icon_sel.get(index));
+                    textView.setTextColor(getResources().getColor(R.color.white));
+                    //tabicon.setBackgroundResource(tab_icon_sel.get(index));
+                    tabicon.setImageResource(tab_icon_sel.get(index));
                     vp_viewpage.setCurrentItem(tab.getPosition(), true);
                 }
 
@@ -493,8 +494,9 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                     int index = tab.getPosition();
                     TextView textView = tab.getCustomView().findViewById(R.id.tabtext);
                     ImageView tabicon = tab.getCustomView().findViewById(R.id.tabicon);
-                    textView.setTextColor(getResources().getColor(R.color.black));
-                    tabicon.setBackgroundResource(tab_icon.get(index));
+                    textView.setTextColor(getResources().getColor(R.color.white));
+                    //tabicon.setBackgroundResource(tab_icon.get(index));
+                    tabicon.setImageResource(tab_icon.get(index));
                 }
 
                 @Override
@@ -820,7 +822,8 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                     msg.what = EXIT_INFO;
                     mHandle.sendMessageDelayed(msg, 2000);
                 } else {
-                    MyApp.getInstance().close_Activity();
+                    MyApp.getInstance().finish_Activity();
+                    MyApp.getInstance().activityList.clear();
                     finish();
                     System.exit(0);
                 }

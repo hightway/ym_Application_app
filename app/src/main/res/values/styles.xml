@@ -7,6 +7,12 @@
         <item name="colorAccent">@color/white</item>
     </style>
 
+    <style name="AppTheme_dark" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/white</item>
+        <item name="colorAccent">@color/white</item>
+    </style>
+
 
     <style name="myDialogTheme2" parent="android:Theme.Dialog">
         <item name="android:windowFrame">@null</item>
@@ -108,6 +114,17 @@
     <style name="showPopupAnimation" parent="android:Animation">
         <item name="android:windowExitAnimation">@anim/pop_out</item>
         <item name="android:windowEnterAnimation">@anim/pop_in</item>
+    </style>
+
+    <style name="keyboard" parent="android:Animation">
+        <item name="android:windowExitAnimation">@anim/keyboard_out</item>
+        <item name="android:windowEnterAnimation">@anim/keyboard_in</item>
+    </style>
+
+
+    <style name="animBottom" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/push_bottom_in</item>
+        <item name="android:windowExitAnimation">@anim/push_bottom_out</item>
     </style>
 
 

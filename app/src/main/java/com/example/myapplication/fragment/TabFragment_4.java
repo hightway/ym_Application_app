@@ -57,8 +57,6 @@ public class TabFragment_4 extends BaseLazyFragment {
     TextView text_view;
     @BindView(R.id.tx_top)
     TextView tx_top;
-    @BindView(R.id.tx_search)
-    TextView tx_search;
     @BindView(R.id.rel_search_bar)
     RelativeLayout rel_search_bar;
 
@@ -109,38 +107,14 @@ public class TabFragment_4 extends BaseLazyFragment {
         mScrollLayout.setOnScrollChangedListener(mOnScrollChangedListener);
         //mScrollLayout.getBackground().setAlpha(0);
 
-        //获取时间段
-        //tx_search.setText(getString(getTodayFlag()));
-        if (mhandler != null) {
-            mhandler.postDelayed(runnable, 1000 * 60 * 5);
-        }
-
         //设置回调
         //Pop_Show_Set.setCallBack(this);
     }
 
 
-    Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            //获取时间段
-            if (tx_search != null) {
-                tx_search.setText(getString(getTodayFlag()));
-            }
-
-            mhandler.postDelayed(runnable, 1000 * 60 * 5);
-        }
-    };
-
-
     @Override
     public void onResume() {
         super.onResume();
-        //获取时间段
-        if (tx_search != null) {
-            tx_search.setText(getString(getTodayFlag()));
-        }
-
         if(!TextUtils.isEmpty(UserConfig.instance().access_token)){
             tx_login.setVisibility(View.GONE);
             tx_unlogin.setVisibility(View.VISIBLE);
@@ -150,14 +124,6 @@ public class TabFragment_4 extends BaseLazyFragment {
         }
     }
 
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mhandler != null) {
-            mhandler.removeCallbacks(runnable);
-        }
-    }
 
     public static int getTodayFlag() {
         // 获取系统时间

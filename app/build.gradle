@@ -74,6 +74,23 @@ dependencies {
     implementation 'com.github.moraisigor:slidingdrawer:1.7.1'
     implementation 'com.yinglan.scrolllayout:scrolllayout:1.0.2'
 
+    //自定义软键盘
+    implementation 'com.github.StomHong:CustomizeKeyboard:1.0.2'
+
     //获取权限的第三方库
     implementation 'pub.devrel:easypermissions:3.0.0'
+
+
+    //阿里云播放器的两个依赖
+    implementation 'com.aliyun.sdk.android:AliyunPlayer:4.5.0-full'
+    implementation 'com.alivc.conan:AlivcConan:0.9.5'
+
+    //ijkplayer
+    /*implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
+    implementation 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.8.8'
+    implementation 'tv.danmaku.ijk.media:ijkplayer-armv5:0.8.8'
+    implementation 'tv.danmaku.ijk.media:ijkplayer-arm64:0.8.8'
+    implementation 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.8'
+    implementation 'tv.danmaku.ijk.media:ijkplayer-x86_64:0.8.8'
+    implementation 'tv.danmaku.ijk.media:ijkplayer-exo:0.8.8'*/
 }

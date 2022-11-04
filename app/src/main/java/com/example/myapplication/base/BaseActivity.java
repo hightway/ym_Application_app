@@ -48,7 +48,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
 
         //竖屏锁定
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        setBar_color(R.color.black);
+        setBar_color(R.color.app_dark_2);
 
         //抽象方法
         initView();

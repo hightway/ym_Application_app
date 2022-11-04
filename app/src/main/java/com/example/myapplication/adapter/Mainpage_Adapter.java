@@ -53,15 +53,16 @@ public class Mainpage_Adapter extends FragmentPagerAdapter {
         View v = LayoutInflater.from(context).inflate(R.layout.icon_view, null);
         ImageView iv = v.findViewById(R.id.tabicon);
         TextView tv = v.findViewById(R.id.tabtext);
-        //iv.setBackgroundResource(ints[position]);
         if(position == 0){
-            iv.setBackgroundResource(ints[position]);
+            //iv.setBackgroundResource(ints[position]);
+            iv.setImageResource(ints[position]);
         }else{
-            iv.setBackgroundResource(ints_tab[position]);
+            //iv.setBackgroundResource(ints_tab[position]);
+            iv.setImageResource(ints_tab[position]);
         }
         tv.setText(str[position]);
         if (position == 0) {
-            tv.setTextColor(v.getResources().getColor(R.color.red3));
+            tv.setTextColor(v.getResources().getColor(R.color.white));
         }
         return v;
     }

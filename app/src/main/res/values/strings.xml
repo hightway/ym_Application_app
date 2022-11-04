@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">助眠app</string>
     <string name="copy_success">复制成功</string>
-    <string name="tab_1">tab_1</string>
+    <string name="tab_1">首页</string>
     <string name="tab_2">tab_2</string>
-    <string name="tab_3">tab_3</string>
-    <string name="tab_4">tab_4</string>
+    <string name="tab_3">睡眠</string>
+    <string name="tab_4">我的</string>
 
     <string name="switch_msg">切换到短信登录页面</string>
     <string name="custom_title">自定义标题</string>
@@ -23,10 +23,16 @@
     <string name="password_register">新用户注册</string>
     <string name="roule">服务条款</string>
     <string name="login_msg">登录注册即表示您同意</string>
-    <string name="code_length">请输入8-15位数字或者字母的密码</string>
+    <string name="code_length">请输入8-20位数字或者字母的密码</string>
     <string name="code_same">密码必须一致</string>
     <string name="pwd_reset">重置密码</string>
     <string name="pwd_reset_num">请输入手机号</string>
+    <string name="pwd_reset_set">请输入新密码</string>
+    <string name="pwd_reset_input">请输入确认密码</string>
+    <string name="pwd_reset_ok">确认密码</string>
+    <string name="pwd_reset_new">新密码</string>
+    <string name="pwd_reset_sure">确认新密码</string>
+    <string name="pwd_reset_login">确  认</string>
     <string name="pwd_reset_send">验证码已发送至</string>
 
     <string name="date_1">凌晨好</string>

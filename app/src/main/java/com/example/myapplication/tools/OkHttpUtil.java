@@ -95,6 +95,47 @@ public class OkHttpUtil {
     }
 
 
+    public static void postRequest(String url, HashMap<String, String> params, String token, final OnRequestNetWorkListener listener) {
+        PostFormBuilder builder = OkHttpUtils.post().url(url);
+
+        Iterator<Map.Entry<String, String>> iterator = params.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry entry = iterator.next();
+            String key = (String) entry.getKey();
+            String value = (String) entry.getValue();
+            builder.addParams(key, value);
+        }
+
+        builder.addHeader("version", Api.version_code);
+        builder.addHeader("platform", "Android");
+        builder.addHeader("Authorization", "Bearer" + " " + token);
+        builder.build().execute(new StringCallback() {
+            @Override
+            public void onError(okhttp3.Call call, Exception e, int id) {
+                listener.notOk(e.getMessage());
+                DialogUtils.getInstance().dismiss();
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    int code = jsonObject.getInt("errCode");
+                    if (code == 422) {
+                        //未登录
+                        listener.un_login_err();
+                    } else {
+                        listener.ok(response, jsonObject);
+                    }
+                    DialogUtils.getInstance().dismiss();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+
     public static void postRequest(String url, final OnRequestNetWorkListener listener) {
         PostFormBuilder builder = OkHttpUtils.post().url(url);
 

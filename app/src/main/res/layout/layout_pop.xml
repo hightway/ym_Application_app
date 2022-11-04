@@ -81,7 +81,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#666666" />
+                android:background="#4d666666" />
 
             <RelativeLayout
                 android:id="@+id/login_input_key"
@@ -175,7 +175,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#666666" />
+                android:background="#4d666666" />
 
 
             <RelativeLayout
@@ -204,7 +204,8 @@
                     android:paddingBottom="6dp"
                     android:text="@string/pwd_forget"
                     android:textColor="@color/app_color"
-                    android:textSize="@dimen/textsize14" />
+                    android:textSize="@dimen/textsize14"
+                    android:visibility="gone"/>
 
             </RelativeLayout>
 
@@ -219,10 +220,10 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="20dp"
-            android:background="@drawable/button_bg"
+            android:background="@drawable/button_unsel_bg"
             android:gravity="center"
             android:text="@string/login"
-            android:textColor="@color/white"
+            android:textColor="@color/get_code_cocle_un"
             android:textSize="@dimen/textsize16"
             android:textStyle="bold" />
 

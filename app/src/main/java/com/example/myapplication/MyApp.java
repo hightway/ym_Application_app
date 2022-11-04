@@ -44,7 +44,7 @@ public class MyApp extends Application {
     }
 
     //遍历所有Activity并finish
-    public void close_Activity() {
+    public void finish_Activity() {
         for (Activity activity : activityList) {
             if(activity != null){
                 activity.finish();
