@@ -29,6 +29,7 @@ import com.example.myapplication.bean.User_Msg_Bean;
 import com.example.myapplication.bean.Weather_Bean;
 import com.example.myapplication.config.BaseUIConfig;
 import com.example.myapplication.custom.MyViewPage;
+import com.example.myapplication.custom.WrapSlidingDrawer;
 import com.example.myapplication.fragment.TabFragment;
 import com.example.myapplication.fragment.TabFragment_3;
 import com.example.myapplication.fragment.TabFragment_4;
@@ -86,9 +87,10 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.RECORD_AUDIO
     };
+    private TabFragment tabFragment;
 
 
-    public static MainActivity getInstance(){
+    public static MainActivity getInstance() {
         return instance;
     }
 
@@ -107,7 +109,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     @Override
     protected void onResume() {
         super.onResume();
-        if(mUIConfig != null){
+        if (mUIConfig != null) {
             mUIConfig.onResume();
         }
     }
@@ -167,7 +169,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     }
 
     private void getUser_info() {
-        if(TextUtils.isEmpty(UserConfig.instance().access_token)){
+        if (TextUtils.isEmpty(UserConfig.instance().access_token)) {
             return;
         }
 
@@ -186,7 +188,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
             public void ok(String response, JSONObject jsonObject) {
                 try {
                     int code = jsonObject.getInt("errCode");
-                    if(code == 200){
+                    if (code == 200) {
                         User_Msg_Bean user_msg_bean = mGson.fromJson(response, User_Msg_Bean.class);
                         User_Msg_Bean.DataBean dataBean = user_msg_bean.getData();
                         UserConfig.instance().age = dataBean.getAge();
@@ -256,6 +258,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
     /**
      * 拉起授权页
+     *
      * @param
      */
     /*public void getLoginToken(int timeout) {
@@ -350,7 +353,6 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
             e.printStackTrace();
         }
     }*/
-
     public void getJson_data(String fileName, Context context) {
         //将json数据变成字符串
         //StringBuilder stringBuilder = new StringBuilder();
@@ -425,7 +427,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
         fragmentList = new ArrayList<>();
 
-        TabFragment tabFragment = new TabFragment();
+        tabFragment = new TabFragment();
         tab_name.add(getString(R.string.tab_1));
         tab_icon_sel.add(R.mipmap.ic_home_pressed);
         tab_icon.add(R.mipmap.ic_home_normal);
@@ -533,24 +535,38 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
 
     //双击退出
-    /*public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (!isExit) {
-                isExit = true;
-                toast("再按一次退出程序");
-                // 利用handler延迟发送更改状态信息
-                Message msg = new Message();
-                msg.what = EXIT_INFO;
-                mHandle.sendMessageDelayed(msg, 2000);
+            if (tabFragment != null) {
+                WrapSlidingDrawer drawer = tabFragment.getWrapSlidingDrawer();
+                if (drawer != null && drawer.isOpened()) {
+                    drawer.animateClose();
+                } else {
+                    exit_sys();
+                }
             } else {
-                MyApp.getInstance().close_Activity();
-                finish();
-                System.exit(0);
+                exit_sys();
             }
             return false;
         }
         return super.onKeyDown(keyCode, event);
-    }*/
+    }
+
+    public void exit_sys() {
+        if (!isExit) {
+            isExit = true;
+            toast("再按一次退出程序");
+            // 利用handler延迟发送更改状态信息
+            Message msg = new Message();
+            msg.what = EXIT_INFO;
+            mHandle.sendMessageDelayed(msg, 2000);
+        } else {
+            MyApp.getInstance().finish_Activity();
+            MyApp.getInstance().activityList.clear();
+            finish();
+            System.exit(0);
+        }
+    }
 
 
     // 申请权限
@@ -625,7 +641,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
             }
             Toast.makeText(this, "该应用已允许权限:" + stringBuffer.toString().trim(), Toast.LENGTH_SHORT).show();*/
 
-            if(requestCode == 1){
+            if (requestCode == 1) {
                 initLocation();
             }
         }
@@ -696,7 +712,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     }
 
     private void removeLocationListener() {
-        if(locationManager != null){
+        if (locationManager != null) {
             locationManager.removeUpdates(locationListener);
         }
     }
@@ -731,14 +747,14 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     // postalCode=null,countryCode=CN,countryName=中国,hasLatitude=true,latitude=23.123588,hasLongitude=true,longitude=113.619181,
     // phone=null,url=null,extras=Bundle[mParcelledData.dataSize=88]]"address = {Address@14044} "Address[addressLines=[0:"广东省广州市增城区新塘镇广深大道东161号广侨时代"],feature=新塘镇广深大道东161号广侨时代,admin=广东省,sub-admin=新塘镇,locality=广州市,thoroughfare=广深大道东,postalCode=null,countryCode=CN,countryName=中国,hasLatitude=true,latitude=23.123588,hasLongitude=true,longitude=113.619181,phone=null,url=null,extras=Bundle[mParcelledData.dataSize=88]]"
     public void handleCountryAndArea(Address address) {
-        if(address != null){
+        if (address != null) {
             String locality = address.getSubLocality();
             String lin_1 = address.getAddressLine(0);
             Locale locale = address.getLocale();
             String city = address.getLocality();
 
             //获取六位数的区域码
-            if(!TextUtils.isEmpty(locality) && TextUtils.isEmpty(city_code)){
+            if (!TextUtils.isEmpty(locality) && TextUtils.isEmpty(city_code)) {
                 getCity_code(locality);
             }
 
@@ -754,9 +770,9 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
 
     private void getCity_code(String locality) {
-        if(city_code_map != null && !city_code_map.isEmpty()){
+        if (city_code_map != null && !city_code_map.isEmpty()) {
             for (String key : city_code_map.keySet()) {
-                if(key.equals(locality)){
+                if (key.equals(locality)) {
                     city_code = city_code_map.get(key);
                     toast_long(locality + " : " + city_code);
                     //根据区域码获取天气情况
@@ -782,11 +798,11 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
             public void ok(String response, JSONObject jsonObject) {
                 try {
                     int code = jsonObject.getInt("errCode");
-                    if(code == 200){
+                    if (code == 200) {
                         Weather_Bean weather_bean = mGson.fromJson(response, Weather_Bean.class);
                         Weather_Bean.DataBean.ResultBean resultBean = weather_bean.data.result;
-                        Weather_Bean.DataBean.ResultBean.NowBean nowBean =  resultBean.now;
-                        toast_long("天气："+ nowBean.text +"\n温度：" + nowBean.temp + "\n体感温度："+ nowBean.feels_like +"\n风况：" + nowBean.wind_class + nowBean.wind_dir);
+                        Weather_Bean.DataBean.ResultBean.NowBean nowBean = resultBean.now;
+                        toast_long("天气：" + nowBean.text + "\n温度：" + nowBean.temp + "\n体感温度：" + nowBean.feels_like + "\n风况：" + nowBean.wind_class + nowBean.wind_dir);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -803,13 +819,14 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
 
     private BaseLazyFragment mBackHandedFragment;
+
     @Override
     public void setSelectedFragment(BaseLazyFragment selectedFragment) {
         this.mBackHandedFragment = selectedFragment;
     }
 
 
-    @Override
+    /*@Override
     public void onBackPressed() {
         if(mBackHandedFragment == null || !mBackHandedFragment.onBackPressed()){
             if(getSupportFragmentManager().getBackStackEntryCount() == 0){
@@ -831,7 +848,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                 getSupportFragmentManager().popBackStack();
             }
         }
-    }
+    }*/
 
     /*private void getCity_id_num(String locality) {
         if(city_id_list != null && city_id_list.size()>0){

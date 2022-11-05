@@ -101,7 +101,7 @@ public class PWD_Forget_Activity extends BaseActivity {
 
 
     private void init_keyboard() {
-        keyboardPopupWindow = new KeyboardPopupWindow(instance, getWindow().getDecorView(), edit_phone, false);
+        keyboardPopupWindow = new KeyboardPopupWindow(instance, getWindow().getDecorView(), edit_phone, false, false);
         //numberEt.setInputType(InputType.TYPE_NULL);//该设置会导致光标不可见
         edit_phone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -207,11 +207,11 @@ public class PWD_Forget_Activity extends BaseActivity {
 
     private void getKey(String phone) {
 
-        /*Bundle bundle = new Bundle();
+        Bundle bundle = new Bundle();
         bundle.putString("phoneNumber", phone);
-        startActivity_to(PWD_Forget_Key_Activity.class, bundle);*/
+        startActivity_to(PWD_Forget_Key_Activity.class, bundle);
 
-        DialogUtils.getInstance().showDialog(instance, "加载中...");
+        /*DialogUtils.getInstance().showDialog(instance, "加载中...");
         HashMap<String, String> map = new HashMap<>();
         map.put("phone", phone);
         map.put("type", "forget");
@@ -239,7 +239,7 @@ public class PWD_Forget_Activity extends BaseActivity {
                     e.printStackTrace();
                 }
             }
-        });
+        });*/
     }
 
 }

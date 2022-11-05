@@ -1,36 +1,20 @@
 package com.example.myapplication.fragment;
 
-import static com.example.myapplication.config.MockRequest.getPhoneNumber;
-import static com.nirvana.tools.core.ComponentSdkCore.getApplicationContext;
-
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.widget.Toolbar;
-
-import com.example.myapplication.MainActivity;
-import com.example.myapplication.MyApp;
 import com.example.myapplication.R;
 import com.example.myapplication.base.BaseLazyFragment;
 import com.example.myapplication.bean.UserBean;
-import com.example.myapplication.config.ExecutorManager;
-import com.example.myapplication.config.MessageActivity;
 import com.example.myapplication.http.Api;
 import com.example.myapplication.http.UserConfig;
-import com.example.myapplication.plmd.Pop_Show_Interface;
-import com.example.myapplication.plmd.Pop_Show_Set;
 import com.example.myapplication.tools.Aliyun_Login_Util;
 import com.example.myapplication.tools.DialogUtils;
-import com.example.myapplication.tools.Dp_Px_Util;
-import com.example.myapplication.tools.Login_Util;
 import com.example.myapplication.tools.OkHttpUtil;
-import com.example.myapplication.tools.PopWindowUtil;
 import com.google.gson.Gson;
-import com.mobile.auth.gatewayauth.PhoneNumberAuthHelper;
 import com.yinglan.scrolllayout.ScrollLayout;
 
 import org.json.JSONException;
@@ -65,11 +49,6 @@ public class TabFragment_4 extends BaseLazyFragment {
     protected int setLayout() {
         //return R.layout.tab_4_fragment_lay;
         return R.layout.tab_4;
-    }
-
-    @Override
-    public boolean onBackPressed() {
-        return false;
     }
 
     @Override

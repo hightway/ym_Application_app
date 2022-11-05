@@ -30,8 +30,8 @@
     <string name="pwd_reset_set">请输入新密码</string>
     <string name="pwd_reset_input">请输入确认密码</string>
     <string name="pwd_reset_ok">确认密码</string>
-    <string name="pwd_reset_new">新密码</string>
-    <string name="pwd_reset_sure">确认新密码</string>
+    <string name="pwd_reset_new">新密码（不少于8位）</string>
+    <string name="pwd_reset_sure">确认新密码（不少于8位）</string>
     <string name="pwd_reset_login">确  认</string>
     <string name="pwd_reset_send">验证码已发送至</string>
 

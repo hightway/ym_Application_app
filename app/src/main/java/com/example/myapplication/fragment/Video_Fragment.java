@@ -1,10 +1,7 @@
 package com.example.myapplication.fragment;
 
-import static com.nirvana.tools.core.ComponentSdkCore.getApplicationContext;
-
 import android.graphics.Bitmap;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -20,13 +17,12 @@ import com.aliyun.player.nativeclass.TrackInfo;
 import com.aliyun.player.source.UrlSource;
 import com.example.myapplication.R;
 import com.example.myapplication.base.BaseLazyFragment;
-import com.example.myapplication.base.Base_New_Fragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class Video_Fragment extends Base_New_Fragment {
+public class Video_Fragment extends BaseLazyFragment {
 
     @BindView(R.id.surface_view)
     SurfaceView surface_view;

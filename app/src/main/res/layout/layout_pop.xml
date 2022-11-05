@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/img_miss"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="30dp"
             android:orientation="vertical">
@@ -47,7 +47,7 @@
                 android:id="@+id/register_input_phone"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="20dp"
                 android:gravity="center_vertical">
 
                 <TextView
@@ -87,7 +87,7 @@
                 android:id="@+id/login_input_key"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="20dp"
                 android:gravity="center_vertical">
 
                 <TextView
@@ -138,7 +138,7 @@
                 android:id="@+id/login_input_pwd"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="20dp"
                 android:gravity="center_vertical"
                 android:visibility="gone">
 
@@ -181,7 +181,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="16dp">
 
                 <TextView
                     android:id="@+id/tx_longin_set"
@@ -218,7 +218,6 @@
             android:layout_height="48dp"
             android:layout_below="@+id/lin_edit"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
             android:layout_marginRight="20dp"
             android:background="@drawable/button_unsel_bg"
             android:gravity="center"

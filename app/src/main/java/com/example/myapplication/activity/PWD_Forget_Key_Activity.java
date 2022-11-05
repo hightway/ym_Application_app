@@ -79,7 +79,7 @@ public class PWD_Forget_Key_Activity extends BaseActivity implements Verificatio
 
 
     private void init_keyboard() {
-        keyboardPopupWindow = new KeyboardPopupWindow(instance, getWindow().getDecorView(), input_code.editText, false);
+        keyboardPopupWindow = new KeyboardPopupWindow(instance, getWindow().getDecorView(), input_code.editText, false, false);
         keyboardPopupWindow.setIs_Key_Input(true);
         //numberEt.setInputType(InputType.TYPE_NULL);//该设置会导致光标不可见
         input_code.editText.setOnClickListener(new View.OnClickListener() {
@@ -175,7 +175,7 @@ public class PWD_Forget_Key_Activity extends BaseActivity implements Verificatio
         }
 
         //请求网络
-        DialogUtils.getInstance().showDialog(instance, "加载中...");
+        /*DialogUtils.getInstance().showDialog(instance, "加载中...");
         HashMap<String, String> map = new HashMap<>();
         map.put("phone", phoneNumber);
         map.put("code", txt);
@@ -215,12 +215,12 @@ public class PWD_Forget_Key_Activity extends BaseActivity implements Verificatio
                     e.printStackTrace();
                 }
             }
-        });
+        });*/
 
-        /*Bundle bundle = new Bundle();
+        Bundle bundle = new Bundle();
         bundle.putString("phoneNumber", phoneNumber);
         bundle.putString("key", txt);
-        startActivity_to(PWD_Forget_Set_Activity.class, bundle);*/
+        startActivity_to(PWD_Forget_Set_Activity.class, bundle);
     }
 
 

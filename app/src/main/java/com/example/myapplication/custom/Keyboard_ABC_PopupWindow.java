@@ -21,18 +21,24 @@ import java.util.List;
 import java.util.Random;
 
 
-public class KeyboardPopupWindow extends PopupWindow {
+public class Keyboard_ABC_PopupWindow extends PopupWindow {
     private static final String TAG = "KeyboardPopupWindow";
     private Context context;
     private View anchorView;
     private View parentView;
     private EditText editText;
-    private boolean is_Key_Input = false;
-    private boolean isRandomSort = false;//数字是否随机排序
-    private boolean ABC_Show = false; //是否显示字母切换按钮
+    //private boolean is_Key_Input = false;
+    private boolean isRandomSort = false;
+    private boolean is_ABC = false;
     private List<Integer> list = new ArrayList<>();
-    private int[] commonButtonIds = new int[]{R.id.button00, R.id.button01, R.id.button02, R.id.button03,
-            R.id.button04, R.id.button05, R.id.button06, R.id.button07, R.id.button08, R.id.button09};
+    private int[] commonButtonIds = new int[]{R.id.button_q, R.id.button_w, R.id.button_e, R.id.button_r,
+            R.id.button_t, R.id.button_y, R.id.button_u, R.id.button_i, R.id.button_o, R.id.button_p,
+            R.id.button_a, R.id.button_s, R.id.button_d, R.id.button_f, R.id.button_g, R.id.button_h, R.id.button_j, R.id.button_k,
+            R.id.button_l, R.id.button_z, R.id.button_x, R.id.button_c, R.id.button_v, R.id.button_b, R.id.button_n, R.id.button_m};
+
+    private String[] ABC = new String[]{"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Z", "X", "C", "V", "B", "N", "M"};
+    private String[] abc = new String[]{"q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m"};
+    private Button button_abc;
 
     /**
      * @param context
@@ -40,12 +46,11 @@ public class KeyboardPopupWindow extends PopupWindow {
      * @param editText
      * @param isRandomSort 数字是否随机排序
      */
-    public KeyboardPopupWindow(Context context, View anchorView, EditText editText, boolean isRandomSort, boolean ABC_Show) {
+    public Keyboard_ABC_PopupWindow(Context context, View anchorView, EditText editText, boolean isRandomSort) {
         this.context = context;
         this.anchorView = anchorView;
         this.editText = editText;
         this.isRandomSort = isRandomSort;
-        this.ABC_Show = ABC_Show;
         if (context == null || anchorView == null) {
             return;
         }
@@ -98,7 +103,7 @@ public class KeyboardPopupWindow extends PopupWindow {
     }
 
     private void initView() {
-        parentView = LayoutInflater.from(context).inflate(R.layout.keyboadview, null);
+        parentView = LayoutInflater.from(context).inflate(R.layout.key_board_word, null);
         initKeyboardView(parentView);
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -135,45 +140,67 @@ public class KeyboardPopupWindow extends PopupWindow {
         }
 
         //②给小数点按键设置点击监听
-        Button buttonDot = view.findViewById(R.id.buttonDot);
-        if(ABC_Show){
-            buttonDot.setVisibility(View.VISIBLE);
-            buttonDot.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(keyboard_abc_callback != null){
-                        keyboard_abc_callback.change_abc();
-                    }
+        /*view.findViewById(R.id.buttonDot).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int curSelection = editText.getSelectionStart();
+                int length = editText.getText().toString().length();
+                if (curSelection < length) {
+                    String content = editText.getText().toString();
+                    editText.setText(content.substring(0, curSelection) + "." + content.subSequence(curSelection, length));
+                    editText.setSelection(curSelection + 1);
+                } else {
+                    editText.setText(editText.getText().toString() + ".");
+                    editText.setSelection(editText.getText().toString().length());
                 }
-            });
-        }else{
-            buttonDot.setVisibility(View.INVISIBLE);
-        }
+            }
+        });*/
 
         //③给叉按键设置点击监听
         view.findViewById(R.id.buttonCross).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //验证码输入栏特殊处理
-                if(is_Key_Input){
-                    keyboard_callback.txt_del();
-                }else{
-                    int length = editText.getText().toString().length();
-                    int curSelection = editText.getSelectionStart();
-                    if (length > 0 && curSelection > 0 && curSelection <= length) {
-                        String content = editText.getText().toString();
-                        editText.setText(content.substring(0, curSelection - 1) + content.subSequence(curSelection, length));
-                        editText.setSelection(curSelection - 1);
-                    }
+                int length = editText.getText().toString().length();
+                int curSelection = editText.getSelectionStart();
+                if (length > 0 && curSelection > 0 && curSelection <= length) {
+                    String content = editText.getText().toString();
+                    editText.setText(content.substring(0, curSelection - 1) + content.subSequence(curSelection, length));
+                    editText.setSelection(curSelection - 1);
                 }
+            }
+        });
+
+        view.findViewById(R.id.buttonCross).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                editText.setText("");
+                return true;
+            }
+        });
+
+        view.findViewById(R.id.button_num).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(keyboard_callback != null){
+                    keyboard_callback.change_num();
+                }
+            }
+        });
+
+        //大小写切换
+        button_abc = view.findViewById(R.id.button_ABC);
+        button_abc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                set_ABC();
             }
         });
     }
 
 
-    public void setIs_Key_Input(boolean key){
+    /*public void setIs_Key_Input(boolean key) {
         this.is_Key_Input = key;
-    }
+    }*/
 
 
     public void show() {
@@ -191,10 +218,12 @@ public class KeyboardPopupWindow extends PopupWindow {
             return;
         }
         if (!isRandomSort) {
+            is_ABC = false;
             for (int i = 0; i < commonButtonIds.length; i++) {
                 final Button button = parentView.findViewById(commonButtonIds[i]);
-                button.setText("" + i);
+                button.setText(abc[i]);
             }
+            button_abc.setText("大写");
         } else {
             list.clear();
             Random ran = new Random();
@@ -210,6 +239,27 @@ public class KeyboardPopupWindow extends PopupWindow {
         }
 
         setAnimationStyle(R.style.keyboard);
+    }
+
+
+    private void set_ABC() {
+        if (parentView == null) {
+            return;
+        }
+        if (is_ABC) {
+            for (int i = 0; i < commonButtonIds.length; i++) {
+                final Button button = parentView.findViewById(commonButtonIds[i]);
+                button.setText(abc[i]);
+            }
+            button_abc.setText("大写");
+        }else{
+            for (int i = 0; i < commonButtonIds.length; i++) {
+                final Button button = parentView.findViewById(commonButtonIds[i]);
+                button.setText(ABC[i]);
+            }
+            button_abc.setText("小写");
+        }
+        is_ABC = !is_ABC;
     }
 
 
@@ -241,21 +291,12 @@ public class KeyboardPopupWindow extends PopupWindow {
         }
     }
 
-    private Keyboard_Callback keyboard_callback;
-    public interface Keyboard_Callback{
-        void txt_del();
+    private Keyboard_NUM_Callback keyboard_callback;
+    public interface Keyboard_NUM_Callback {
+        void change_num();
     }
-    public void setKeyboard_Callback(Keyboard_Callback keyboard_callback){
+    public void setKeyboard_NUM_Callback(Keyboard_NUM_Callback keyboard_callback) {
         this.keyboard_callback = keyboard_callback;
-    }
-
-
-    private Keyboard_ABC_Callback keyboard_abc_callback;
-    public interface Keyboard_ABC_Callback {
-        void change_abc();
-    }
-    public void setKeyboard_NUM_Callback(Keyboard_ABC_Callback keyboard_abc_callback) {
-        this.keyboard_abc_callback = keyboard_abc_callback;
     }
 
 

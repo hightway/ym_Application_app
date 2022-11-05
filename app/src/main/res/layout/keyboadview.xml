@@ -43,32 +43,32 @@
             <Button
                 android:id="@+id/button01"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="48dp"
                 android:background="@drawable/selector_keyboard_click"
                 android:text="1"
                 android:layout_margin="4dp"
                 android:textColor="@color/white"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
 
             <Button
                 android:id="@+id/button02"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="48dp"
                 android:background="@drawable/selector_keyboard_click"
                 android:text="2"
                 android:layout_margin="4dp"
                 android:textColor="@color/white"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
 
             <Button
                 android:id="@+id/button03"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="48dp"
                 android:background="@drawable/selector_keyboard_click"
                 android:text="3"
                 android:layout_margin="4dp"
                 android:textColor="@color/white"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
         </TableRow>
 
         <TableRow
@@ -78,7 +78,7 @@
             <Button
                 android:id="@+id/button04"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="48dp"
                 android:background="@drawable/selector_keyboard_click"
                 android:text="4"
                 android:layout_margin="4dp"
@@ -88,22 +88,22 @@
             <Button
                 android:id="@+id/button05"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="48dp"
                 android:background="@drawable/selector_keyboard_click"
                 android:text="5"
                 android:layout_margin="4dp"
                 android:textColor="@color/white"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
 
             <Button
                 android:id="@+id/button06"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="48dp"
                 android:background="@drawable/selector_keyboard_click"
                 android:text="6"
                 android:layout_margin="4dp"
                 android:textColor="@color/white"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
         </TableRow>
 
         <TableRow
@@ -113,32 +113,32 @@
             <Button
                 android:id="@+id/button07"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="48dp"
                 android:background="@drawable/selector_keyboard_click"
                 android:text="7"
                 android:layout_margin="4dp"
                 android:textColor="@color/white"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
 
             <Button
                 android:id="@+id/button08"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="48dp"
                 android:background="@drawable/selector_keyboard_click"
                 android:text="8"
                 android:layout_margin="4dp"
                 android:textColor="@color/white"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
 
             <Button
                 android:id="@+id/button09"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="48dp"
                 android:background="@drawable/selector_keyboard_click"
                 android:text="9"
                 android:layout_margin="4dp"
                 android:textColor="@color/white"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
         </TableRow>
 
         <TableRow
@@ -149,32 +149,32 @@
                 android:id="@+id/buttonDot"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="52dp"
-                android:background="@drawable/selector_keyboard_click_dark"
-                android:text="."
+                android:layout_height="48dp"
+                android:background="@drawable/selector_keyboard_click"
+                android:text="abc"
                 android:layout_margin="4dp"
                 android:textColor="@color/white"
-                android:textSize="24sp"
-                android:enabled="false"
-                android:clickable="false"
+                android:textSize="18sp"
+                android:textAllCaps="false"
+                android:clickable="true"
                 android:visibility="invisible"/>
 
             <Button
                 android:id="@+id/button00"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="52dp"
+                android:layout_height="48dp"
                 android:background="@drawable/selector_keyboard_click"
                 android:text="0"
                 android:layout_margin="4dp"
                 android:textColor="@color/white"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
 
             <RelativeLayout
                 android:id="@+id/buttonCross"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="52dp"
+                android:layout_height="48dp"
                 android:layout_margin="4dp">
 
                 <ImageView

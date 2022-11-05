@@ -43,12 +43,12 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <TextView
+            <!--<TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/pwd_reset_set"
                 android:textColor="@color/get_code_cocle"
-                android:textSize="@dimen/textsize14"/>
+                android:textSize="@dimen/textsize14"/>-->
 
             <EditText
                 android:id="@+id/edit_phone"
@@ -68,13 +68,13 @@
                 android:textCursorDrawable="@drawable/color_cursor"
                 android:textSize="@dimen/textsize18" />
 
-            <TextView
+            <!--<TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/pwd_reset_ok"
                 android:layout_marginTop="20dp"
                 android:textColor="@color/get_code_cocle"
-                android:textSize="@dimen/textsize14"/>
+                android:textSize="@dimen/textsize14"/>-->
 
             <EditText
                 android:id="@+id/edit_phone_ok"

@@ -1,13 +1,18 @@
 package com.example.myapplication.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,6 +21,8 @@ import com.example.myapplication.MyApp;
 import com.example.myapplication.R;
 import com.example.myapplication.base.BaseActivity;
 import com.example.myapplication.custom.KeyboardNormal;
+import com.example.myapplication.custom.KeyboardPopupWindow;
+import com.example.myapplication.custom.Keyboard_ABC_PopupWindow;
 import com.example.myapplication.http.Api;
 import com.example.myapplication.tools.DialogUtils;
 import com.example.myapplication.tools.IcallUtils;
@@ -32,7 +39,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class PWD_Forget_Set_Activity extends BaseActivity {
+public class PWD_Forget_Set_Activity extends BaseActivity implements Keyboard_ABC_PopupWindow.Keyboard_NUM_Callback, KeyboardPopupWindow.Keyboard_ABC_Callback{
 
     private PWD_Forget_Set_Activity instance;
     private Activity activity;
@@ -52,6 +59,13 @@ public class PWD_Forget_Set_Activity extends BaseActivity {
     private String token;
     private boolean pwd_input;
     private boolean pwd_sure;
+
+    private Keyboard_ABC_PopupWindow keyboardPopupWindow;
+    private KeyboardPopupWindow keyboardPopupWindow_Num;
+    private boolean isUiCreated = false;
+    private Keyboard_ABC_PopupWindow keyboardPopupWindow_2;
+    private KeyboardPopupWindow keyboardPopupWindow_num_2;
+    private boolean sel_top = true;
 
     @Override
     protected int getLayoutID() {
@@ -146,30 +160,18 @@ public class PWD_Forget_Set_Activity extends BaseActivity {
 
 
 
-        /*edit_phone.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                new KeyboardNormal(activity, instance, edit_phone).showKeyboard();
-                return false;
-            }
-        });
+        init_keyboard(edit_phone);
+        init_keyboard_num(edit_phone);
 
-        edit_phone_ok.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                new KeyboardNormal(activity, instance, edit_phone_ok).showKeyboard();
-                return false;
-            }
-        });*/
-
-        //forbidDefaultSoftKeyboard();
+        init_keyboard_2(edit_phone_ok);
+        init_keyboard_num_2(edit_phone_ok);
     }
 
 
     /**
      * 禁止系统默认的软键盘弹出
      */
-    private void forbidDefaultSoftKeyboard() {
+    /*private void forbidDefaultSoftKeyboard() {
         if (edit_phone == null) {
             return;
         }
@@ -185,7 +187,7 @@ public class PWD_Forget_Set_Activity extends BaseActivity {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
 
 
@@ -206,7 +208,20 @@ public class PWD_Forget_Set_Activity extends BaseActivity {
 
     @OnClick(R.id.tx_login)
     public void tx_login() {
-        hideSoftWorldInput(edit_phone, true);
+        //hideSoftWorldInput(edit_phone, true);
+        if (keyboardPopupWindow != null) {
+            keyboardPopupWindow.dismiss();
+        }
+        if (keyboardPopupWindow_Num != null) {
+            keyboardPopupWindow_Num.dismiss();
+        }
+        if (keyboardPopupWindow_2 != null) {
+            keyboardPopupWindow_2.dismiss();
+        }
+        if (keyboardPopupWindow_num_2 != null) {
+            keyboardPopupWindow_num_2.dismiss();
+        }
+
         String password = edit_phone.getText().toString().trim();
         String repass = edit_phone_ok.getText().toString().trim();
 
@@ -241,15 +256,243 @@ public class PWD_Forget_Set_Activity extends BaseActivity {
                 try {
                     toast(jsonObject.getString("errMsg"));
                     if (jsonObject.getInt("errCode") == 200) {
-                        MyApp.getInstance().finish_Activity();
-                        MyApp.getInstance().activityList.clear();
+                        if(mHandle != null){
+                            mHandle.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    MyApp.getInstance().finish_Activity();
+                                    MyApp.getInstance().activityList.clear();
+                                }
+                            }, 500);
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
-
     }
+
+
+
+    private void init_keyboard(EditText edit_key_1) {
+        keyboardPopupWindow = new Keyboard_ABC_PopupWindow(instance, getWindow().getDecorView(), edit_key_1, false);
+        keyboardPopupWindow.setKeyboard_NUM_Callback(this);
+        //numberEt.setInputType(InputType.TYPE_NULL);//该设置会导致光标不可见
+        edit_key_1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sel_top = true;
+                if(keyboardPopupWindow_Num != null && keyboardPopupWindow_Num.isShowing()){
+                    keyboardPopupWindow_Num.dismiss();
+                }
+                if(keyboardPopupWindow_num_2 != null && keyboardPopupWindow_num_2.isShowing()){
+                    keyboardPopupWindow_num_2.dismiss();
+                }
+                if(keyboardPopupWindow_2 != null && keyboardPopupWindow_2.isShowing()){
+                    keyboardPopupWindow_2.dismiss();
+                }
+                if (keyboardPopupWindow != null) {
+                    keyboardPopupWindow.show();
+                }
+            }
+        });
+        edit_key_1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                Log.d("keyboard", "数字输入框是否有焦点——>" + hasFocus);
+                //很重要，Unable to add window -- token null is not valid; is your activity running?
+                if (keyboardPopupWindow != null && isUiCreated) {
+                    // 需要等待页面创建完成后焦点变化才去显示自定义键盘
+                    if(keyboardPopupWindow_Num != null && keyboardPopupWindow_Num.isShowing()){
+                        keyboardPopupWindow_Num.dismiss();
+                    }
+                    if(keyboardPopupWindow_num_2 != null && keyboardPopupWindow_num_2.isShowing()){
+                        keyboardPopupWindow_num_2.dismiss();
+                    }
+                    if(keyboardPopupWindow_2 != null && keyboardPopupWindow_2.isShowing()){
+                        keyboardPopupWindow_2.dismiss();
+                    }
+                    sel_top = true;
+                    keyboardPopupWindow.refreshKeyboardOutSideTouchable(!hasFocus);
+                }
+
+                if (hasFocus) {//隐藏系统软键盘
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(edit_key_1.getWindowToken(), 0);
+                }
+
+            }
+        });
+
+        //view加载完成时回调
+        edit_key_1.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (keyboardPopupWindow != null) {
+                    keyboardPopupWindow.show();
+                }
+            }
+        });
+    }
+
+    private void init_keyboard_2(EditText edit_key_1) {
+        keyboardPopupWindow_2 = new Keyboard_ABC_PopupWindow(instance, getWindow().getDecorView(), edit_key_1, false);
+        keyboardPopupWindow_2.setKeyboard_NUM_Callback(this);
+        //numberEt.setInputType(InputType.TYPE_NULL);//该设置会导致光标不可见
+        edit_key_1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sel_top = false;
+                if(keyboardPopupWindow_Num != null && keyboardPopupWindow_Num.isShowing()){
+                    keyboardPopupWindow_Num.dismiss();
+                }
+                if(keyboardPopupWindow_num_2 != null && keyboardPopupWindow_num_2.isShowing()){
+                    keyboardPopupWindow_num_2.dismiss();
+                }
+                if(keyboardPopupWindow != null && keyboardPopupWindow.isShowing()){
+                    keyboardPopupWindow.dismiss();
+                }
+
+                if (keyboardPopupWindow_2 != null) {
+                    keyboardPopupWindow_2.show();
+                }
+            }
+        });
+        edit_key_1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                Log.d("keyboard", "数字输入框是否有焦点——>" + hasFocus);
+                //很重要，Unable to add window -- token null is not valid; is your activity running?
+                if (keyboardPopupWindow_2 != null && isUiCreated) {
+                    // 需要等待页面创建完成后焦点变化才去显示自定义键盘
+
+                    if(keyboardPopupWindow_Num != null && keyboardPopupWindow_Num.isShowing()){
+                        keyboardPopupWindow_Num.dismiss();
+                    }
+                    if(keyboardPopupWindow_num_2 != null && keyboardPopupWindow_num_2.isShowing()){
+                        keyboardPopupWindow_num_2.dismiss();
+                    }
+                    if(keyboardPopupWindow != null && keyboardPopupWindow.isShowing()){
+                        keyboardPopupWindow.dismiss();
+                    }
+                    sel_top = false;
+                    keyboardPopupWindow_2.refreshKeyboardOutSideTouchable(!hasFocus);
+                }
+
+                if (hasFocus) {//隐藏系统软键盘
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(edit_key_1.getWindowToken(), 0);
+                }
+            }
+        });
+    }
+
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (keyboardPopupWindow != null && keyboardPopupWindow.isShowing()) {
+                keyboardPopupWindow.dismiss();
+                return true;
+            }
+
+            if (keyboardPopupWindow_Num != null && keyboardPopupWindow_Num.isShowing()) {
+                keyboardPopupWindow_Num.dismiss();
+                return true;
+            }
+
+            if (keyboardPopupWindow_2 != null && keyboardPopupWindow_2.isShowing()) {
+                keyboardPopupWindow_2.dismiss();
+                return true;
+            }
+
+            if (keyboardPopupWindow_num_2 != null && keyboardPopupWindow_num_2.isShowing()) {
+                keyboardPopupWindow_num_2.dismiss();
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        isUiCreated = true;
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        if (keyboardPopupWindow != null) {
+            keyboardPopupWindow.releaseResources();
+        }
+        if (keyboardPopupWindow_Num != null) {
+            keyboardPopupWindow_Num.releaseResources();
+        }
+        if (keyboardPopupWindow_2 != null) {
+            keyboardPopupWindow_2.releaseResources();
+        }
+        if (keyboardPopupWindow_num_2 != null) {
+            keyboardPopupWindow_num_2.releaseResources();
+        }
+        super.onDestroy();
+    }
+
+
+    @Override
+    public void change_num() {
+        if(sel_top){
+            //切换数字键盘
+            if (keyboardPopupWindow_Num != null) {
+                keyboardPopupWindow_Num.show();
+            }
+            if (keyboardPopupWindow != null) {
+                keyboardPopupWindow.dismiss();
+            }
+        }else{
+            if (keyboardPopupWindow_num_2 != null) {
+                keyboardPopupWindow_num_2.show();
+            }
+            if (keyboardPopupWindow_2 != null) {
+                keyboardPopupWindow_2.dismiss();
+            }
+        }
+    }
+
+
+    @Override
+    public void change_abc() {
+        if(sel_top){
+            if (keyboardPopupWindow_Num != null) {
+                keyboardPopupWindow_Num.dismiss();
+            }
+            if (keyboardPopupWindow != null) {
+                keyboardPopupWindow.show();
+            }
+        }else{
+            if (keyboardPopupWindow_num_2 != null) {
+                keyboardPopupWindow_num_2.dismiss();
+            }
+            if (keyboardPopupWindow_2 != null) {
+                keyboardPopupWindow_2.show();
+            }
+        }
+    }
+
+
+
+    private void init_keyboard_num(EditText edit_key_1) {
+        keyboardPopupWindow_Num = new KeyboardPopupWindow(instance, getWindow().getDecorView(), edit_key_1, false, true);
+        keyboardPopupWindow_Num.setKeyboard_NUM_Callback(this);
+    }
+
+    private void init_keyboard_num_2(EditText edit_key_1) {
+        keyboardPopupWindow_num_2 = new KeyboardPopupWindow(instance, getWindow().getDecorView(), edit_key_1, false, true);
+        keyboardPopupWindow_num_2.setKeyboard_NUM_Callback(this);
+    }
+
+
 
 }

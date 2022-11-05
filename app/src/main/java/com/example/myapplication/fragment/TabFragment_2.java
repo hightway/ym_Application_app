@@ -20,17 +20,11 @@ import butterknife.OnClick;
 
 public class TabFragment_2 extends BaseLazyFragment {
 
-
     @Override
     protected int setLayout() {
         return R.layout.tab_2_fragment_lay;
     }
 
-
-    @Override
-    public boolean onBackPressed() {
-        return false;
-    }
 
     @Override
     protected void initView(View view) {

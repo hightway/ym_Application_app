@@ -105,20 +105,6 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
     }
 
     @Override
-    public boolean onBackPressed() {
-        if (drawer != null) {
-            if (drawer.isOpened()) {
-                drawer.animateClose();
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
-    @Override
     protected void initView(View view) {
         ButterKnife.bind(this, view);
         mActivity = getActivity();
@@ -721,6 +707,11 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
         max = total;
         current = part;
         //start();
+    }
+
+
+    public WrapSlidingDrawer getWrapSlidingDrawer(){
+        return drawer;
     }
 
 

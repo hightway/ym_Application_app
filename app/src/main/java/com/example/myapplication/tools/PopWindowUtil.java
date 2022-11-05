@@ -146,7 +146,7 @@ public class PopWindowUtil {
     private boolean key_sure = false;
     private boolean pwd_sure = false;
 
-    public PopupWindow getPopupWindow(Context mContext, View view, int xOff, int yOff, int anim) {
+    public PopupWindow getPopupWindow(Activity mContext, View view, int xOff, int yOff, int anim) {
         is_sel = false;
         isPwd_Login = false;
         phone_sure = false;
