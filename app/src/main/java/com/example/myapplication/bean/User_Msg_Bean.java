@@ -1,6 +1,8 @@
 package com.example.myapplication.bean;
 
 
+import java.util.List;
+
 /**
  *  查询用户得到的详细个人信息
  * */
@@ -36,6 +38,7 @@ public class User_Msg_Bean {
 
     public static class DataBean {
         private Integer id;
+        private Integer unread_notify;
         private String name;
         private String phone;
         private String avatar;
@@ -44,6 +47,24 @@ public class User_Msg_Bean {
         private Integer age;
         private String created_at;
         private String updated_at;
+        private List<Members_Bean> members;
+
+
+        public Integer getUnread_notify() {
+            return unread_notify;
+        }
+
+        public void setUnread_notify(Integer unread_notify) {
+            this.unread_notify = unread_notify;
+        }
+
+        public List<Members_Bean> getMembers() {
+            return members;
+        }
+
+        public void setMembers(List<Members_Bean> members) {
+            this.members = members;
+        }
 
         public Integer getId() {
             return id;
@@ -115,6 +136,92 @@ public class User_Msg_Bean {
 
         public void setUpdated_at(String updated_at) {
             this.updated_at = updated_at;
+        }
+
+
+
+        public class Members_Bean{
+            private Integer member_id;
+            private Integer experience;
+            private String end_time;
+            private String member_name;
+            private String member_icon;
+            private String level_id;
+            private String level;
+            private String level_name;
+            private String lv_icon;
+
+            public Integer getMember_id() {
+                return member_id;
+            }
+
+            public void setMember_id(Integer member_id) {
+                this.member_id = member_id;
+            }
+
+            public Integer getExperience() {
+                return experience;
+            }
+
+            public void setExperience(Integer experience) {
+                this.experience = experience;
+            }
+
+            public String getEnd_time() {
+                return end_time;
+            }
+
+            public void setEnd_time(String end_time) {
+                this.end_time = end_time;
+            }
+
+            public String getMember_name() {
+                return member_name;
+            }
+
+            public void setMember_name(String member_name) {
+                this.member_name = member_name;
+            }
+
+            public String getMember_icon() {
+                return member_icon;
+            }
+
+            public void setMember_icon(String member_icon) {
+                this.member_icon = member_icon;
+            }
+
+            public String getLevel_id() {
+                return level_id;
+            }
+
+            public void setLevel_id(String level_id) {
+                this.level_id = level_id;
+            }
+
+            public String getLevel() {
+                return level;
+            }
+
+            public void setLevel(String level) {
+                this.level = level;
+            }
+
+            public String getLevel_name() {
+                return level_name;
+            }
+
+            public void setLevel_name(String level_name) {
+                this.level_name = level_name;
+            }
+
+            public String getLv_icon() {
+                return lv_icon;
+            }
+
+            public void setLv_icon(String lv_icon) {
+                this.lv_icon = lv_icon;
+            }
         }
 
     }

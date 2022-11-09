@@ -1,7 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:orientation="vertical">
 
-</RelativeLayout>
+    <top.defaults.view.PickerView
+        android:id="@+id/pickerView"
+        android:layout_width="100dp"
+        android:layout_centerInParent="true"
+        android:layout_height="wrap_content"
+        app:textColor="@color/app_dark"
+        app:textSize="@dimen/textsize16"
+        app:autoFitSize="true"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/colorAccent"
+        android:gravity="center"/>
+
+
+    <com.example.myapplication.custom.ScrollPickerView
+        android:id="@+id/datepicker_year"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:scrollpicker_gravity="center"
+        app:scrollpicker_spacing="-5dp"
+        android:layout_marginTop="20dp"
+        app:scrollpicker_textColor_center="@color/red3"
+        app:scrollpicker_textColor_outside="@color/blue"
+        app:scrollpicker_textFormat="0000"
+        app:scrollpicker_textRatio="1.8"
+        app:scrollpicker_textSize="18sp" />
+
+    <com.example.myapplication.custom.ScrollPickerView
+        android:id="@+id/datepicker_year_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:scrollpicker_gravity="center"
+        app:scrollpicker_spacing="-5dp"
+        android:layout_marginTop="20dp"
+        app:scrollpicker_textColor_center="@color/red3"
+        app:scrollpicker_textColor_outside="@color/blue"
+        app:scrollpicker_textFormat="0000"
+        app:scrollpicker_textRatio="1.8"
+        app:scrollpicker_textSize="18sp" />
+
+    <com.example.myapplication.custom.ScrollPickerView
+        android:id="@+id/datepicker_year_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:scrollpicker_gravity="center"
+        app:scrollpicker_spacing="-5dp"
+        android:layout_marginTop="20dp"
+        app:scrollpicker_textColor_center="@color/red3"
+        app:scrollpicker_textColor_outside="@color/blue"
+        app:scrollpicker_textFormat="0000"
+        app:scrollpicker_textRatio="1.8"
+        app:scrollpicker_textSize="18sp" />
+
+</LinearLayout>

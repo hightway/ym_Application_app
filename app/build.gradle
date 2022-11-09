@@ -85,6 +85,11 @@ dependencies {
     implementation 'com.aliyun.sdk.android:AliyunPlayer:4.5.0-full'
     implementation 'com.alivc.conan:AlivcConan:0.9.5'
 
+    //时间选择器
+    implementation 'com.github.duanhong169:picker-view:1.0.0'
+    implementation 'com.github.jzmanu:MDatePickerSample:v1.0.6'
+
+
     //ijkplayer
     /*implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
     implementation 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.8.8'

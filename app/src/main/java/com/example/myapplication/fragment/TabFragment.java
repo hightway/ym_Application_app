@@ -512,7 +512,7 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
 
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recycle_view.setLayoutManager(layoutManager);
-        listAdapter = new FruitAdapter(fruitList);
+        listAdapter = new FruitAdapter(fruitList, getActivity());
         recycle_view.setAdapter(listAdapter);
     }
 
