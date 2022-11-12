@@ -3,26 +3,156 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
+    android:background="@color/app_dark"
     android:orientation="vertical">
 
-    <top.defaults.view.PickerView
-        android:id="@+id/pickerView"
-        android:layout_width="100dp"
-        android:layout_centerInParent="true"
-        android:layout_height="wrap_content"
-        app:textColor="@color/app_dark"
-        app:textSize="@dimen/textsize16"
-        app:autoFitSize="true"
-        android:visibility="gone"/>
 
     <TextView
-        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/good_deream"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textsize32"
+        android:layout_marginTop="52dp"
+        android:layout_marginLeft="20dp" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/tab_3_bg"
+        android:orientation="vertical"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:padding="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@mipmap/tab_1_pic"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/good_deream_1"
+                    android:textSize="@dimen/textsize14"
+                    android:textColor="@color/white"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/good_deream_2"
+                    android:textSize="@dimen/textsize12"
+                    android:textColor="@color/white_l"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginTop="30dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@mipmap/tab_2_pic"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/good_deream_3"
+                    android:textSize="@dimen/textsize14"
+                    android:textColor="@color/white"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/good_deream_4"
+                    android:textSize="@dimen/textsize12"
+                    android:textColor="@color/white_l"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tx_sleep_time"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:text="@string/good_deream_5"
+            android:textColor="@color/white"
+            android:layout_marginTop="30dp"
+            android:textSize="@dimen/textsize14"
+            android:gravity="center"
+            android:background="@drawable/button_bg"/>
+
+    </LinearLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/good_deream_6"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textsize18"
         android:layout_marginTop="20dp"
-        android:textColor="@color/colorAccent"
-        android:gravity="center"/>
+        android:layout_marginLeft="20dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tab_3_bg"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:padding="16dp"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/good_deream_7"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize18" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="@string/good_deream_4"
+            android:textSize="@dimen/textsize12"
+            android:textColor="@color/white_l"/>
+
+    </LinearLayout>
+
+
 
 
     <com.example.myapplication.custom.ScrollPickerView
@@ -36,7 +166,8 @@
         app:scrollpicker_textColor_outside="@color/blue"
         app:scrollpicker_textFormat="0000"
         app:scrollpicker_textRatio="1.8"
-        app:scrollpicker_textSize="18sp" />
+        app:scrollpicker_textSize="18sp"
+        android:visibility="gone"/>
 
     <com.example.myapplication.custom.ScrollPickerView
         android:id="@+id/datepicker_year_1"
@@ -49,19 +180,67 @@
         app:scrollpicker_textColor_outside="@color/blue"
         app:scrollpicker_textFormat="0000"
         app:scrollpicker_textRatio="1.8"
-        app:scrollpicker_textSize="18sp" />
+        app:scrollpicker_textSize="18sp"
+        android:visibility="gone"/>
 
-    <com.example.myapplication.custom.ScrollPickerView
-        android:id="@+id/datepicker_year_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:scrollpicker_gravity="center"
-        app:scrollpicker_spacing="-5dp"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
         android:layout_marginTop="20dp"
-        app:scrollpicker_textColor_center="@color/red3"
-        app:scrollpicker_textColor_outside="@color/blue"
-        app:scrollpicker_textFormat="0000"
-        app:scrollpicker_textRatio="1.8"
-        app:scrollpicker_textSize="18sp" />
+        android:background="@color/app_dark"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_centerInParent="true">
+
+            <com.example.myapplication.custom.ScrollPickerView
+                android:id="@+id/datepicker_year_2"
+                android:layout_width="90dp"
+                android:layout_height="match_parent"
+                app:scrollpicker_gravity="center"
+                app:scrollpicker_spacing="-1dp"
+                app:scrollpicker_textColor_center="@color/white"
+                app:scrollpicker_textColor_outside="@color/white_t"
+                app:scrollpicker_textFormat="09"
+                app:scrollpicker_textRatio="2.6"
+                app:scrollpicker_textSize="20sp" />
+
+            <com.example.myapplication.custom.ScrollPickerView
+                android:id="@+id/datepicker_year_3"
+                android:layout_width="90dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                app:scrollpicker_gravity="center"
+                app:scrollpicker_spacing="-1dp"
+                app:scrollpicker_textColor_center="@color/white"
+                app:scrollpicker_textColor_outside="@color/white_t"
+                app:scrollpicker_textFormat="37"
+                app:scrollpicker_textRatio="2.6"
+                app:scrollpicker_textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="246dp"
+            android:layout_height="72dp"
+            android:background="@mipmap/time_sel_bg"
+            android:layout_centerInParent="true"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:textSize="40sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>

@@ -86,8 +86,8 @@ dependencies {
     implementation 'com.alivc.conan:AlivcConan:0.9.5'
 
     //时间选择器
-    implementation 'com.github.duanhong169:picker-view:1.0.0'
-    implementation 'com.github.jzmanu:MDatePickerSample:v1.0.6'
+    //implementation 'com.github.duanhong169:picker-view:1.0.0'
+    //implementation 'com.github.jzmanu:MDatePickerSample:v1.0.6'
 
 
     //ijkplayer
@@ -98,4 +98,9 @@ dependencies {
     implementation 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.8'
     implementation 'tv.danmaku.ijk.media:ijkplayer-x86_64:0.8.8'
     implementation 'tv.danmaku.ijk.media:ijkplayer-exo:0.8.8'*/
+
+    //exoplayer
+    api 'com.google.android.exoplayer:exoplayer:2.11.7'
+    //video cache
+    api 'com.danikula:videocache:2.7.1'
 }

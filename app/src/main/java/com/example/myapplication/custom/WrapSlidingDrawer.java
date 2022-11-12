@@ -6,6 +6,7 @@ import android.view.View;
 
 import hollowsoft.slidingdrawer.SlidingDrawer;
 
+
 public class WrapSlidingDrawer extends SlidingDrawer {
     private boolean mVertical = true;
     private int mTopOffset;

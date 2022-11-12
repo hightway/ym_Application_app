@@ -17,7 +17,10 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.myapplication.adapter.Mainpage_Adapter;
@@ -29,6 +32,7 @@ import com.example.myapplication.bean.User_Msg_Bean;
 import com.example.myapplication.bean.Weather_Bean;
 import com.example.myapplication.config.BaseUIConfig;
 import com.example.myapplication.custom.MyViewPage;
+import com.example.myapplication.custom.SlidingDrawerLayout;
 import com.example.myapplication.custom.WrapSlidingDrawer;
 import com.example.myapplication.fragment.TabFragment;
 import com.example.myapplication.fragment.TabFragment_3;
@@ -39,6 +43,7 @@ import com.example.myapplication.plmd.BackHandledInterface;
 import com.example.myapplication.tools.DialogUtils;
 import com.example.myapplication.tools.Login_Util;
 import com.example.myapplication.tools.OkHttpUtil;
+import com.example.myapplication.tools.StatusBarUtil;
 import com.google.android.material.tabs.TabLayout;
 import com.mobile.auth.gatewayauth.PhoneNumberAuthHelper;
 import com.mobile.auth.gatewayauth.TokenResultListener;
@@ -67,6 +72,8 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
     @BindView(R.id.vp_viewpage)
     MyViewPage vp_viewpage;
+    @BindView(R.id.view_view)
+    View view_view;
 
     private List<String> tab_name = new ArrayList<>();
     private List<Integer> tab_icon_sel = new ArrayList<>();
@@ -95,9 +102,11 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     }
 
 
+    //FLAG_LAYOUT_FULLSCREEN
     @Override
     protected int getLayoutID() {
         instance = this;
+        setBar_color_transparent(R.color.transparent);
         return R.layout.activity_main;
     }
 
@@ -165,6 +174,10 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
         //获取用户信息（已登录情况）
         getUser_info();
+
+        view_view.setVisibility(View.GONE);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, StatusBarUtil.getStatusBarHeight(instance));
+        view_view.setLayoutParams(params);
 
     }
 
@@ -478,6 +491,11 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                     }
 
                     int index = tab.getPosition();
+                    if(index == 0){
+                        view_view.setVisibility(View.GONE);
+                    }else{
+                        view_view.setVisibility(View.VISIBLE);
+                    }
                     TextView textView = tab.getCustomView().findViewById(R.id.tabtext);
                     ImageView tabicon = tab.getCustomView().findViewById(R.id.tabicon);
                     textView.setTextColor(getResources().getColor(R.color.white));
@@ -538,9 +556,9 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (tabFragment != null) {
-                WrapSlidingDrawer drawer = tabFragment.getWrapSlidingDrawer();
-                if (drawer != null && drawer.isOpened()) {
-                    drawer.animateClose();
+                SlidingDrawerLayout drawer = tabFragment.getWrapSlidingDrawer();
+                if (drawer != null && !drawer.getmIsAllShow()) {
+                    drawer.hide();
                 } else {
                     exit_sys();
                 }

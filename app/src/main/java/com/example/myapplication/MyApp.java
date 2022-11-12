@@ -10,6 +10,7 @@ import com.example.myapplication.aliyun_oss.AliyunOSSUtils;
 import com.example.myapplication.config.Get_AssetsUtil;
 import com.example.myapplication.http.Api;
 import com.example.myapplication.http.UserConfig;
+import com.example.myapplication.videoplayTool.AppUtil;
 import com.example.myapplication.wxapi.WxLogin;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.log.LoggerInterceptor;
@@ -72,6 +73,8 @@ public class MyApp extends Application {
 
         //获取用户个人信息
         UserConfig.instance().getUserConfig(this);
+
+        AppUtil.setApplicationContext(getApplicationContext());
 
         //获取app版本号
         try {

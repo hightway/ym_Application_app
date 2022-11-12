@@ -115,6 +115,7 @@ public class SwipeDrawer extends ViewGroup{
 
     private int downX = 0;
     private int downY = 0;
+    private int mFirstY = 0;
     private int downMs = 0;
 
     private boolean isInit = false;
@@ -1442,6 +1443,7 @@ public class SwipeDrawer extends ViewGroup{
             case MotionEvent.ACTION_DOWN:
                 downX = getX;
                 downY = getY;
+                mFirstY = getY;
                 downMs = getMs;
                 cacheDrawer(true);
                 setParentIntercept(1, true);
@@ -1490,6 +1492,12 @@ public class SwipeDrawer extends ViewGroup{
         }
         return isIntercept;
     }
+
+
+    public int getTouchPointY() {
+        return mFirstY;
+    }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {

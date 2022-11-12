@@ -3,19 +3,31 @@ package com.example.myapplication.activity;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 
+import androidx.viewpager2.widget.ViewPager2;
+
 import com.example.myapplication.R;
+import com.example.myapplication.adapter.VideoViewPagerAdapter;
 import com.example.myapplication.base.BaseActivity;
 import com.example.myapplication.custom.ImageRound;
 import com.example.myapplication.custom.MyCircleProgress;
 import com.example.myapplication.custom.VoisePlayingIcon;
+import com.example.myapplication.fragment.Video_Fragment;
 import com.example.myapplication.tools.ExpandOrCollapse;
 import com.example.myapplication.tools.Utils;
+import com.example.myapplication.videoplayTool.AppUtil;
+import com.example.myapplication.videoplayTool.VideoPlayManager;
+import com.example.myapplication.videoplayTool.VideoPlayTask;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,15 +49,22 @@ public class Video_Detail_Activity extends BaseActivity {
     @BindView(R.id.circle_progress)
     MyCircleProgress circle_progress;
 
+    @BindView(R.id.viewpager2)
+    ViewPager2 mViewPager2;
+
     private boolean btn_open = true;
     private int x;
     private ExpandOrCollapse mAnimationManager;
     private int prevWidth = 0;
     private boolean threadFlag = false;
+    private VideoViewPagerAdapter mVideoViewPagerAdapter;
+    private boolean onFragmentResume;
+    private boolean onFragmentVisible;
 
     @Override
     protected int getLayoutID() {
         instance = this;
+        setBar_color_transparent(R.color.transparent);
         return R.layout.video_detail_lay;
     }
 
@@ -94,7 +113,79 @@ public class Video_Detail_Activity extends BaseActivity {
             }
         });
         thread.start();
+
+
+        List<String> urls = new ArrayList<>();
+        urls.add("http://dpv.videocc.net/51b4303ed6/e/51b4303ed62737f339f98491747c63ee_3.mp4?pid=1560914841120X1051965");
+        urls.add("https://vfx.mtime.cn/Video/2019/01/15/mp4/190115161611510728_480.mp4");
+        urls.add("http://vfx.mtime.cn/Video/2019/02/04/mp4/190204084208765161.mp4");
+        urls.add("http://vfx.mtime.cn/Video/2019/03/14/mp4/190314102306987969.mp4");
+        urls.add("http://vfx.mtime.cn/Video/2019/03/14/mp4/190314223540373995.mp4");
+        urls.add("http://vfx.mtime.cn/Video/2019/03/17/mp4/190317150237409904.mp4");
+        urls.add("http://vfx.mtime.cn/Video/2019/03/19/mp4/190319125415785691.mp4");
+        urls.add("http://vfx.mtime.cn/Video/2019/03/19/mp4/190319104618910544.mp4");
+        urls.add("http://vfx.mtime.cn/Video/2019/03/18/mp4/190318214226685784.mp4");
+        urls.add("http://vfx.mtime.cn/Video/2019/03/12/mp4/190312143927981075.mp4");
+        urls.add("http://vfx.mtime.cn/Video/2019/03/12/mp4/190312083533415853.mp4");
+
+        //init viewpager2
+        initViewPage2(urls);
     }
+
+    private void initViewPage2(List<String> urls) {
+        mVideoViewPagerAdapter = new VideoViewPagerAdapter(instance);
+        //mVideoViewPagerAdapter.setDataList(VideoPlayManager.buildTestVideoUrls());
+        mVideoViewPagerAdapter.setDataList(urls);
+        mViewPager2.setOrientation(ViewPager2.ORIENTATION_VERTICAL);
+        mViewPager2.setAdapter(mVideoViewPagerAdapter);
+        mViewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                Log.d("Video_Play_TAG", " on page selected = " + position);
+                View itemView = mViewPager2.findViewWithTag(position);
+                SimpleExoPlayerView simpleExoPlayerView = itemView.findViewById(R.id.video_view);
+                VideoPlayManager.getInstance(AppUtil.getApplicationContext()).setCurVideoPlayTask(new VideoPlayTask(simpleExoPlayerView,
+                        mVideoViewPagerAdapter.getUrlByPos(position)));
+
+
+                VideoPlayManager.getInstance(AppUtil.getApplicationContext()).startPlay();
+                /*if(onFragmentResume && onFragmentVisible) {
+                    VideoPlayManager.getInstance(AppUtil.getApplicationContext()).startPlay();
+                }*/
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
+            }
+        });
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        onFragmentResume = true;
+        if(onFragmentVisible) {
+            VideoPlayManager.getInstance(AppUtil.getApplicationContext()).resumePlay();
+        }
+        //Log.d("Video_Play_TAG", " video fragment Resume ");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        onFragmentResume = false;
+        VideoPlayManager.getInstance(AppUtil.getApplicationContext()).pausePlay();
+        //Log.d("Video_Play_TAG", " video fragment Pause ");
+    }
+
 
     @Override
     protected void onDestroy() {

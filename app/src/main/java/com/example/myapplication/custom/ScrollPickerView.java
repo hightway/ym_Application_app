@@ -260,7 +260,7 @@ public class ScrollPickerView extends View implements ValueAnimator.AnimatorUpda
         //设置字体大小
         mTextPaint.setTextSize(mTextSize);
         //等宽字体
-        mTextPaint.setTypeface(Typeface.MONOSPACE);
+        mTextPaint.setTypeface(Typeface.SERIF);
         //设置对齐方式
         switch (mGravity) {
             case GRAVITY_LEFT: {

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -28,17 +29,19 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.myapplication.R;
+import com.example.myapplication.activity.Video_More_Activity;
 import com.example.myapplication.adapter.FruitAdapter;
 import com.example.myapplication.adapter.ViewPage_Adapter;
 import com.example.myapplication.aliyun_oss.AliyunOSSUtils;
 import com.example.myapplication.base.BaseLazyFragment;
 import com.example.myapplication.bean.Fruit;
-import com.example.myapplication.custom.WrapSlidingDrawer;
+import com.example.myapplication.custom.SlidingDrawerLayout;
 import com.example.myapplication.http.UserConfig;
 import com.example.myapplication.swipeDrawer_view.Common;
 import com.example.myapplication.swipeDrawer_view.OnDrawerChange;
 import com.example.myapplication.swipeDrawer_view.SwipeDrawer;
 import com.example.myapplication.tools.MMAlert;
+import com.example.myapplication.tools.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,8 +55,8 @@ import hollowsoft.slidingdrawer.OnDrawerCloseListener;
 import hollowsoft.slidingdrawer.OnDrawerOpenListener;
 import hollowsoft.slidingdrawer.OnDrawerScrollListener;
 
-public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.UploadListener, AliyunOSSUtils.Upload_ParListener,
-        OnDrawerScrollListener, OnDrawerOpenListener, OnDrawerCloseListener {
+//OnDrawerScrollListener, OnDrawerOpenListener, OnDrawerCloseListener
+public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.UploadListener, AliyunOSSUtils.Upload_ParListener{
 
     @BindView(R.id.tx_upload)
     TextView tx_upload;
@@ -61,11 +64,11 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
     TextView tx_upload_video;
     //@BindView(R.id.dp_game_progress)
     //DownLoadProgressbar dp_game_progress;
-    @BindView(R.id.drawer)
-    WrapSlidingDrawer drawer;
-    @BindView(R.id.handle)
-    TextView handle;
+    /*@BindView(R.id.drawer)
+    WrapSlidingDrawer drawer;*/
 
+    @BindView(R.id.sliding_lay)
+    SlidingDrawerLayout sliding_lay;
     @BindView(R.id.content)
     SwipeDrawer content;
 
@@ -87,6 +90,10 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
     TextView tx_temperature;
     @BindView(R.id.rel_all_msg)
     RelativeLayout rel_all_msg;
+    @BindView(R.id.layout_point)
+    LinearLayout layout_point;
+    @BindView(R.id.tx_more)
+    TextView tx_more;
 
     private AliyunOSSUtils ossUtils;
     private ActivityResultLauncher launcher;
@@ -94,7 +101,6 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
     private static final int GETICON_LOCAL = 2;
     private long max = 100; //总的大小
     private long current = 0; //当前下载大小
-    //Handler handler = new Handler();
 
     private List<Fruit> fruitList = new ArrayList<>();
     private FruitAdapter listAdapter;
@@ -120,9 +126,9 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
             }
         });
 
-        drawer.setOnDrawerScrollListener(this);
+        /*drawer.setOnDrawerScrollListener(this);
         drawer.setOnDrawerOpenListener(this);
-        drawer.setOnDrawerCloseListener(this);
+        drawer.setOnDrawerCloseListener(this);*/
 
         //content.setScanScrollChangedListener(this);
 
@@ -167,8 +173,12 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
 
                     }
                 });
+
+                //显示抽屉
+                sliding_lay.setVisibility(View.VISIBLE);
+
             }
-        }, 2000);
+        }, 1000);
 
 
         //获取时间段
@@ -212,20 +222,23 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
         Calendar c = Calendar.getInstance();
         // 提取他的时钟值，int型
         int hour = c.get(Calendar.HOUR_OF_DAY);
-        if (hour < 5) {
-            return R.string.date_1;
+        if(hour < 7){
+            return R.string.date_7;
+        } else if(hour < 9){
+            return R.string.date_8;
         } else if (hour < 12) {
             return R.string.date_2;
-        } else if (hour < 13) {
+        } else if (hour < 14) {
             return R.string.date_3;
-        } else if (hour < 16) {
-            return R.string.date_4;
         } else if (hour < 18) {
+            return R.string.date_4;
+        } else if (hour < 19) {
             return R.string.date_5;
         } else if (hour < 24) {
             return R.string.date_6;
+        }else{
+            return R.string.date_1;
         }
-        return R.string.date_2;
     }
 
 
@@ -237,7 +250,7 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
     private void initVideo_viewpage() {
         List<Fragment> fragments = new ArrayList<>();
 
-        Video_Fragment video_fragment_33 = new Video_Fragment("https://v-cdn.zjol.com.cn/280445.mp4");
+        Video_Fragment video_fragment_33 = new Video_Fragment("https://v-cdn.zjol.com.cn/280448.mp4");
 
         Video_Fragment video_fragment_1 = new Video_Fragment("https://v-cdn.zjol.com.cn/280443.mp4");
         Video_Fragment video_fragment_2 = new Video_Fragment("https://v-cdn.zjol.com.cn/280441.mp4");
@@ -261,6 +274,24 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
         video_viewpage.setCurrentItem(1, false);
         video_viewpage.setOffscreenPageLimit(2);//记数从0开始!!! 设置预加载的个数
         //video_viewpage.setPageTransformer(false, new DepthPageTransformer());
+
+
+
+        for(int i=0; i<POINT_LENGTH; i++){
+            //创建下标小白点，然后用LinearLayout作为父容器，把5个小白点加进去
+            View view = new View(getActivity());
+            view.setBackgroundResource(R.drawable.point_disable);
+            LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(32, 8);
+            if(i!=0){
+                lp.leftMargin = 16;
+            }
+            layout_point.addView(view,lp);
+        }
+        //设置小白点的默认位置0是选中状态的白点。
+        layout_point.getChildAt(0).setBackgroundResource(R.drawable.point_enable);
+
+
+
         video_viewpage.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int pPosition) {
@@ -271,6 +302,14 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
                     mCurrentPagePosition = POINT_LENGTH;
                 } else {
                     mCurrentPagePosition = pPosition;
+                }
+
+                for(int i=1; i<=layout_point.getChildCount(); i++){
+                    if(i == mCurrentPagePosition){
+                        layout_point.getChildAt(i-1).setBackgroundResource(R.drawable.point_enable);
+                    }else{
+                        layout_point.getChildAt(i-1).setBackgroundResource(R.drawable.point_disable);
+                    }
                 }
             }
 
@@ -312,28 +351,6 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
                 }
             }
         });
-
-
-
-        /*ViewPage_Adapter viewPage_adapter = new ViewPage_Adapter(getChildFragmentManager(), fragments);
-        video_viewpage.setAdapter(viewPage_adapter);*/
-
-        /*video_viewpage.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });*/
     }
 
     private void initData() {
@@ -348,15 +365,15 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
                 reTopIcon.setRotation(0);
                 reTopIcon.setVisibility(View.GONE);
 
-                /*reTopText.setText("刷新完成");
+                reTopText.setText("刷新完成");
                 // 0.6秒后关闭
                 reTopText.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         content.closeDrawer();
                     }
-                }, 300);*/
-                content.closeDrawer();
+                }, 300);
+                //content.closeDrawer();
             }
 
             // 加载完毕
@@ -710,8 +727,13 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
     }
 
 
-    public WrapSlidingDrawer getWrapSlidingDrawer(){
-        return drawer;
+    public SlidingDrawerLayout getWrapSlidingDrawer(){
+        return sliding_lay;
+    }
+
+    @OnClick(R.id.tx_more)
+    public void tx_more(){
+        startActivity(new Intent(getActivity(), Video_More_Activity.class));
     }
 
 
@@ -744,7 +766,7 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
     };*/
 
 
-    @Override
+    /*@Override
     public void onDrawerClosed() {
         //toast("1");
     }
@@ -762,7 +784,7 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
     @Override
     public void onScrollEnded() {
 
-    }
+    }*/
 
 
     //SmartScrollView

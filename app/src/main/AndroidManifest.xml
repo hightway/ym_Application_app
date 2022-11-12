@@ -149,6 +149,16 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name="com.example.myapplication.activity.Video_More_Activity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.example.myapplication.activity.Sleep_Time_Set_Activity"
+            android:screenOrientation="portrait" />
+
+
+
+        <activity
             android:name=".wxapi.WXEntryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"

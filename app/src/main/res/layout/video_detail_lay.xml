@@ -6,6 +6,12 @@
     android:background="@color/white">
 
 
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewpager2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
@@ -199,8 +205,6 @@
                 android:visibility="gone"/>
 
         </RelativeLayout>
-
-
     </RelativeLayout>
 
 </RelativeLayout>

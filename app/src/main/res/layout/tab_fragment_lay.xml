@@ -21,6 +21,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+
+        <LinearLayout
+            android:id="@+id/layout_point"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:layout_marginBottom="150dp"/>
+
         <RelativeLayout
             android:id="@+id/rel_all_msg"
             android:layout_width="match_parent"
@@ -103,7 +113,7 @@
 
     <!--<hollowsoft.slidingdrawer.SlidingDrawer-->
     <!--allowSingleTap：指示是否可以通过handle打开或关闭-->
-    <com.example.myapplication.custom.WrapSlidingDrawer
+    <!--<com.example.myapplication.custom.WrapSlidingDrawer
         android:id="@+id/drawer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -115,30 +125,19 @@
             android:id="@+id/handle"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:background="@color/trans"
-            android:gravity="center"
-            android:text="Handle"
+            android:background="@color/transparent_"
+            android:gravity="center_vertical"
+            android:paddingLeft="20dp"
+            android:text="精选视频"
             android:textAllCaps="true"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-
-        <!--<androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </androidx.recyclerview.widget.RecyclerView>-->
-
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize16" />
 
         <com.example.myapplication.swipeDrawer_view.SwipeDrawer
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/top_bar"
-            android:background="@color/white"
-
+            android:background="@color/transparent_"
             sd:bottomLayout="@+id/bottomLayout"
             sd:mainScroll="@+id/mainList"
             sd:topLayout="@+id/topLayout">
@@ -192,12 +191,128 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/mainList"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white" />
+                android:layout_height="match_parent" />
 
         </com.example.myapplication.swipeDrawer_view.SwipeDrawer>
 
-    </com.example.myapplication.custom.WrapSlidingDrawer>
+    </com.example.myapplication.custom.WrapSlidingDrawer>-->
+
+
+
+    <com.example.myapplication.custom.SlidingDrawerLayout
+        android:id="@+id/sliding_lay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:direction="0"
+        app:visiableLength="80dp"
+        android:visibility="invisible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top|center_horizontal"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/handle"
+                android:layout_width="match_parent"
+                android:layout_height="62dp"
+                android:background="@color/transparent_del">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="20dp"
+                    android:layout_centerVertical="true"
+                    android:text="精选视频"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textsize16" />
+
+                <TextView
+                    android:id="@+id/tx_more"
+                    android:layout_width="80dp"
+                    android:layout_height="28dp"
+                    android:gravity="center"
+                    android:layout_marginRight="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:text="更多视频"
+                    android:background="@drawable/txt_cocle_bg"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textsize14" />
+
+            </RelativeLayout>
+
+            <com.example.myapplication.swipeDrawer_view.SwipeDrawer
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/transparent_del"
+                sd:bottomLayout="@+id/bottomLayout"
+                sd:mainScroll="@+id/mainList"
+                sd:topLayout="@+id/topLayout">
+
+                <LinearLayout
+                    android:id="@+id/topLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/reTopIcon"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@mipmap/icon_down" />
+
+                    <TextView
+                        android:id="@+id/reTopText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="下拉刷新"
+                        android:textColor="#666666"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/bottomLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/reBottomIcon"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@mipmap/icon_up" />
+
+                    <TextView
+                        android:id="@+id/reBottomText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="上拉加载"
+                        android:textColor="#666666"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/mainList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </com.example.myapplication.swipeDrawer_view.SwipeDrawer>
+
+        </LinearLayout>
+    </com.example.myapplication.custom.SlidingDrawerLayout>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -34,6 +34,19 @@
     <string name="pwd_reset_sure">确认新密码（不少于8位）</string>
     <string name="pwd_reset_login">确  认</string>
     <string name="pwd_reset_send">验证码已发送至</string>
+    <string name="video_more">更多视频</string>
+    <string name="good_deream">祝你好梦～</string>
+    <string name="good_deream_1">更解你的作息规律</string>
+    <string name="good_deream_2">精确记录每日作息时间，及时调整作息规律</string>
+    <string name="good_deream_3">睡眠的评分指数</string>
+    <string name="good_deream_4">你的睡眠数据将在报告中呈现，Ta也可以对你的睡眠状况有明显的判断。</string>
+    <string name="good_deream_5">设置睡眠时间</string>
+    <string name="good_deream_6">录制梦话</string>
+    <string name="good_deream_7">还没有声音</string>
+    <string name="good_deream_8">轻按睡眠界面的“小月亮”按钮，并开启睡眠监测功能，以录制可能影响睡眠质量的声音</string>
+    <string name="good_deream_9">记录睡眠</string>
+    <string name="good_deream_10">设置叫醒时间</string>
+    <string name="good_deream_11">开始休息</string>
 
     <string name="date_1">凌晨好</string>
     <string name="date_2">上午好</string>
@@ -41,6 +54,8 @@
     <string name="date_4">下午好</string>
     <string name="date_5">傍晚好</string>
     <string name="date_6">晚上好</string>
+    <string name="date_7">清晨好</string>
+    <string name="date_8">早上好</string>
 
 
     <string name="msg">已阅读并同意</string>

@@ -7,6 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="white_t">#20FFFFFF</color>
+    <color name="white_l">#ff999999</color>
 
     <!-- 点击layout的灰色 -->
     <color name="layout_gray_bg">#f7f7f7</color>
@@ -40,6 +42,7 @@
     <color name="new_black">#ff2C2C2C</color>
     <color name="code_cocle">#E0E0E0</color>
     <color name="get_code_cocle">#ffffff</color>
+    <color name="txt_cocle">#ff333333</color>
     <color name="get_code_cocle_un">#99ebebf5</color>
     <color name="divider">#D1D1D1</color>
     <color name="click_bg_dark">#ff000000</color>

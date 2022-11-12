@@ -36,6 +36,11 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //竖屏锁定
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setBar_color(R.color.app_dark);
+
+        //布局
         setContentView(getLayoutID());
 
         if(mHandle == null){
@@ -45,10 +50,6 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         if (mGson == null) {
             mGson = new Gson();
         }
-
-        //竖屏锁定
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        setBar_color(R.color.app_dark_2);
 
         //抽象方法
         initView();
@@ -62,6 +63,16 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         //设置状态栏颜色
         getWindow().setStatusBarColor(getResources().getColor(id));
+    }
+
+    @SuppressLint("NewApi")
+    public void setBar_color_transparent(int id) {
+        //需要设置这个 flag 才能调用 setStatusBarColor 来设置状态栏颜色
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        //设置状态栏颜色
+        getWindow().setStatusBarColor(getResources().getColor(id));
+        //全屏显示，状态栏显示在Activity页面上面
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 
 
