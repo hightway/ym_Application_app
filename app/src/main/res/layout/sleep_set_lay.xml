@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/app_dark">
+    android:background="@color/black_1">
 
     <RelativeLayout
         android:id="@+id/search_bar"
@@ -135,6 +135,7 @@
             android:src="@mipmap/sleep_icon_3"/>
 
         <ImageView
+            android:id="@+id/img_more"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:padding="4dp"

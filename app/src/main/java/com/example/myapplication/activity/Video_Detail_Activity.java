@@ -3,13 +3,25 @@ package com.example.myapplication.activity;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
+import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.myapplication.R;
@@ -25,6 +37,7 @@ import com.example.myapplication.videoplayTool.AppUtil;
 import com.example.myapplication.videoplayTool.VideoPlayManager;
 import com.example.myapplication.videoplayTool.VideoPlayTask;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +64,12 @@ public class Video_Detail_Activity extends BaseActivity {
 
     @BindView(R.id.viewpager2)
     ViewPager2 mViewPager2;
+    @BindView(R.id.img_4)
+    ImageView img_4;
+    @BindView(R.id.layout_point)
+    LinearLayout layout_point;
+    @BindView(R.id.scrollView)
+    ScrollView scrollView;
 
     private boolean btn_open = true;
     private int x;
@@ -60,6 +79,7 @@ public class Video_Detail_Activity extends BaseActivity {
     private VideoViewPagerAdapter mVideoViewPagerAdapter;
     private boolean onFragmentResume;
     private boolean onFragmentVisible;
+    private int pos = 0;
 
     @Override
     protected int getLayoutID() {
@@ -158,6 +178,33 @@ public class Video_Detail_Activity extends BaseActivity {
                 /*if(onFragmentResume && onFragmentVisible) {
                     VideoPlayManager.getInstance(AppUtil.getApplicationContext()).startPlay();
                 }*/
+
+                for(int i=0; i<layout_point.getChildCount(); i++){
+                    if(i == position){
+                        layout_point.getChildAt(i).setBackgroundResource(R.drawable.point_enable);
+                    }else{
+                        layout_point.getChildAt(i).setBackgroundResource(R.drawable.point_disable);
+                    }
+                }
+
+                int l_height = layout_point.getHeight();
+                int s_height = scrollView.getHeight();
+                if(l_height > s_height){
+                    View view = layout_point.getChildAt(position);
+                    int top = view.getTop();
+                    int height = view.getHeight();
+                    if(pos < position){
+                        if((top + height) >= s_height){
+                            scrollView.scrollBy(0, height+14);
+                        }
+                    }else{
+                        if(l_height - top >= s_height){
+                            scrollView.scrollBy(0, -(height+14));
+                        }
+                    }
+                }
+
+                pos = position;
             }
 
             @Override
@@ -165,6 +212,20 @@ public class Video_Detail_Activity extends BaseActivity {
                 super.onPageScrollStateChanged(state);
             }
         });
+
+
+        for(int i=0; i<urls.size(); i++){
+            //创建下标小白点，然后用LinearLayout作为父容器，把5个小白点加进去
+            View view = new View(instance);
+            view.setBackgroundResource(R.drawable.point_disable);
+            LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(8, 28);
+            if(i!=0){
+                lp.topMargin = 14;
+            }
+            layout_point.addView(view,lp);
+        }
+        //设置小白点的默认位置0是选中状态的白点。
+        layout_point.getChildAt(0).setBackgroundResource(R.drawable.point_enable);
     }
 
 
@@ -260,6 +321,47 @@ public class Video_Detail_Activity extends BaseActivity {
             animSet.start();
         }
         btn_open = !btn_open;
+    }
+
+
+    @OnClick(R.id.img_4)
+    public void img_4(){
+        getPopupWindow(instance, R.style.showPopupAnimation);
+    }
+
+
+    public void getPopupWindow(Activity mContext, int anim) {
+        WindowManager wm = getWindowManager();
+        Display d = wm.getDefaultDisplay();
+        int d_height = d.getHeight();
+
+        View inflate = LayoutInflater.from(mContext).inflate(R.layout.layout_meua, null, false);
+        PopupWindow popupWindow = new PopupWindow(inflate, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        popupWindow.setHeight(d_height*4/5);
+        //点击非菜单部分退出
+        /*inflate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });*/
+
+        /*TextView img_miss = inflate.findViewById(R.id.tx_ok);
+        img_miss.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                popupWindow.dismiss();
+            }
+        });*/
+
+        popupWindow.setBackgroundDrawable(null);
+        popupWindow.setFocusable(true);
+        popupWindow.setAnimationStyle(anim);
+
+        //解决软件盘 "adjust_Pan"在使用时获取焦点的控件下边的View将会被软键盘覆盖
+        popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
+        popupWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        popupWindow.showAtLocation(inflate, Gravity.NO_GRAVITY, 0, d_height*4/5);
     }
 
 }

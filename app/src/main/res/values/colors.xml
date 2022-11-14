@@ -6,9 +6,11 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
+    <color name="black_1">#b3000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="white_t">#20FFFFFF</color>
     <color name="white_l">#ff999999</color>
+    <color name="tab_cocle">#6B6B6B</color>
 
     <!-- 点击layout的灰色 -->
     <color name="layout_gray_bg">#f7f7f7</color>
