@@ -10,14 +10,23 @@
         android:layout_height="match_parent"
         android:background="@drawable/sleep_time_bg"
         android:paddingTop="12dp"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/good_deream_17"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize16"
+            android:layout_marginTop="6dp"
+            android:textStyle="bold"/>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/meua_tabs"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
             app:tabMode="scrollable"
             app:tabMaxWidth="0dp"
             app:tabIndicatorColor="@color/transparent"

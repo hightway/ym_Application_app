@@ -12,6 +12,7 @@ buildscript {
 
         //阿里云播放器
         maven {url 'https://maven.aliyun.com/repository/releases'}
+        maven { url "https://raw.github.com/laenger/maven-releases/master/releases" }
 
         google()
         mavenCentral()

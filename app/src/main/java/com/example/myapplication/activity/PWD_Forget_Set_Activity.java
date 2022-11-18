@@ -39,7 +39,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class PWD_Forget_Set_Activity extends BaseActivity implements Keyboard_ABC_PopupWindow.Keyboard_NUM_Callback, KeyboardPopupWindow.Keyboard_ABC_Callback{
+public class PWD_Forget_Set_Activity extends BaseActivity implements KeyboardPopupWindow.Keyboard_ABC_Callback{
 
     private PWD_Forget_Set_Activity instance;
     private Activity activity;
@@ -61,10 +61,8 @@ public class PWD_Forget_Set_Activity extends BaseActivity implements Keyboard_AB
     private boolean pwd_sure;
 
     private Keyboard_ABC_PopupWindow keyboardPopupWindow;
-    private KeyboardPopupWindow keyboardPopupWindow_Num;
     private boolean isUiCreated = false;
     private Keyboard_ABC_PopupWindow keyboardPopupWindow_2;
-    private KeyboardPopupWindow keyboardPopupWindow_num_2;
     private boolean sel_top = true;
 
     @Override
@@ -161,10 +159,10 @@ public class PWD_Forget_Set_Activity extends BaseActivity implements Keyboard_AB
 
 
         init_keyboard(edit_phone);
-        init_keyboard_num(edit_phone);
+        //init_keyboard_num(edit_phone);
 
         init_keyboard_2(edit_phone_ok);
-        init_keyboard_num_2(edit_phone_ok);
+        //init_keyboard_num_2(edit_phone_ok);
     }
 
 
@@ -212,14 +210,8 @@ public class PWD_Forget_Set_Activity extends BaseActivity implements Keyboard_AB
         if (keyboardPopupWindow != null) {
             keyboardPopupWindow.dismiss();
         }
-        if (keyboardPopupWindow_Num != null) {
-            keyboardPopupWindow_Num.dismiss();
-        }
         if (keyboardPopupWindow_2 != null) {
             keyboardPopupWindow_2.dismiss();
-        }
-        if (keyboardPopupWindow_num_2 != null) {
-            keyboardPopupWindow_num_2.dismiss();
         }
 
         String password = edit_phone.getText().toString().trim();
@@ -237,7 +229,9 @@ public class PWD_Forget_Set_Activity extends BaseActivity implements Keyboard_AB
         DialogUtils.getInstance().showDialog(instance, "加载中...");
         HashMap<String, String> map = new HashMap<>();
         map.put("phone", phoneNumber);
-        map.put("salt", salt);
+        if(!TextUtils.isEmpty(salt)){
+            map.put("salt", salt);
+        }
         map.put("password", password);
         map.put("password_confirmation", repass);
         OkHttpUtil.postRequest(Api.HEAD + "user/forget_password", map, token, new OkHttpUtil.OnRequestNetWorkListener() {
@@ -277,18 +271,12 @@ public class PWD_Forget_Set_Activity extends BaseActivity implements Keyboard_AB
 
     private void init_keyboard(EditText edit_key_1) {
         keyboardPopupWindow = new Keyboard_ABC_PopupWindow(instance, getWindow().getDecorView(), edit_key_1, false);
-        keyboardPopupWindow.setKeyboard_NUM_Callback(this);
+        //keyboardPopupWindow.setKeyboard_NUM_Callback(this);
         //numberEt.setInputType(InputType.TYPE_NULL);//该设置会导致光标不可见
         edit_key_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sel_top = true;
-                if(keyboardPopupWindow_Num != null && keyboardPopupWindow_Num.isShowing()){
-                    keyboardPopupWindow_Num.dismiss();
-                }
-                if(keyboardPopupWindow_num_2 != null && keyboardPopupWindow_num_2.isShowing()){
-                    keyboardPopupWindow_num_2.dismiss();
-                }
                 if(keyboardPopupWindow_2 != null && keyboardPopupWindow_2.isShowing()){
                     keyboardPopupWindow_2.dismiss();
                 }
@@ -304,12 +292,6 @@ public class PWD_Forget_Set_Activity extends BaseActivity implements Keyboard_AB
                 //很重要，Unable to add window -- token null is not valid; is your activity running?
                 if (keyboardPopupWindow != null && isUiCreated) {
                     // 需要等待页面创建完成后焦点变化才去显示自定义键盘
-                    if(keyboardPopupWindow_Num != null && keyboardPopupWindow_Num.isShowing()){
-                        keyboardPopupWindow_Num.dismiss();
-                    }
-                    if(keyboardPopupWindow_num_2 != null && keyboardPopupWindow_num_2.isShowing()){
-                        keyboardPopupWindow_num_2.dismiss();
-                    }
                     if(keyboardPopupWindow_2 != null && keyboardPopupWindow_2.isShowing()){
                         keyboardPopupWindow_2.dismiss();
                     }
@@ -338,18 +320,12 @@ public class PWD_Forget_Set_Activity extends BaseActivity implements Keyboard_AB
 
     private void init_keyboard_2(EditText edit_key_1) {
         keyboardPopupWindow_2 = new Keyboard_ABC_PopupWindow(instance, getWindow().getDecorView(), edit_key_1, false);
-        keyboardPopupWindow_2.setKeyboard_NUM_Callback(this);
+        //keyboardPopupWindow_2.setKeyboard_NUM_Callback(this);
         //numberEt.setInputType(InputType.TYPE_NULL);//该设置会导致光标不可见
         edit_key_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sel_top = false;
-                if(keyboardPopupWindow_Num != null && keyboardPopupWindow_Num.isShowing()){
-                    keyboardPopupWindow_Num.dismiss();
-                }
-                if(keyboardPopupWindow_num_2 != null && keyboardPopupWindow_num_2.isShowing()){
-                    keyboardPopupWindow_num_2.dismiss();
-                }
                 if(keyboardPopupWindow != null && keyboardPopupWindow.isShowing()){
                     keyboardPopupWindow.dismiss();
                 }
@@ -366,13 +342,6 @@ public class PWD_Forget_Set_Activity extends BaseActivity implements Keyboard_AB
                 //很重要，Unable to add window -- token null is not valid; is your activity running?
                 if (keyboardPopupWindow_2 != null && isUiCreated) {
                     // 需要等待页面创建完成后焦点变化才去显示自定义键盘
-
-                    if(keyboardPopupWindow_Num != null && keyboardPopupWindow_Num.isShowing()){
-                        keyboardPopupWindow_Num.dismiss();
-                    }
-                    if(keyboardPopupWindow_num_2 != null && keyboardPopupWindow_num_2.isShowing()){
-                        keyboardPopupWindow_num_2.dismiss();
-                    }
                     if(keyboardPopupWindow != null && keyboardPopupWindow.isShowing()){
                         keyboardPopupWindow.dismiss();
                     }
@@ -397,19 +366,8 @@ public class PWD_Forget_Set_Activity extends BaseActivity implements Keyboard_AB
                 keyboardPopupWindow.dismiss();
                 return true;
             }
-
-            if (keyboardPopupWindow_Num != null && keyboardPopupWindow_Num.isShowing()) {
-                keyboardPopupWindow_Num.dismiss();
-                return true;
-            }
-
             if (keyboardPopupWindow_2 != null && keyboardPopupWindow_2.isShowing()) {
                 keyboardPopupWindow_2.dismiss();
-                return true;
-            }
-
-            if (keyboardPopupWindow_num_2 != null && keyboardPopupWindow_num_2.isShowing()) {
-                keyboardPopupWindow_num_2.dismiss();
                 return true;
             }
         }
@@ -428,26 +386,17 @@ public class PWD_Forget_Set_Activity extends BaseActivity implements Keyboard_AB
         if (keyboardPopupWindow != null) {
             keyboardPopupWindow.releaseResources();
         }
-        if (keyboardPopupWindow_Num != null) {
-            keyboardPopupWindow_Num.releaseResources();
-        }
         if (keyboardPopupWindow_2 != null) {
             keyboardPopupWindow_2.releaseResources();
-        }
-        if (keyboardPopupWindow_num_2 != null) {
-            keyboardPopupWindow_num_2.releaseResources();
         }
         super.onDestroy();
     }
 
 
-    @Override
+    /*@Override
     public void change_num() {
         if(sel_top){
             //切换数字键盘
-            if (keyboardPopupWindow_Num != null) {
-                keyboardPopupWindow_Num.show();
-            }
             if (keyboardPopupWindow != null) {
                 keyboardPopupWindow.dismiss();
             }
@@ -459,22 +408,16 @@ public class PWD_Forget_Set_Activity extends BaseActivity implements Keyboard_AB
                 keyboardPopupWindow_2.dismiss();
             }
         }
-    }
+    }*/
 
 
     @Override
     public void change_abc() {
         if(sel_top){
-            if (keyboardPopupWindow_Num != null) {
-                keyboardPopupWindow_Num.dismiss();
-            }
             if (keyboardPopupWindow != null) {
                 keyboardPopupWindow.show();
             }
         }else{
-            if (keyboardPopupWindow_num_2 != null) {
-                keyboardPopupWindow_num_2.dismiss();
-            }
             if (keyboardPopupWindow_2 != null) {
                 keyboardPopupWindow_2.show();
             }
@@ -483,7 +426,7 @@ public class PWD_Forget_Set_Activity extends BaseActivity implements Keyboard_AB
 
 
 
-    private void init_keyboard_num(EditText edit_key_1) {
+    /*private void init_keyboard_num(EditText edit_key_1) {
         keyboardPopupWindow_Num = new KeyboardPopupWindow(instance, getWindow().getDecorView(), edit_key_1, false, true);
         keyboardPopupWindow_Num.setKeyboard_NUM_Callback(this);
     }
@@ -491,7 +434,7 @@ public class PWD_Forget_Set_Activity extends BaseActivity implements Keyboard_AB
     private void init_keyboard_num_2(EditText edit_key_1) {
         keyboardPopupWindow_num_2 = new KeyboardPopupWindow(instance, getWindow().getDecorView(), edit_key_1, false, true);
         keyboardPopupWindow_num_2.setKeyboard_NUM_Callback(this);
-    }
+    }*/
 
 
 

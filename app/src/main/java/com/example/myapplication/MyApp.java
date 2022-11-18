@@ -3,9 +3,13 @@ package com.example.myapplication;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.text.TextUtils;
 
+import com.aliyun.player.AliPlayer;
+import com.aliyun.player.AliPlayerFactory;
+import com.aliyun.player.nativeclass.PlayerConfig;
 import com.example.myapplication.aliyun_oss.AliyunOSSUtils;
 import com.example.myapplication.config.Get_AssetsUtil;
 import com.example.myapplication.http.Api;
@@ -28,6 +32,8 @@ public class MyApp extends Application {
 
     public List<Activity> activityList = new LinkedList();
     public static MyApp instance;
+    public static AliPlayer app_mAliPlayer;
+    public static Context Aapp_context;
 
 
     public MyApp() {}
@@ -54,10 +60,10 @@ public class MyApp extends Application {
     }
 
 
-
     @Override
     public void onCreate() {
         super.onCreate();
+        Aapp_context = getApplicationContext();
         disableAPIDialog();
 
         //获取APP参数
@@ -72,9 +78,9 @@ public class MyApp extends Application {
         OkHttpUtils.initClient(okHttpClient);
 
         //获取用户个人信息
-        UserConfig.instance().getUserConfig(this);
+        UserConfig.instance().getUserConfig(Aapp_context);
 
-        AppUtil.setApplicationContext(getApplicationContext());
+        AppUtil.setApplicationContext(Aapp_context);
 
         //获取app版本号
         try {
@@ -87,9 +93,24 @@ public class MyApp extends Application {
         }
 
         //初始化微信SDK
-        WxLogin.initWx(this);
+        WxLogin.initWx(Aapp_context);
+
+        //初始化阿里云播放器播放MP3
+        get_app_mAliPlayer();
     }
 
+
+    //初始化阿里云播放器播放MP3
+    public static AliPlayer get_app_mAliPlayer() {
+        if(app_mAliPlayer == null){
+            app_mAliPlayer = AliPlayerFactory.createAliPlayer(Aapp_context);
+            PlayerConfig config = app_mAliPlayer.getConfig();
+            config.mDisableVideo = true;  //设置开启纯音频播放
+            app_mAliPlayer.setConfig(config);
+        }
+
+        return app_mAliPlayer;
+    }
 
 
     /**

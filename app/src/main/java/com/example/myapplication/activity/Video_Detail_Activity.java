@@ -4,10 +4,12 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -21,22 +23,40 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.aliyun.player.AliPlayer;
+import com.aliyun.player.AliPlayerFactory;
+import com.aliyun.player.IPlayer;
+import com.aliyun.player.nativeclass.PlayerConfig;
+import com.aliyun.player.source.UrlSource;
+import com.aliyun.subtitle.SubtitleView;
+import com.example.myapplication.MyApp;
 import com.example.myapplication.R;
+import com.example.myapplication.adapter.Mainpage_Adapter;
 import com.example.myapplication.adapter.VideoViewPagerAdapter;
+import com.example.myapplication.adapter.ViewPage_Adapter;
+import com.example.myapplication.adapter.ViewPage_Meua_Adapter;
 import com.example.myapplication.base.BaseActivity;
+import com.example.myapplication.custom.DialogFragment;
 import com.example.myapplication.custom.ImageRound;
 import com.example.myapplication.custom.MyCircleProgress;
+import com.example.myapplication.custom.MyDialogFragment;
 import com.example.myapplication.custom.VoisePlayingIcon;
+import com.example.myapplication.fragment.Anchor_Radio_Fragment;
+import com.example.myapplication.fragment.Play_History_Fragment;
 import com.example.myapplication.fragment.Video_Fragment;
+import com.example.myapplication.fragment.White_Noise_Fragment;
 import com.example.myapplication.tools.ExpandOrCollapse;
 import com.example.myapplication.tools.Utils;
 import com.example.myapplication.videoplayTool.AppUtil;
 import com.example.myapplication.videoplayTool.VideoPlayManager;
 import com.example.myapplication.videoplayTool.VideoPlayTask;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -70,6 +90,8 @@ public class Video_Detail_Activity extends BaseActivity {
     LinearLayout layout_point;
     @BindView(R.id.scrollView)
     ScrollView scrollView;
+    @BindView(R.id.lin_roll)
+    LinearLayout lin_roll;
 
     private boolean btn_open = true;
     private int x;
@@ -150,14 +172,51 @@ public class Video_Detail_Activity extends BaseActivity {
 
         //init viewpager2
         initViewPage2(urls);
+
+
+
+
+        Utils.init_Aliyun(MyApp.get_app_mAliPlayer(), MyApp.Aapp_context, lin_roll);
+
+
+        /*AliPlayer mAliPlayer = AliPlayerFactory.createAliPlayer(instance);
+        mAliPlayer.setOnSubtitleDisplayListener(new IPlayer.OnSubtitleDisplayListener() {
+            @Override
+            public void onSubtitleExtAdded(int trackIndex, String url) { }
+
+            @Override
+            public void onSubtitleShow(int trackIndex, long id, String data) {
+                // ass 字幕
+                assSubtitleView.show(id,data);
+
+                // srt 字幕
+                SubtitleView.Subtitle subtitle = new SubtitleView.Subtitle();
+                subtitle.id = id + "";
+                subtitle.content = data;
+                subtitleView.show(subtitle);
+
+            }
+
+            @Override
+            public void onSubtitleHide(int trackIndex, long id) {
+                // ass 字幕
+                assSubtitleView.dismiss(id);
+
+                // srt 字幕
+                subtitleView.dismiss(id + "");
+            }
+
+            @Override
+            public void onSubtitleHeader(int trackIndex, String header) { }
+        });*/
     }
 
     private void initViewPage2(List<String> urls) {
         mVideoViewPagerAdapter = new VideoViewPagerAdapter(instance);
-        //mVideoViewPagerAdapter.setDataList(VideoPlayManager.buildTestVideoUrls());
         mVideoViewPagerAdapter.setDataList(urls);
         mViewPager2.setOrientation(ViewPager2.ORIENTATION_VERTICAL);
         mViewPager2.setAdapter(mVideoViewPagerAdapter);
+        mViewPager2.setOffscreenPageLimit(2);
         mViewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -173,11 +232,8 @@ public class Video_Detail_Activity extends BaseActivity {
                 VideoPlayManager.getInstance(AppUtil.getApplicationContext()).setCurVideoPlayTask(new VideoPlayTask(simpleExoPlayerView,
                         mVideoViewPagerAdapter.getUrlByPos(position)));
 
-
+                //开始播放
                 VideoPlayManager.getInstance(AppUtil.getApplicationContext()).startPlay();
-                /*if(onFragmentResume && onFragmentVisible) {
-                    VideoPlayManager.getInstance(AppUtil.getApplicationContext()).startPlay();
-                }*/
 
                 for(int i=0; i<layout_point.getChildCount(); i++){
                     if(i == position){
@@ -215,7 +271,7 @@ public class Video_Detail_Activity extends BaseActivity {
 
 
         for(int i=0; i<urls.size(); i++){
-            //创建下标小白点，然后用LinearLayout作为父容器，把5个小白点加进去
+            //创建下标小白点，然后用LinearLayout作为父容器，把小白点加进去
             View view = new View(instance);
             view.setBackgroundResource(R.drawable.point_disable);
             LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(8, 28);
@@ -236,7 +292,6 @@ public class Video_Detail_Activity extends BaseActivity {
         if(onFragmentVisible) {
             VideoPlayManager.getInstance(AppUtil.getApplicationContext()).resumePlay();
         }
-        //Log.d("Video_Play_TAG", " video fragment Resume ");
     }
 
     @Override
@@ -244,7 +299,6 @@ public class Video_Detail_Activity extends BaseActivity {
         super.onPause();
         onFragmentResume = false;
         VideoPlayManager.getInstance(AppUtil.getApplicationContext()).pausePlay();
-        //Log.d("Video_Play_TAG", " video fragment Pause ");
     }
 
 
@@ -326,7 +380,43 @@ public class Video_Detail_Activity extends BaseActivity {
 
     @OnClick(R.id.img_4)
     public void img_4(){
-        getPopupWindow(instance, R.style.showPopupAnimation);
+        //getPopupWindow(instance, R.style.showPopupAnimation);
+
+        /*MyDialogFragment customLoseDialog = new MyDialogFragment();
+        customLoseDialog.show(getSupportFragmentManager(), "lose");*/
+
+        DialogFragment dialogFragment = new DialogFragment();
+        dialogFragment.show(getSupportFragmentManager(), "ss");
+
+        /*BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(instance);
+        //BottomSheetDialogFragment mBottomSheetDialog = new BottomSheetDialogFragment();
+
+        View view1 = getLayoutInflater().inflate(R.layout.layout_meua, null);
+        view1.setBackgroundResource(R.color.transparent);
+        mBottomSheetDialog.setContentView(view1);
+
+        TabLayout tl_tabs = mBottomSheetDialog.getWindow().findViewById(R.id.meua_tabs);
+        ViewPager meua_viewpage = mBottomSheetDialog.getWindow().findViewById(R.id.meua_viewpage);
+        List<String> tab_name = new ArrayList<>();
+        List<Fragment> fragmentList = new ArrayList<>();
+
+        tab_name.add(getString(R.string.meua_1));
+        tab_name.add(getString(R.string.meua_2));
+        tab_name.add(getString(R.string.meua_3));
+        fragmentList.add(new White_Noise_Fragment());
+        fragmentList.add(new Anchor_Radio_Fragment());
+        fragmentList.add(new Play_History_Fragment());
+        ViewPage_Meua_Adapter adapter = new ViewPage_Meua_Adapter(getSupportFragmentManager(), fragmentList, tab_name);
+        meua_viewpage.setAdapter(adapter);
+        tl_tabs.setupWithViewPager(meua_viewpage);
+
+        mBottomSheetDialog.show();*/
+
+
+
+
+
+
     }
 
 
@@ -338,6 +428,7 @@ public class Video_Detail_Activity extends BaseActivity {
         View inflate = LayoutInflater.from(mContext).inflate(R.layout.layout_meua, null, false);
         PopupWindow popupWindow = new PopupWindow(inflate, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         popupWindow.setHeight(d_height*4/5);
+
         //点击非菜单部分退出
         /*inflate.setOnClickListener(new View.OnClickListener() {
             @Override

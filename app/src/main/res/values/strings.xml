@@ -6,6 +6,10 @@
     <string name="tab_3">睡眠</string>
     <string name="tab_4">我的</string>
 
+    <string name="meua_1">白噪音</string>
+    <string name="meua_2">主播电台</string>
+    <string name="meua_3">播放历史</string>
+
     <string name="switch_msg">切换到短信登录页面</string>
     <string name="custom_title">自定义标题</string>
     <string name="custom_slogan">自定义Slogan</string>
@@ -48,6 +52,11 @@
     <string name="good_deream_10">设置叫醒时间</string>
     <string name="good_deream_11">开始休息</string>
     <string name="good_deream_12">更多设置</string>
+    <string name="good_deream_13">放松治愈电台</string>
+    <string name="good_deream_14">更多</string>
+    <string name="good_deream_15">大家都在听</string>
+    <string name="good_deream_16">换一换</string>
+    <string name="good_deream_17">更多电台</string>
 
     <string name="sleep_tip_1">自定义闹钟铃声</string>
     <string name="sleep_tip_2">睡眠监测</string>

@@ -20,10 +20,17 @@ import java.util.List;
 public class ViewPage_Adapter extends FragmentPagerAdapter {
 
     private List<Fragment> fragList;
+    private List<String> tab_name;
 
     public ViewPage_Adapter(@NonNull FragmentManager fm, List<Fragment> fragList) {
         super(fm);
         this.fragList = fragList;
+    }
+
+    public ViewPage_Adapter(@NonNull FragmentManager fm, List<Fragment> fragList, List<String> tab_name) {
+        super(fm);
+        this.fragList = fragList;
+        this.tab_name = tab_name;
     }
 
 
@@ -36,5 +43,14 @@ public class ViewPage_Adapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return fragList.size();
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        if (tab_name != null) {
+            return tab_name.get(position);
+        }else{
+            return "";
+        }
     }
 }

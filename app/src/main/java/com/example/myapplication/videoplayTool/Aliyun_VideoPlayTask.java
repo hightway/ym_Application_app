@@ -3,14 +3,13 @@ package com.example.myapplication.videoplayTool;
 import android.view.SurfaceView;
 import android.widget.ImageView;
 
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+public class Aliyun_VideoPlayTask {
 
-public class VideoPlayTask {
-    private SimpleExoPlayerView mSimpleExoPlayerView;
+    private SurfaceView mSimpleExoPlayerView;
     private ImageView start;
     private String mVideoUrl;
 
-    public VideoPlayTask(SimpleExoPlayerView simpleExoPlayerView, String uri) {
+    public Aliyun_VideoPlayTask(SurfaceView simpleExoPlayerView, ImageView start, String uri) {
         this.mSimpleExoPlayerView = simpleExoPlayerView;
         this.mVideoUrl = uri;
         this.start = start;
@@ -27,11 +26,11 @@ public class VideoPlayTask {
         this.start = start;
     }
 
-    public SimpleExoPlayerView getSimpleExoPlayerView() {
+    public SurfaceView getSimpleExoPlayerView() {
         return mSimpleExoPlayerView;
     }
 
-    public void setSimpleExoPlayerView(SimpleExoPlayerView mSimpleExoPlayerView) {
+    public void setSimpleExoPlayerView(SurfaceView mSimpleExoPlayerView) {
         this.mSimpleExoPlayerView = mSimpleExoPlayerView;
     }
 
@@ -42,4 +41,5 @@ public class VideoPlayTask {
     public void setVideoUrl(String videoUrl) {
         this.mVideoUrl = videoUrl;
     }
+
 }

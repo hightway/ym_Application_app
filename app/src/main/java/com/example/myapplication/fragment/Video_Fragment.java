@@ -144,7 +144,7 @@ public class Video_Fragment extends BaseLazyFragment {
             }
         });
 
-        aliyunVodPlayer.setOnSubtitleDisplayListener(new IPlayer.OnSubtitleDisplayListener() {
+        /*aliyunVodPlayer.setOnSubtitleDisplayListener(new IPlayer.OnSubtitleDisplayListener() {
             @Override
             public void onSubtitleShow(long id, String data) {
                 //显示字幕
@@ -154,7 +154,7 @@ public class Video_Fragment extends BaseLazyFragment {
             public void onSubtitleHide(long id) {
                 //隐藏字幕
             }
-        });
+        });*/
 
         aliyunVodPlayer.setOnTrackChangedListener(new IPlayer.OnTrackChangedListener() {
             @Override

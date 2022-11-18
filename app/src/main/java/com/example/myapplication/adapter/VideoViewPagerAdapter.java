@@ -3,8 +3,10 @@ package com.example.myapplication.adapter;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,7 +32,6 @@ public class VideoViewPagerAdapter extends RecyclerView.Adapter<VideoViewPagerAd
         mVieoUrls.clear();
         mVieoUrls.addAll(videoUrls);
         notifyDataSetChanged();
-        //Log.d("Video_Play_TAG", "setDataList" );
     }
 
     public void addDataList(List<String> videoUrls) {
@@ -49,7 +50,6 @@ public class VideoViewPagerAdapter extends RecyclerView.Adapter<VideoViewPagerAd
     public void onBindViewHolder(@NonNull VideoViewPagerAdapter.VideoViewHolder holder, int position) {
         holder.videoUrl = mVieoUrls.get(position);
         holder.itemView.setTag(position);
-        //Log.d("Video_Play_TAG", " on bind view holder pos = "+ position + " , url = " + holder.videoUrl);
     }
 
     @Override
@@ -59,11 +59,15 @@ public class VideoViewPagerAdapter extends RecyclerView.Adapter<VideoViewPagerAd
 
     public class VideoViewHolder extends RecyclerView.ViewHolder {
         public SimpleExoPlayerView mVideoView;
+        public SurfaceView surface_view;
+        public ImageView start;
         public String videoUrl;
 
         VideoViewHolder(View itemView) {
             super(itemView);
             mVideoView = itemView.findViewById(R.id.video_view);
+            /*surface_view = itemView.findViewById(R.id.surface_view);
+            start = itemView.findViewById(R.id.start);*/
         }
     }
 

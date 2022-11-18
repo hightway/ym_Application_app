@@ -13,17 +13,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
-import com.example.myapplication.activity.My_Video_Detail_Activity;
 import com.example.myapplication.activity.Video_Detail_Activity;
 import com.example.myapplication.bean.Fruit;
 
 import java.util.List;
 
-public class FruitAdapter extends RecyclerView.Adapter<FruitAdapter.ViewHolder> {
+public class White_Noise_Adapter extends RecyclerView.Adapter<White_Noise_Adapter.ViewHolder> {
     private List<Fruit> mFruitList;
     private Context mContext;
 
-    public FruitAdapter(List<Fruit> mFruitList, Context context) {
+    public White_Noise_Adapter(List<Fruit> mFruitList, Context context) {
         this.mFruitList = mFruitList;
         this.mContext = context;
     }
@@ -44,7 +43,7 @@ public class FruitAdapter extends RecyclerView.Adapter<FruitAdapter.ViewHolder> 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fruit_item, parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.noise_item, parent,false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
@@ -59,7 +58,6 @@ public class FruitAdapter extends RecyclerView.Adapter<FruitAdapter.ViewHolder> 
             @Override
             public void onClick(View view) {
                 mContext.startActivity(new Intent(mContext, Video_Detail_Activity.class));
-                //mContext.startActivity(new Intent(mContext, My_Video_Detail_Activity.class));
             }
         });
     }
@@ -69,4 +67,3 @@ public class FruitAdapter extends RecyclerView.Adapter<FruitAdapter.ViewHolder> 
         return mFruitList.size();
     }
 }
-

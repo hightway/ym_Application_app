@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_margin="14dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/good_deream_13"
+            android:textSize="@dimen/textsize14"
+            android:textColor="@color/radio_txt_cocle"/>
+
+        <TextView
+            android:id="@+id/tx_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/good_deream_14"
+            android:textSize="@dimen/textsize14"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/get_code_cocle_un"/>
+
+    </RelativeLayout>
+
+
+
+    <HorizontalScrollView
+        android:id="@+id/hsv_hos"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:fadingEdge="horizontal"
+        android:scrollbars="none">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"/>
+        </RelativeLayout>
+
+    </HorizontalScrollView>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_margin="14dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/good_deream_15"
+            android:textSize="@dimen/textsize14"
+            android:textColor="@color/radio_txt_cocle"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/good_deream_16"
+            android:textSize="@dimen/textsize14"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/get_code_cocle_un"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

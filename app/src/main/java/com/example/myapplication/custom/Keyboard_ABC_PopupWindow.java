@@ -36,6 +36,10 @@ public class Keyboard_ABC_PopupWindow extends PopupWindow {
             R.id.button_a, R.id.button_s, R.id.button_d, R.id.button_f, R.id.button_g, R.id.button_h, R.id.button_j, R.id.button_k,
             R.id.button_l, R.id.button_z, R.id.button_x, R.id.button_c, R.id.button_v, R.id.button_b, R.id.button_n, R.id.button_m};
 
+    private int[] num_ButtonIds = new int[]{R.id.but_0, R.id.but_1, R.id.but_2, R.id.but_3,
+            R.id.but_4, R.id.but_5, R.id.but_6, R.id.but_7, R.id.but_8, R.id.but_9};
+
+    private String[] number = new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
     private String[] ABC = new String[]{"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Z", "X", "C", "V", "B", "N", "M"};
     private String[] abc = new String[]{"q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m"};
     private Button button_abc;
@@ -139,6 +143,25 @@ public class Keyboard_ABC_PopupWindow extends PopupWindow {
             });
         }
 
+        for (int i = 0; i < num_ButtonIds.length; i++) {
+            final Button button = view.findViewById(num_ButtonIds[i]);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int curSelection = editText.getSelectionStart();
+                    int length = editText.getText().toString().length();
+                    if (curSelection < length) {
+                        String content = editText.getText().toString();
+                        editText.setText(content.substring(0, curSelection) + button.getText() + content.subSequence(curSelection, length));
+                        editText.setSelection(curSelection + 1);
+                    } else {
+                        editText.setText(editText.getText().toString() + button.getText());
+                        editText.setSelection(editText.getText().toString().length());
+                    }
+                }
+            });
+        }
+
         //②给小数点按键设置点击监听
         /*view.findViewById(R.id.buttonDot).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,14 +201,14 @@ public class Keyboard_ABC_PopupWindow extends PopupWindow {
             }
         });
 
-        view.findViewById(R.id.button_num).setOnClickListener(new View.OnClickListener() {
+        /*view.findViewById(R.id.button_num).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(keyboard_callback != null){
                     keyboard_callback.change_num();
                 }
             }
-        });
+        });*/
 
         //大小写切换
         button_abc = view.findViewById(R.id.button_ABC);
@@ -223,6 +246,11 @@ public class Keyboard_ABC_PopupWindow extends PopupWindow {
                 final Button button = parentView.findViewById(commonButtonIds[i]);
                 button.setText(abc[i]);
             }
+
+            /*for (int i = 0; i < num_ButtonIds.length; i++) {
+                final Button button = parentView.findViewById(commonButtonIds[i]);
+                button.setText(number[i]);
+            }*/
             button_abc.setText("大写");
         } else {
             list.clear();
@@ -291,13 +319,13 @@ public class Keyboard_ABC_PopupWindow extends PopupWindow {
         }
     }
 
-    private Keyboard_NUM_Callback keyboard_callback;
+    /*private Keyboard_NUM_Callback keyboard_callback;
     public interface Keyboard_NUM_Callback {
         void change_num();
     }
     public void setKeyboard_NUM_Callback(Keyboard_NUM_Callback keyboard_callback) {
         this.keyboard_callback = keyboard_callback;
-    }
+    }*/
 
 
 }

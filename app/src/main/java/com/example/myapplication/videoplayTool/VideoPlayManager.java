@@ -158,16 +158,4 @@ public class VideoPlayManager {
         this.mCurVideoPlayTask = mCurVideoPlayTask;
     }
 
-    /**
-     * 构建测试数据
-     * @return
-     */
-    public static List<String> buildTestVideoUrls() {
-        List<String> urls = new ArrayList<>();
-        urls.add("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4");
-        urls.add("https://vfx.mtime.cn/Video/2019/01/15/mp4/190115161611510728_480.mp4");
-        urls.add("http://gslb.miaopai.com/stream/oxX3t3Vm5XPHKUeTS-zbXA__.mp4");
-        urls.add("http://vjs.zencdn.net/v/oceans.mp4 ");
-        return urls;
-    }
 }

@@ -50,4 +50,6 @@
     <color name="click_bg_dark">#ff000000</color>
     <color name="click_bg_dark_light">#E0E0E0</color>
     <color name="key_board_bg">#ff6f6f70</color>
+    <color name="radio_cocle">#6E6E6E</color>
+    <color name="radio_txt_cocle">#E5E5E5</color>
 </resources>

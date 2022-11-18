@@ -7,6 +7,14 @@ import android.os.Build;
 import android.os.Environment;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.LinearLayout;
+
+import com.aliyun.player.AliPlayer;
+import com.aliyun.player.AliPlayerFactory;
+import com.aliyun.player.IPlayer;
+import com.aliyun.player.nativeclass.PlayerConfig;
+import com.aliyun.player.source.UrlSource;
+import com.aliyun.subtitle.SubtitleView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -117,5 +125,66 @@ public class Utils {
         }
         return Uri.fromFile(new File(path + filename));
     }
+
+
+
+    public static void init_Aliyun(AliPlayer mAliPlayer, Context instance, LinearLayout lin_roll){
+        //用于显示SRT和VTT字幕
+        SubtitleView subtitleView = new SubtitleView(instance);
+
+        SubtitleView.DefaultValueBuilder defaultValueBuilder = new SubtitleView.DefaultValueBuilder();
+        defaultValueBuilder.setColor("#FFFFFFFF");
+        defaultValueBuilder.setSize(45);
+        subtitleView.setDefaultValue(defaultValueBuilder);
+        //用于显示ASS和SSA字幕
+        //AssSubtitleView assSubtitleView = new AssSubtitleView(instance);
+        //将字幕View添加到布局视图中
+        lin_roll.addView(subtitleView);
+        mAliPlayer.setOnSubtitleDisplayListener(new IPlayer.OnSubtitleDisplayListener() {
+            @Override
+            public void onSubtitleExtAdded(int trackIndex, String url) {
+                mAliPlayer.selectExtSubtitle(trackIndex, true);
+            }
+
+            @Override
+            public void onSubtitleShow(int trackIndex, long id, String data) {
+                // ass 字幕
+                //assSubtitleView.show(id,data);
+
+                // srt 字幕
+                SubtitleView.Subtitle subtitle = new SubtitleView.Subtitle();
+
+                subtitle.id = id + "";
+                subtitle.content = data;
+                subtitleView.show(subtitle);
+
+                /*lin_roll.bringToFront();
+                lin_roll.setStateListAnimator(null);*/
+            }
+
+            @Override
+            public void onSubtitleHide(int trackIndex, long id) {
+                // ass 字幕
+                //assSubtitleView.dismiss(id);
+                // srt 字幕
+                subtitleView.dismiss(id + "");
+            }
+
+            @Override
+            public void onSubtitleHeader(int trackIndex, String header) {
+
+            }
+        });
+
+        mAliPlayer.addExtSubtitle("https://test-maoyu.oss-cn-guangzhou.aliyuncs.com/%E5%81%8F%E7%88%B1.srt");
+        UrlSource urlSource = new UrlSource();
+        urlSource.setUri("https://test-maoyu.oss-cn-guangzhou.aliyuncs.com/%E5%81%8F%E7%88%B1.mp3");
+        //设置播放源
+        mAliPlayer.setLoop(true);
+        mAliPlayer.setDataSource(urlSource);
+        mAliPlayer.setAutoPlay(true);
+        mAliPlayer.prepare();
+    }
+
 
 }

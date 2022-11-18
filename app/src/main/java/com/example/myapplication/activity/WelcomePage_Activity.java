@@ -37,6 +37,7 @@ public class WelcomePage_Activity extends BaseActivity {
         instance = this;
         config = UserConfig.instance();
         config.getUserConfig(this);
+
         //可以做些网络请求
 
     }

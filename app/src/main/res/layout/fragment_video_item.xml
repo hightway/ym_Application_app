@@ -13,4 +13,24 @@
         app:surface_type="texture_view"
         app:resize_mode="fill"/>
 
+
+    <!--<FrameLayout
+        android:id="@+id/fl_group"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <SurfaceView
+            android:id="@+id/surface_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/start"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:src="@mipmap/ic_play_video" />
+
+    </FrameLayout>-->
+
 </FrameLayout>
