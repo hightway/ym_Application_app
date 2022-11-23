@@ -1,6 +1,7 @@
 package com.example.myapplication.fragment;
 
 import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -10,22 +11,31 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.donkingliang.headerviewadapter.view.HeaderRecyclerView;
 import com.example.myapplication.R;
 import com.example.myapplication.adapter.Anchor_Radio_CommonAdapter;
 import com.example.myapplication.adapter.HosGridViewAdapter;
+import com.example.myapplication.adapter.Radio_CommonAdapter;
 import com.example.myapplication.adapter.White_Noise_Adapter;
 import com.example.myapplication.base.BaseLazyFragment;
 import com.example.myapplication.bean.Fruit;
 import com.example.myapplication.bean.Hor_DateBean;
+import com.example.myapplication.bean.White_Noise_Bean;
 import com.example.myapplication.custom.DialogFragment;
 import com.example.myapplication.custom.More_DialogFragment;
+import com.example.myapplication.http.Api;
 import com.example.myapplication.swipeDrawer_view.Common;
 import com.example.myapplication.swipeDrawer_view.OnDrawerChange;
 import com.example.myapplication.swipeDrawer_view.SwipeDrawer;
+import com.example.myapplication.tools.OkHttpUtil;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -34,7 +44,7 @@ import butterknife.ButterKnife;
 public class Anchor_Radio_Fragment extends BaseLazyFragment {
 
     @BindView(R.id.mainList)
-    RecyclerView mainList;
+    HeaderRecyclerView mainList;
     @BindView(R.id.content)
     SwipeDrawer content;
     @BindView(R.id.reTopIcon)
@@ -46,9 +56,13 @@ public class Anchor_Radio_Fragment extends BaseLazyFragment {
     @BindView(R.id.reBottomText)
     TextView reBottomText;
 
-    private List<Hor_DateBean> fruitList = new ArrayList<>();
+    private List<Hor_DateBean.DataBean.ListBean> dataBeanList = new ArrayList<>();
     private Anchor_Radio_CommonAdapter listAdapter;
     private HeaderAndFooterWrapper headerFooterWrapper;
+    private int page = 1;
+    private int pageSize = 20;
+    private RecyclerView hor_recycleview;
+    private Radio_CommonAdapter radio_commonAdapter;
 
 
     @Override
@@ -68,16 +82,17 @@ public class Anchor_Radio_Fragment extends BaseLazyFragment {
     private void initData() {
         // 监听 SwipeDrawer 改变
         content.setOnDrawerChange(new OnDrawerChange() {
-
             // 刷新完毕
             private void topOver() {
                 // 显示刷新完成状态
-                SetList(0);
+                //SetList(0);
+                page=1;
+                ListData();
                 reTopIcon.clearAnimation();
                 reTopIcon.setRotation(0);
                 reTopIcon.setVisibility(View.GONE);
 
-                reTopText.setText("刷新完成");
+                reTopText.setText(getString(R.string.load_more_success));
                 // 0.6秒后关闭
                 reTopText.postDelayed(new Runnable() {
                     @Override
@@ -91,12 +106,14 @@ public class Anchor_Radio_Fragment extends BaseLazyFragment {
             // 加载完毕
             private void bottomOver() {
                 // 显示加载完成状态
-                SetList(20);
+                //SetList(20);
+                page++;
+                ListData();
                 reBottomIcon.clearAnimation();
                 reBottomIcon.setRotation(0);
                 reBottomIcon.setVisibility(View.GONE);
 
-                reBottomText.setText("加载完成");
+                //reBottomText.setText("加载完成");
                 // 0.6秒后关闭
                 reBottomText.postDelayed(new Runnable() {
                     @Override
@@ -199,58 +216,15 @@ public class Anchor_Radio_Fragment extends BaseLazyFragment {
             }
         });
 
-        ListData();
-    }
-
-
-    /**
-     * 更新 list 数据
-     *
-     * @param num 更新条数
-     */
-    private void SetList(int num) {
-        if (num > 0) {
-            for (int i = 0; i < num; i++) {
-                fruitList.add(new Hor_DateBean("白噪音", R.mipmap.wx_icon));
-                fruitList.add(new Hor_DateBean("黑噪音", R.mipmap.msm_icon));
-            }
-            listAdapter.notifyDataSetChanged();
-            headerFooterWrapper.notifyDataSetChanged();
-        } else {
-            fruitList.clear();
-            listAdapter.notifyDataSetChanged();
-            headerFooterWrapper.notifyDataSetChanged();
-            for (int i = 0; i < 20; i++) {
-                Hor_DateBean orange = new Hor_DateBean("绿噪音", R.mipmap.wx_icon);
-                fruitList.add(orange);
-                Hor_DateBean waterMelon = new Hor_DateBean("红噪音", R.mipmap.msm_icon);
-                fruitList.add(waterMelon);
-            }
-            listAdapter.notifyDataSetChanged();
-            headerFooterWrapper.notifyDataSetChanged();
-        }
-    }
-
-    /**
-     * 给 RecyclerView 填充数据
-     */
-    private void ListData() {
-        for (int i = 20; i > 0; i--) {
-            Hor_DateBean orange = new Hor_DateBean("绿噪音", R.mipmap.wx_icon);
-            fruitList.add(orange);
-            Hor_DateBean waterMelon = new Hor_DateBean("红噪音", R.mipmap.msm_icon);
-            fruitList.add(waterMelon);
-        }
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        /*LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mainList.setLayoutManager(layoutManager);
-        listAdapter = new Anchor_Radio_CommonAdapter(getActivity(), R.layout.item_radio_item, fruitList);
+        listAdapter = new Anchor_Radio_CommonAdapter(getActivity(), R.layout.item_radio_item, dataBeanList);
         mainList.setAdapter(listAdapter);
 
         //添加header—装饰者模式
         headerFooterWrapper = new HeaderAndFooterWrapper(listAdapter);
         View headerView = View.inflate(getContext(), R.layout.layout_radio_header,null);
-        RecyclerView hor_recycleview = headerView.findViewById(R.id.rv_view);
+        hor_recycleview = headerView.findViewById(R.id.rv_view);
         TextView tx_more = headerView.findViewById(R.id.tx_more);
         tx_more.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -258,7 +232,7 @@ public class Anchor_Radio_Fragment extends BaseLazyFragment {
                 more_audio();
             }
         });
-        init_hor(hor_recycleview);
+        //init_hor(hor_recycleview);
         headerFooterWrapper.addHeaderView(headerView);
         //添加头部
         mainList.setAdapter(headerFooterWrapper);
@@ -271,13 +245,105 @@ public class Anchor_Radio_Fragment extends BaseLazyFragment {
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 //因为有头布局所以应用的条目索引从1开始
                 //然而集合的索引是从0开始
-                Hor_DateBean appInfo = fruitList.get(position - 1);
+                Hor_DateBean.DataBean.ListBean appInfo = dataBeanList.get(position - 1);
             }
 
             //当长按条目的时候执行---按下不放超过400ms就算长按
             @Override
             public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
                 return false;
+            }
+        });*/
+
+
+        radio_commonAdapter = new Radio_CommonAdapter(getActivity());
+        radio_commonAdapter.setGridDataList(dataBeanList);
+        mainList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        //解决数据加载完成后, 没有停留在顶部的问题
+        mainList.setFocusable(false);
+        mainList.setHasFixedSize(true);
+        mainList.setAdapter(radio_commonAdapter);
+
+        View view_head = LayoutInflater.from(getActivity()).inflate(R.layout.layout_radio_header, mainList, false);
+        hor_recycleview = view_head.findViewById(R.id.rv_view);
+        TextView tx_more = view_head.findViewById(R.id.tx_more);
+        tx_more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                more_audio();
+            }
+        });
+        mainList.addHeaderView(view_head);
+
+        ListData();
+    }
+
+
+    //水平滑动布局
+    private void init_hor(List<Hor_DateBean.DataBean.TopBean> topBeans) {
+        hor_recycleview.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        HosGridViewAdapter hosGridViewAdapter = new HosGridViewAdapter(topBeans, getActivity());
+        hor_recycleview.setAdapter(hosGridViewAdapter);
+        hosGridViewAdapter.setOnHosGridItemClick(new HosGridViewAdapter.OnRvItemClick() {
+            @Override
+            public void OnRvItemClick(View view) {
+
+            }
+        });
+    }
+
+
+    /**
+     * 给 RecyclerView 填充数据
+     */
+    private void ListData() {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("page", String.valueOf(page));
+        map.put("size", String.valueOf(pageSize));
+        OkHttpUtil.postRequestNoDialog(Api.HEAD + "radio_stations", map, new OkHttpUtil.OnRequestNetWorkListener() {
+            @Override
+            public void notOk(String err) {
+                new Throwable("请求失败");
+            }
+
+            @Override
+            public void un_login_err() {
+
+            }
+
+            @Override
+            public void ok(String response, JSONObject jsonObject) {
+                try {
+                    int code = jsonObject.getInt("errCode");
+                    if (code == 200) {
+                        Hor_DateBean white_noise_bean = mgson.fromJson(response, Hor_DateBean.class);
+                        Hor_DateBean.DataBean dataBean = white_noise_bean.data;
+                        List<Hor_DateBean.DataBean.TopBean> topBeans = dataBean.top;
+                        if(page == 1 && topBeans != null && topBeans.size() > 0){
+                            init_hor(topBeans);
+                        }
+
+                        List<Hor_DateBean.DataBean.ListBean> listBeans = dataBean.list;
+                        if(listBeans != null && listBeans.size() > 0){
+                            if (page == 1) {
+                                dataBeanList = listBeans;
+                                radio_commonAdapter.setGridDataList(dataBeanList);
+                            } else {
+                                reBottomText.setText(getString(R.string.load_more_success));
+                                dataBeanList.addAll(listBeans);
+                                radio_commonAdapter.notifyItemRangeInserted(radio_commonAdapter.getItemCount() + 1, listBeans.size());
+                            }
+                        }else{
+                            if(page == 1){
+                                listAdapter.clean();
+                            }else{
+                                reBottomText.setText(getString(R.string.load_more));
+                            }
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -286,26 +352,6 @@ public class Anchor_Radio_Fragment extends BaseLazyFragment {
     private void more_audio() {
         More_DialogFragment dialogFragment = new More_DialogFragment();
         dialogFragment.show(getChildFragmentManager(), "ss");
-    }
-
-
-    //水平滑动布局
-    private void init_hor(RecyclerView rv_view) {
-        List<Hor_DateBean> list = new ArrayList<>();
-
-        list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            list.add(new Hor_DateBean("日期" + i, R.mipmap.wx_icon));
-        }
-        rv_view.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        HosGridViewAdapter hosGridViewAdapter = new HosGridViewAdapter(list, getActivity());
-        rv_view.setAdapter(hosGridViewAdapter);
-        hosGridViewAdapter.setOnHosGridItemClick(new HosGridViewAdapter.OnRvItemClick() {
-            @Override
-            public void OnRvItemClick(View view) {
-
-            }
-        });
     }
 
 

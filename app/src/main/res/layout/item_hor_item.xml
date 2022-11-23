@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="150dp">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:id="@+id/rel_item"
-        android:layout_width="match_parent"
+        android:layout_width="106dp"
         android:layout_height="150dp"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp">
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp">
 
-        <ImageView
-            android:id="@+id/img_bg"
+        <com.example.myapplication.custom.FillImageView
             android:layout_width="match_parent"
-            android:layout_height="150dp"/>
+            android:layout_height="match_parent"
+            android:id="@+id/img_bg" />
 
         <TextView
             android:id="@+id/txt_name"
             android:layout_width="match_parent"
             android:layout_height="34dp"
             android:gravity="center"
-            android:text="5/28"
             android:layout_alignParentBottom="true"
             android:background="@mipmap/rectangle_bg"
             android:textColor="@color/white"
-            android:textSize="@dimen/textsize14" />
+            android:singleLine="true"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            android:textSize="@dimen/textsize13" />
     </RelativeLayout>
 </LinearLayout>

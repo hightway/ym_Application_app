@@ -15,8 +15,10 @@ import com.aliyun.player.bean.InfoBean;
 import com.aliyun.player.bean.InfoCode;
 import com.aliyun.player.nativeclass.TrackInfo;
 import com.aliyun.player.source.UrlSource;
+import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
 import com.example.myapplication.base.BaseLazyFragment;
+import com.example.myapplication.bean.Weather_Video_Bean;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,13 +30,15 @@ public class Video_Fragment extends BaseLazyFragment {
     SurfaceView surface_view;
     @BindView(R.id.start)
     ImageView start;
+    @BindView(R.id.img_gone)
+    ImageView img_gone;
     private AliPlayer aliyunVodPlayer;
-    private String video_url;
+    private Weather_Video_Bean.DataBean.VideoListBean videoListBean;
     private boolean is_first = true;
     private boolean is_start;
 
-    public Video_Fragment(String url){
-        video_url = url;
+    public Video_Fragment(Weather_Video_Bean.DataBean.VideoListBean videoListBean){
+        this.videoListBean = videoListBean;
     }
 
     @Override
@@ -45,6 +49,13 @@ public class Video_Fragment extends BaseLazyFragment {
     @Override
     protected void initView(View view) {
         ButterKnife.bind(this, view);
+
+        if(!TextUtils.isEmpty(videoListBean.icon)){
+            img_gone.setVisibility(View.VISIBLE);
+            Glide.with(getActivity())
+                    .load(videoListBean.icon)
+                    .into(img_gone);
+        }
 
         aliyunVodPlayer = AliPlayerFactory.createAliPlayer(getActivity());
 
@@ -76,7 +87,7 @@ public class Video_Fragment extends BaseLazyFragment {
             @Override
             public void onPrepared() {
                 //准备成功事件
-                aliyunVodPlayer.pause();
+                //aliyunVodPlayer.pause();
                 is_first = false;
                 is_start = false;
                 start.setVisibility(View.VISIBLE);
@@ -115,6 +126,7 @@ public class Video_Fragment extends BaseLazyFragment {
                     is_first = false;
                     is_start = true;
                     start.setVisibility(View.GONE);
+                    img_gone.setVisibility(View.GONE);
                     //rel_bottom.setVisibility(View.GONE);
                 }
             }
@@ -206,7 +218,7 @@ public class Video_Fragment extends BaseLazyFragment {
     }
 
     private void update_view() {
-        if (!TextUtils.isEmpty(video_url)) {
+        if (videoListBean != null && !TextUtils.isEmpty(videoListBean.resource_url)) {
             /*if (handler != null) {
                 handler.removeMessages(0);
             }
@@ -216,7 +228,7 @@ public class Video_Fragment extends BaseLazyFragment {
             is_start = false;
 
             UrlSource urlSource = new UrlSource();
-            urlSource.setUri(video_url);
+            urlSource.setUri(videoListBean.resource_url);
             //设置播放源
             aliyunVodPlayer.setDataSource(urlSource);
             //设置循环播放
@@ -248,6 +260,7 @@ public class Video_Fragment extends BaseLazyFragment {
 
             aliyunVodPlayer.start();
             start.setVisibility(View.GONE);
+            img_gone.setVisibility(View.GONE);
         }
         is_start = !is_start;
     }
@@ -268,6 +281,7 @@ public class Video_Fragment extends BaseLazyFragment {
             is_start = true;
             if(start != null){
                 start.setVisibility(View.GONE);
+                img_gone.setVisibility(View.GONE);
             }
         }
     }

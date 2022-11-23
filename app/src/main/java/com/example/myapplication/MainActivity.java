@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -28,8 +29,10 @@ import com.example.myapplication.aliyun_oss.AliyunOSSUtils;
 import com.example.myapplication.base.BaseActivity;
 import com.example.myapplication.base.BaseLazyFragment;
 import com.example.myapplication.bean.Oss_Bean;
+import com.example.myapplication.bean.UserBean;
 import com.example.myapplication.bean.User_Msg_Bean;
 import com.example.myapplication.bean.Weather_Bean;
+import com.example.myapplication.bean.Weather_Video_Bean;
 import com.example.myapplication.config.BaseUIConfig;
 import com.example.myapplication.custom.MyViewPage;
 import com.example.myapplication.custom.SlidingDrawerLayout;
@@ -83,7 +86,6 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     private static MainActivity instance;
     private LocationManager locationManager;
     private LocationListener locationListener;
-    private HashMap<String, String> city_code_map;
     private String city_code;
     private String city_id;
     public static PhoneNumberAuthHelper mPhoneNumberAuthHelper;
@@ -137,13 +139,10 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
         getOssStsToken();
 
 
-        //获取定位权限
-        askPermission();
-
         //判断是否开启了手机定位服务
         //Location_Util.isLocationProviderEnabled(instance);
 
-        getJson_data("city_code", instance);
+        //getJson_data("city_code", instance);
         //getCity_ID("city_id", instance);
 
 
@@ -178,6 +177,10 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
         view_view.setVisibility(View.GONE);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, StatusBarUtil.getStatusBarHeight(instance));
         view_view.setLayoutParams(params);
+
+
+        //获取定位权限
+        askPermission();
 
     }
 
@@ -366,29 +369,10 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
             e.printStackTrace();
         }
     }*/
-    public void getJson_data(String fileName, Context context) {
-        //将json数据变成字符串
-        //StringBuilder stringBuilder = new StringBuilder();
-        city_code_map = new HashMap<>();
-        try {
-            //获取assets资源管理器
-            AssetManager assetManager = context.getAssets();
-            //通过管理器打开文件并读取
-            BufferedReader bf = new BufferedReader(new InputStreamReader(assetManager.open(fileName)));
-            String line;
-            while ((line = bf.readLine()) != null) {
-                String[] arr = line.split("\t");
-                city_code_map.put(arr[1].trim(), arr[0].trim());
-                //stringBuilder.append(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
 
     private void getOssStsToken() {
-        DialogUtils.getInstance().showDialog(this, "初始化中...");
+        //DialogUtils.getInstance().showDialog(this, "初始化中...");
         OkHttpUtil.postRequest(Api.HEAD + "getOssStsToken", new OkHttpUtil.OnRequestNetWorkListener() {
             @Override
             public void notOk(String err) {
@@ -397,7 +381,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
             @Override
             public void un_login_err() {
-                Login_Util.go_Login(instance);
+                //Login_Util.go_Login(instance);
             }
 
             @Override
@@ -788,18 +772,55 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
 
     private void getCity_code(String locality) {
-        if (city_code_map != null && !city_code_map.isEmpty()) {
-            for (String key : city_code_map.keySet()) {
+        if (MyApp.city_code_map != null && !MyApp.city_code_map.isEmpty()) {
+            for (String key : MyApp.city_code_map.keySet()) {
                 if (key.equals(locality)) {
-                    city_code = city_code_map.get(key);
-                    toast_long(locality + " : " + city_code);
-                    //根据区域码获取天气情况
-                    getCurrent_weather(city_code);
+                    city_code = MyApp.city_code_map.get(key);
+                    if(!TextUtils.isEmpty(city_code)){
+                        //获取首页视频
+                        get_recommend(city_code);
+                        //根据区域码获取天气情况
+                        getCurrent_weather(city_code);
+                    }
+
                     //停止循环
                     return;
                 }
             }
         }
+    }
+
+
+    private void get_recommend(String city_code) {
+        DialogUtils.getInstance().showDialog(this, "初始化...");
+        HashMap<String, String> map = new HashMap<>();
+        map.put("districtCode", city_code);
+        OkHttpUtil.postRequest(Api.HEAD + "recommend", map, new OkHttpUtil.OnRequestNetWorkListener() {
+            @Override
+            public void notOk(String err) {
+                new Throwable("请求失败");
+            }
+
+            @Override
+            public void un_login_err() {
+
+            }
+
+            @Override
+            public void ok(String response, JSONObject jsonObject) {
+                try {
+                    toast(jsonObject.getString("errMsg"));
+                    if(jsonObject.getInt("errCode") == 200){
+                        Weather_Video_Bean weather_video_bean = mGson.fromJson(response, Weather_Video_Bean.class);
+                        if(tabFragment != null){
+                            tabFragment.setVideo_data(weather_video_bean);
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 
@@ -820,7 +841,9 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                         Weather_Bean weather_bean = mGson.fromJson(response, Weather_Bean.class);
                         Weather_Bean.DataBean.ResultBean resultBean = weather_bean.data.result;
                         Weather_Bean.DataBean.ResultBean.NowBean nowBean = resultBean.now;
-                        toast_long("天气：" + nowBean.text + "\n温度：" + nowBean.temp + "\n体感温度：" + nowBean.feels_like + "\n风况：" + nowBean.wind_class + nowBean.wind_dir);
+                        if(tabFragment != null){
+                            tabFragment.setWeather_data(resultBean);
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

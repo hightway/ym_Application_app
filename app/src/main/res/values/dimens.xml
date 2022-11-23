@@ -27,6 +27,7 @@
     
     <dimen name="title_height">44dp</dimen>
     <dimen name="search_height">48dp</dimen>
+    <dimen name="search_60">60dp</dimen>
 
     <dimen name="textsizi">16.0sp</dimen>
 

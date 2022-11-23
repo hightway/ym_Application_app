@@ -5,6 +5,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -40,6 +41,8 @@ import com.example.myapplication.adapter.VideoViewPagerAdapter;
 import com.example.myapplication.adapter.ViewPage_Adapter;
 import com.example.myapplication.adapter.ViewPage_Meua_Adapter;
 import com.example.myapplication.base.BaseActivity;
+import com.example.myapplication.bean.Video_Detail_Bean;
+import com.example.myapplication.bean.Video_Info_Bean;
 import com.example.myapplication.custom.DialogFragment;
 import com.example.myapplication.custom.ImageRound;
 import com.example.myapplication.custom.MyCircleProgress;
@@ -49,7 +52,10 @@ import com.example.myapplication.fragment.Anchor_Radio_Fragment;
 import com.example.myapplication.fragment.Play_History_Fragment;
 import com.example.myapplication.fragment.Video_Fragment;
 import com.example.myapplication.fragment.White_Noise_Fragment;
+import com.example.myapplication.http.Api;
+import com.example.myapplication.tools.Aliyun_Login_Util;
 import com.example.myapplication.tools.ExpandOrCollapse;
+import com.example.myapplication.tools.OkHttpUtil;
 import com.example.myapplication.tools.Utils;
 import com.example.myapplication.videoplayTool.AppUtil;
 import com.example.myapplication.videoplayTool.VideoPlayManager;
@@ -59,7 +65,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.tabs.TabLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -92,6 +102,10 @@ public class Video_Detail_Activity extends BaseActivity {
     ScrollView scrollView;
     @BindView(R.id.lin_roll)
     LinearLayout lin_roll;
+    @BindView(R.id.img_back)
+    ImageView img_back;
+    @BindView(R.id.img_more)
+    ImageView img_more;
 
     private boolean btn_open = true;
     private int x;
@@ -118,26 +132,10 @@ public class Video_Detail_Activity extends BaseActivity {
     @Override
     protected void initView() {
         ButterKnife.bind(this);
+        Video_Detail_Bean detail_bean = (Video_Detail_Bean) getIntent().getSerializableExtra("detail_bean");
 
-        //布局的状态发生变化或者可见性发生变化才会调用
-        /*view.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                //处理完后remove掉，至于为什么，后面有解释
-                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            }
-        });*/
-
-        //view重绘时回调
-        /*image_round_1.getViewTreeObserver().addOnDrawListener(new ViewTreeObserver.OnDrawListener() {
-            @Override
-            public void onDraw() {
-                x = Utils.get_X(rel_round, image_round_1);
-            }
-        });*/
-
+        //音乐栏动画
         mAnimationManager = new ExpandOrCollapse();
-
 
         //进度圆环
         circle_progress.SetMax(500);
@@ -158,58 +156,52 @@ public class Video_Detail_Activity extends BaseActivity {
 
 
         List<String> urls = new ArrayList<>();
-        urls.add("http://dpv.videocc.net/51b4303ed6/e/51b4303ed62737f339f98491747c63ee_3.mp4?pid=1560914841120X1051965");
-        urls.add("https://vfx.mtime.cn/Video/2019/01/15/mp4/190115161611510728_480.mp4");
-        urls.add("http://vfx.mtime.cn/Video/2019/02/04/mp4/190204084208765161.mp4");
-        urls.add("http://vfx.mtime.cn/Video/2019/03/14/mp4/190314102306987969.mp4");
-        urls.add("http://vfx.mtime.cn/Video/2019/03/14/mp4/190314223540373995.mp4");
-        urls.add("http://vfx.mtime.cn/Video/2019/03/17/mp4/190317150237409904.mp4");
-        urls.add("http://vfx.mtime.cn/Video/2019/03/19/mp4/190319125415785691.mp4");
-        urls.add("http://vfx.mtime.cn/Video/2019/03/19/mp4/190319104618910544.mp4");
-        urls.add("http://vfx.mtime.cn/Video/2019/03/18/mp4/190318214226685784.mp4");
-        urls.add("http://vfx.mtime.cn/Video/2019/03/12/mp4/190312143927981075.mp4");
-        urls.add("http://vfx.mtime.cn/Video/2019/03/12/mp4/190312083533415853.mp4");
+        //获取详情
+        //get_detail(detail_id);
 
         //init viewpager2
-        initViewPage2(urls);
+        //initViewPage2(urls);
 
-
-
-
-        Utils.init_Aliyun(MyApp.get_app_mAliPlayer(), MyApp.Aapp_context, lin_roll);
-
-
-        /*AliPlayer mAliPlayer = AliPlayerFactory.createAliPlayer(instance);
-        mAliPlayer.setOnSubtitleDisplayListener(new IPlayer.OnSubtitleDisplayListener() {
-            @Override
-            public void onSubtitleExtAdded(int trackIndex, String url) { }
-
-            @Override
-            public void onSubtitleShow(int trackIndex, long id, String data) {
-                // ass 字幕
-                assSubtitleView.show(id,data);
-
-                // srt 字幕
-                SubtitleView.Subtitle subtitle = new SubtitleView.Subtitle();
-                subtitle.id = id + "";
-                subtitle.content = data;
-                subtitleView.show(subtitle);
-
-            }
-
-            @Override
-            public void onSubtitleHide(int trackIndex, long id) {
-                // ass 字幕
-                assSubtitleView.dismiss(id);
-
-                // srt 字幕
-                subtitleView.dismiss(id + "");
-            }
-
-            @Override
-            public void onSubtitleHeader(int trackIndex, String header) { }
-        });*/
+        //初始化纯音频
+        MyApp.app_mAliPlayer = MyApp.get_app_mAliPlayer();
+        Utils.init_Aliyun(MyApp.app_mAliPlayer, MyApp.Aapp_context, lin_roll);
     }
+
+    /*private void get_detail(int detail_id) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("detail_id", String.valueOf(detail_id));
+        OkHttpUtil.postRequestNoDialog(Api.HEAD + "featured_video/detail", map, new OkHttpUtil.OnRequestNetWorkListener() {
+            @Override
+            public void notOk(String err) {
+                new Throwable("请求失败");
+                if(!TextUtils.isEmpty(err) && err.contains("401")){
+                    //未登录，看详情需要登录
+                    Aliyun_Login_Util.getInstance().initSDK(instance);
+                    finish();
+                }
+            }
+
+            @Override
+            public void un_login_err() {
+                //未登录，看详情需要登录
+                Aliyun_Login_Util.getInstance().initSDK(instance);
+                finish();
+            }
+
+            @Override
+            public void ok(String response, JSONObject jsonObject) {
+                try {
+                    int code = jsonObject.getInt("errCode");
+                    if (code == 200) {
+                        Video_Detail_Bean video_detail_bean = mGson.fromJson(response, Video_Detail_Bean.class);
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }*/
 
     private void initViewPage2(List<String> urls) {
         mVideoViewPagerAdapter = new VideoViewPagerAdapter(instance);
@@ -304,8 +296,64 @@ public class Video_Detail_Activity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
+        //终止循环
         threadFlag = true;
+        VideoPlayManager.getInstance(AppUtil.getApplicationContext()).stopPlay();
+        if(MyApp.app_mAliPlayer != null){
+            MyApp.app_mAliPlayer.release();
+            MyApp.app_mAliPlayer = null;
+        }
         super.onDestroy();
+    }
+
+    @OnClick(R.id.img_back)
+    public void img_back(){
+        //终止循环
+        threadFlag = true;
+        VideoPlayManager.getInstance(AppUtil.getApplicationContext()).stopPlay();
+        if(MyApp.app_mAliPlayer != null){
+            MyApp.app_mAliPlayer.release();
+            MyApp.app_mAliPlayer = null;
+        }
+        finish();
+    }
+
+    @OnClick(R.id.img_more)
+    public void img_more(){
+        showMorePoprWindow();
+    }
+
+    public void showMorePoprWindow() {
+        View inflate = LayoutInflater.from(instance).inflate(R.layout.more_pop_lay, null, false);
+        PopupWindow mPopupWindow = new PopupWindow(inflate, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout lin_1 = inflate.findViewById(R.id.lin_1);
+        LinearLayout lin_2 = inflate.findViewById(R.id.lin_2);
+        lin_1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        lin_2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        // 弹出动画
+        //mPopupWindow.setAnimationStyle(anim);
+        // 设置点击窗口外边窗口消失，必须在ShowAtLocation方法之前调用
+        mPopupWindow.setOutsideTouchable(true);
+        // 设置此参数获得焦点，否则无法点击
+        mPopupWindow.setFocusable(true);
+
+        mPopupWindow.setBackgroundDrawable(null);
+        //mPopupWindow.showAsDropDown(img_more);
+        mPopupWindow.showAsDropDown(img_more, -(Utils.dp2px(instance, 86)), 0);
+        //popup和dialog的不同就是必须要有依赖的布局控件，设置在这个布局的上下左右等位置
+        //mPopupWindow.showAtLocation(img_more, Gravity.BOTTOM, 0, 0); //设置pop在控件rl_parent底部显示
     }
 
     @Override
@@ -411,11 +459,6 @@ public class Video_Detail_Activity extends BaseActivity {
         tl_tabs.setupWithViewPager(meua_viewpage);
 
         mBottomSheetDialog.show();*/
-
-
-
-
-
 
     }
 

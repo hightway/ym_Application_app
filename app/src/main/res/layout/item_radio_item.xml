@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:padding="10dp">
 
-        <ImageView
+        <com.example.myapplication.custom.FillImageView
             android:id="@+id/img_bg"
             android:layout_width="44dp"
             android:layout_height="44dp"
@@ -22,23 +22,38 @@
             android:layout_toRightOf="@+id/img_bg"
             android:layout_marginLeft="10dp">
 
-            <TextView
-                android:id="@+id/txt_name"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/lin_name"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="我在秋天的草原上"
-                android:textColor="@color/white"
-                android:textSize="@dimen/textsize14" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/txt_msg"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/txt_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textsize14" />
+
+                <TextView
+                    android:id="@+id/tx_author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:textColor="#ff999999"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/lin_tag"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/txt_name"
-                android:text="治愈"
-                android:layout_marginTop="4dp"
-                android:textColor="@color/radio_cocle"
-                android:textSize="@dimen/textsize11" />
+                android:layout_below="@+id/lin_name"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"/>
 
         </RelativeLayout>
 

@@ -116,4 +116,6 @@ dependencies {
 
     //recycyleView添加头尾
     implementation 'com.zhy:base-rvadapter:3.0.3'
+
+    implementation 'com.github.donkingliang:HeaderViewAdapter:1.2.2'
 }

@@ -21,6 +21,7 @@
     <!-- 半透明 -->
     <color name="transparent_">#60000000</color>
     <color name="transparent_del">#80000000</color>
+    <color name="transparent_d">#99000000</color>
     <!-- 半透明 -->
     <color name="transparent_1">#40000000</color>
     <color name="gray_li">#f7f7f7</color>

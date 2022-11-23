@@ -12,19 +12,35 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.myapplication.R;
 import com.example.myapplication.activity.Video_Detail_Activity;
 import com.example.myapplication.bean.Fruit;
+import com.example.myapplication.bean.Video_Info_Bean;
+import com.example.myapplication.bean.White_Noise_Bean;
+import com.example.myapplication.tools.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class White_Noise_Adapter extends RecyclerView.Adapter<White_Noise_Adapter.ViewHolder> {
-    private List<Fruit> mFruitList;
+    private List<White_Noise_Bean.DataBean> mFruitList = new ArrayList<>();
     private Context mContext;
 
-    public White_Noise_Adapter(List<Fruit> mFruitList, Context context) {
-        this.mFruitList = mFruitList;
+    public White_Noise_Adapter(Context context) {
         this.mContext = context;
+    }
+
+    public void setDataList(List<White_Noise_Bean.DataBean> list) {
+        this.mFruitList = list;
+        notifyDataSetChanged();
+    }
+
+    public void clean() {
+        this.mFruitList.clear();
+        notifyDataSetChanged();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder{
@@ -50,14 +66,20 @@ public class White_Noise_Adapter extends RecyclerView.Adapter<White_Noise_Adapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Fruit fruit = mFruitList.get(position);
-        holder.fruitImage.setImageResource(fruit.getImageId());
-        holder.fruitName.setText(fruit.getName());
+        White_Noise_Bean.DataBean fruit = mFruitList.get(position);
+        Glide.with(mContext)
+                .load(fruit.icon)
+                .apply(RequestOptions
+                        .bitmapTransform(new RoundedCorners(16))
+                        .error(R.mipmap.loading_icon)
+                        .placeholder(R.mipmap.loading_icon))
+                .into(holder.fruitImage);
+        holder.fruitName.setText(fruit.title);
 
         holder.lin_root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mContext.startActivity(new Intent(mContext, Video_Detail_Activity.class));
+                //mContext.startActivity(new Intent(mContext, Video_Detail_Activity.class));
             }
         });
     }

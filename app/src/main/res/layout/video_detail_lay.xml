@@ -11,6 +11,32 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="34dp">
+
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginLeft="5dp"
+            android:src="@mipmap/icon_back"
+            android:layout_centerVertical="true"
+            android:padding="12dp"/>
+
+        <ImageView
+            android:id="@+id/img_more"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginRight="5dp"
+            android:src="@mipmap/pop_icon"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="10dp"/>
+
+    </RelativeLayout>
+
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="12dp"

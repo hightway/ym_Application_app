@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.text.TextUtils;
 
 import com.aliyun.player.AliPlayer;
@@ -19,9 +20,13 @@ import com.example.myapplication.wxapi.WxLogin;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.log.LoggerInterceptor;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -34,9 +39,12 @@ public class MyApp extends Application {
     public static MyApp instance;
     public static AliPlayer app_mAliPlayer;
     public static Context Aapp_context;
+    public static HashMap<String, String> city_code_map;
 
 
-    public MyApp() {}
+    public MyApp() {
+
+    }
     //单例模式中获取唯一的MyApplication实例
     public static MyApp getInstance() {
         if (null == instance) {
@@ -97,6 +105,28 @@ public class MyApp extends Application {
 
         //初始化阿里云播放器播放MP3
         get_app_mAliPlayer();
+
+        //获取区域号
+        getJson_data("city_code", Aapp_context);
+    }
+
+
+    public void getJson_data(String fileName, Context context) {
+        //将json数据变成字符串
+        city_code_map = new HashMap<>();
+        try {
+            //获取assets资源管理器
+            AssetManager assetManager = context.getAssets();
+            //通过管理器打开文件并读取
+            BufferedReader bf = new BufferedReader(new InputStreamReader(assetManager.open(fileName)));
+            String line;
+            while ((line = bf.readLine()) != null) {
+                String[] arr = line.split("\t");
+                city_code_map.put(arr[1].trim(), arr[0].trim());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

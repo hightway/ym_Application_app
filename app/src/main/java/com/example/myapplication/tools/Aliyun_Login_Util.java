@@ -5,20 +5,30 @@ import static com.nirvana.tools.core.ComponentSdkCore.getApplicationContext;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.R;
 import com.example.myapplication.base.BaseLazyFragment;
+import com.example.myapplication.bean.UserBean;
 import com.example.myapplication.config.BaseUIConfig;
 import com.example.myapplication.config.ExecutorManager;
 import com.example.myapplication.fragment.TabFragment_4;
 import com.example.myapplication.http.Api;
+import com.example.myapplication.http.UserConfig;
+import com.google.gson.Gson;
 import com.mobile.auth.gatewayauth.PhoneNumberAuthHelper;
 import com.mobile.auth.gatewayauth.ResultCode;
 import com.mobile.auth.gatewayauth.TokenResultListener;
 import com.mobile.auth.gatewayauth.model.TokenRet;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 
 public class Aliyun_Login_Util {
 
@@ -27,7 +37,7 @@ public class Aliyun_Login_Util {
     private PhoneNumberAuthHelper mPhoneNumberAuthHelper;
     private BaseUIConfig mUIConfig;
     private Activity mActivity;
-    private TabFragment_4 tabFragment;
+    //private TabFragment_4 tabFragment;
 
     public Aliyun_Login_Util() {
 
@@ -41,9 +51,9 @@ public class Aliyun_Login_Util {
     }
 
 
-    public void initSDK(Activity activity, TabFragment_4 fragment){
+    public void initSDK(Activity activity){
         mActivity = activity;
-        tabFragment = fragment;
+        //tabFragment = fragment;
         //初始化aliyun SDK
         sdkInit(Api.aliyun_key);
         //1
@@ -122,7 +132,59 @@ public class Aliyun_Login_Util {
             }
         });
 
-        tabFragment.put_Token(token);
+        //tabFragment.put_Token(token);
+        if(!TextUtils.isEmpty(token)){
+            post_data(token);
+        }
+    }
+
+
+    private void post_data(String token) {
+        DialogUtils.getInstance().showDialog(mActivity, "加载中...");
+        HashMap<String, String> map = new HashMap<>();
+        map.put("access_token", token);
+
+        OkHttpUtil.postRequest(Api.HEAD + "login_token", map, new OkHttpUtil.OnRequestNetWorkListener() {
+            @Override
+            public void notOk(String err) {
+                new Throwable("请求失败");
+            }
+
+            @Override
+            public void un_login_err() {
+
+            }
+
+            @Override
+            public void ok(String response, JSONObject jsonObject) {
+                try {
+                    int code = jsonObject.getInt("errCode");
+                    Toast.makeText(mActivity, jsonObject.getString("errMsg"), Toast.LENGTH_SHORT).show();
+                    if(code == 200){
+                        UserBean userBean = new Gson().fromJson(response, UserBean.class);
+                        UserBean.DataBean dataBean = userBean.getData();
+
+                        UserConfig.instance().name = dataBean.getName();
+                        UserConfig.instance().phone = dataBean.getPhone();
+                        UserConfig.instance().access_token = dataBean.getAccess_token();
+                        UserConfig.instance().user_id = dataBean.getUser_id();
+                        UserConfig.instance().expires_in = dataBean.getExpires_in();
+                        UserConfig.instance().token_type = dataBean.getToken_type();
+                        //保存
+                        UserConfig.instance().saveUserConfig(mActivity);
+
+                        //刷新数据
+
+
+                        //跳转主页面
+                        //startActivity(new Intent(instance, MainActivity.class));
+                        //finish();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 

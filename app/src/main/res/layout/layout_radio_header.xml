@@ -8,13 +8,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:layout_margin="14dp">
+        android:layout_margin="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/good_deream_13"
             android:textSize="@dimen/textsize14"
+            android:layout_marginLeft="4dp"
+            android:layout_centerVertical="true"
             android:textColor="@color/radio_txt_cocle"/>
 
         <TextView
@@ -22,7 +24,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/good_deream_14"
+            android:paddingBottom="6dp"
             android:textSize="@dimen/textsize14"
+            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:textColor="@color/get_code_cocle_un"/>
 
@@ -55,22 +59,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:layout_margin="14dp">
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginBottom="14dp"
+        android:layout_marginTop="25dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/good_deream_15"
             android:textSize="@dimen/textsize14"
+            android:layout_centerVertical="true"
             android:textColor="@color/radio_txt_cocle"/>
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/lin_refresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/good_deream_16"
-            android:textSize="@dimen/textsize14"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:layout_alignParentRight="true"
-            android:textColor="@color/get_code_cocle_un"/>
+            android:layout_centerVertical="true">
+
+            <ImageView
+                android:layout_width="19dp"
+                android:layout_height="19dp"
+                android:padding="2dp"
+                android:src="@mipmap/refresh_data"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/good_deream_16"
+                android:layout_marginLeft="2dp"
+                android:textSize="@dimen/textsize14"
+                android:textColor="@color/get_code_cocle_un"/>
+
+        </LinearLayout>
 
     </RelativeLayout>
 

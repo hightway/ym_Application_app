@@ -35,13 +35,22 @@ import com.example.myapplication.adapter.ViewPage_Adapter;
 import com.example.myapplication.aliyun_oss.AliyunOSSUtils;
 import com.example.myapplication.base.BaseLazyFragment;
 import com.example.myapplication.bean.Fruit;
+import com.example.myapplication.bean.User_Msg_Bean;
+import com.example.myapplication.bean.Video_Info_Bean;
+import com.example.myapplication.bean.Weather_Bean;
+import com.example.myapplication.bean.Weather_Video_Bean;
 import com.example.myapplication.custom.SlidingDrawerLayout;
+import com.example.myapplication.http.Api;
 import com.example.myapplication.http.UserConfig;
 import com.example.myapplication.swipeDrawer_view.Common;
 import com.example.myapplication.swipeDrawer_view.OnDrawerChange;
 import com.example.myapplication.swipeDrawer_view.SwipeDrawer;
 import com.example.myapplication.tools.MMAlert;
+import com.example.myapplication.tools.OkHttpUtil;
 import com.example.myapplication.tools.Utils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -56,7 +65,7 @@ import hollowsoft.slidingdrawer.OnDrawerOpenListener;
 import hollowsoft.slidingdrawer.OnDrawerScrollListener;
 
 //OnDrawerScrollListener, OnDrawerOpenListener, OnDrawerCloseListener
-public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.UploadListener, AliyunOSSUtils.Upload_ParListener{
+public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.UploadListener, AliyunOSSUtils.Upload_ParListener {
 
     @BindView(R.id.tx_upload)
     TextView tx_upload;
@@ -88,6 +97,12 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
     TextView tx_time;
     @BindView(R.id.tx_temperature)
     TextView tx_temperature;
+    @BindView(R.id.name_hi)
+    TextView name_hi;
+    @BindView(R.id.tx_day)
+    TextView tx_day;
+    @BindView(R.id.tx_year)
+    TextView tx_year;
     @BindView(R.id.rel_all_msg)
     RelativeLayout rel_all_msg;
     @BindView(R.id.layout_point)
@@ -97,13 +112,15 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
 
     private AliyunOSSUtils ossUtils;
     private ActivityResultLauncher launcher;
-
     private static final int GETICON_LOCAL = 2;
     private long max = 100; //总的大小
     private long current = 0; //当前下载大小
 
     private List<Fruit> fruitList = new ArrayList<>();
     private FruitAdapter listAdapter;
+    private int page = 1;
+    private int pageSize = 20;
+    private List<Video_Info_Bean.DataBean> dataBeanList = new ArrayList<>();
 
     @Override
     protected int setLayout() {
@@ -126,23 +143,28 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
             }
         });
 
-        /*drawer.setOnDrawerScrollListener(this);
-        drawer.setOnDrawerOpenListener(this);
-        drawer.setOnDrawerCloseListener(this);*/
-
-        //content.setScanScrollChangedListener(this);
-
-
-
-        /*initFruit();
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        recycle_view.setLayoutManager(layoutManager);
-        FruitAdapter fruitAdapter = new FruitAdapter(fruitList);
-        recycle_view.setAdapter(fruitAdapter);*/
-
         initData();
 
-        initVideo_viewpage();
+        //获取时间段
+        if (mhandler != null) {
+            mhandler.postDelayed(time_Runnable, 1000 * 60 * 5);
+        }
+    }
+
+
+    public void setVideo_data(Weather_Video_Bean weather_video_bean) {
+        Weather_Video_Bean.DataBean dataBean = weather_video_bean.data;
+        List<Weather_Video_Bean.DataBean.VideoListBean> list = dataBean.video_list;
+        if (list != null && list.size() > 0) {
+            initVideo_viewpage(list);
+        }
+
+        //dataBean.
+        tx_day.setText(String.valueOf(dataBean.day));
+        tx_year.setText(dataBean.month);
+        if(dataBean.daily_pick != null){
+            tx_temperature.setText(dataBean.daily_pick.content);
+        }
 
         mhandler.postDelayed(new Runnable() {
             @Override
@@ -155,11 +177,17 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
 
                 Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.push_bottom_in);
                 tx_time.startAnimation(animation);
+                tx_day.startAnimation(animation);
+                tx_year.startAnimation(animation);
+                name_hi.startAnimation(animation);
                 tx_temperature.startAnimation(animation);
                 animation.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation animation) {
                         tx_time.setVisibility(View.VISIBLE);
+                        tx_day.setVisibility(View.VISIBLE);
+                        tx_year.setVisibility(View.VISIBLE);
+                        name_hi.setVisibility(View.VISIBLE);
                         tx_temperature.setVisibility(View.VISIBLE);
                     }
 
@@ -179,12 +207,10 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
 
             }
         }, 1000);
+    }
 
+    public void setWeather_data(Weather_Bean.DataBean.ResultBean resultBean) {
 
-        //获取时间段
-        if (mhandler != null) {
-            mhandler.postDelayed(time_Runnable, 1000 * 60 * 5);
-        }
     }
 
 
@@ -222,9 +248,9 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
         Calendar c = Calendar.getInstance();
         // 提取他的时钟值，int型
         int hour = c.get(Calendar.HOUR_OF_DAY);
-        if(hour < 7){
+        if (hour < 7) {
             return R.string.date_7;
-        } else if(hour < 9){
+        } else if (hour < 9) {
             return R.string.date_8;
         } else if (hour < 12) {
             return R.string.date_2;
@@ -236,7 +262,7 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
             return R.string.date_5;
         } else if (hour < 24) {
             return R.string.date_6;
-        }else{
+        } else {
             return R.string.date_1;
         }
     }
@@ -244,128 +270,122 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
 
     private boolean mIsChanged = false;
     private int mCurrentPagePosition = FIRST_ITEM_INDEX;
-    private static final int POINT_LENGTH = 6;
-    private static final int FIRST_ITEM_INDEX = 1;
+    private static int POINT_LENGTH = 0;
+    private static int FIRST_ITEM_INDEX = 1;
 
-    private void initVideo_viewpage() {
+    private void initVideo_viewpage(List<Weather_Video_Bean.DataBean.VideoListBean> list) {
         List<Fragment> fragments = new ArrayList<>();
 
-        Video_Fragment video_fragment_33 = new Video_Fragment("https://v-cdn.zjol.com.cn/280448.mp4");
+        if (list.size() <= 1) {
+            Video_Fragment video_fragment = new Video_Fragment(list.get(0));
+            fragments.add(video_fragment);
+        } else {
+            POINT_LENGTH = list.size();
+            Video_Fragment video_fragment_max = new Video_Fragment(list.get(list.size() - 1));
+            fragments.add(video_fragment_max);
 
-        Video_Fragment video_fragment_1 = new Video_Fragment("https://v-cdn.zjol.com.cn/280443.mp4");
-        Video_Fragment video_fragment_2 = new Video_Fragment("https://v-cdn.zjol.com.cn/280441.mp4");
-        Video_Fragment video_fragment_22 = new Video_Fragment("https://v-cdn.zjol.com.cn/280442.mp4");
-        Video_Fragment video_fragment_222 = new Video_Fragment("https://v-cdn.zjol.com.cn/280446.mp4");
-        Video_Fragment video_fragment_2222 = new Video_Fragment("https://v-cdn.zjol.com.cn/280444.mp4");
-        Video_Fragment video_fragment_3 = new Video_Fragment("https://v-cdn.zjol.com.cn/280448.mp4");
-
-        Video_Fragment video_fragment_11 = new Video_Fragment("https://v-cdn.zjol.com.cn/280443.mp4");
-
-        fragments.add(video_fragment_33);
-        fragments.add(video_fragment_1);
-        fragments.add(video_fragment_2);
-        fragments.add(video_fragment_22);
-        fragments.add(video_fragment_222);
-        fragments.add(video_fragment_2222);
-        fragments.add(video_fragment_3);
-        fragments.add(video_fragment_11);
-
-        video_viewpage.setAdapter(new ViewPage_Adapter(getChildFragmentManager(), fragments));
-        video_viewpage.setCurrentItem(1, false);
-        video_viewpage.setOffscreenPageLimit(2);//记数从0开始!!! 设置预加载的个数
-        //video_viewpage.setPageTransformer(false, new DepthPageTransformer());
-
-
-
-        for(int i=0; i<POINT_LENGTH; i++){
-            //创建下标小白点，然后用LinearLayout作为父容器，把5个小白点加进去
-            View view = new View(getActivity());
-            view.setBackgroundResource(R.drawable.point_disable);
-            LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(32, 8);
-            if(i!=0){
-                lp.leftMargin = 16;
+            for (Weather_Video_Bean.DataBean.VideoListBean videoListBean : list) {
+                Video_Fragment video_fragment = new Video_Fragment(videoListBean);
+                fragments.add(video_fragment);
             }
-            layout_point.addView(view,lp);
-        }
-        //设置小白点的默认位置0是选中状态的白点。
-        layout_point.getChildAt(0).setBackgroundResource(R.drawable.point_enable);
+
+            Video_Fragment video_fragment_0 = new Video_Fragment(list.get(0));
+            fragments.add(video_fragment_0);
+
+            video_viewpage.setAdapter(new ViewPage_Adapter(getChildFragmentManager(), fragments));
+            video_viewpage.setCurrentItem(1, false);
+            video_viewpage.setOffscreenPageLimit(3);//设置预加载的个数
 
 
-
-        video_viewpage.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageSelected(int pPosition) {
-                mIsChanged = true;
-                if (pPosition > POINT_LENGTH) {// 末位之后，跳转到首位（1）
-                    mCurrentPagePosition = FIRST_ITEM_INDEX;
-                } else if (pPosition < FIRST_ITEM_INDEX) {// 首位之前，跳转到末尾（N）
-                    mCurrentPagePosition = POINT_LENGTH;
-                } else {
-                    mCurrentPagePosition = pPosition;
+            for (int i = 0; i < POINT_LENGTH; i++) {
+                //创建下标小白点，然后用LinearLayout作为父容器，把5个小白点加进去
+                View view = new View(getActivity());
+                view.setBackgroundResource(R.drawable.point_disable);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(32, 8);
+                if (i != 0) {
+                    lp.leftMargin = 16;
                 }
+                layout_point.addView(view, lp);
+            }
+            //设置小白点的默认位置0是选中状态的白点。
+            layout_point.getChildAt(0).setBackgroundResource(R.drawable.point_enable);
 
-                for(int i=1; i<=layout_point.getChildCount(); i++){
-                    if(i == mCurrentPagePosition){
-                        layout_point.getChildAt(i-1).setBackgroundResource(R.drawable.point_enable);
-                    }else{
-                        layout_point.getChildAt(i-1).setBackgroundResource(R.drawable.point_disable);
+
+            video_viewpage.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageSelected(int pPosition) {
+                    mIsChanged = true;
+                    if (pPosition > POINT_LENGTH) {// 末位之后，跳转到首位（1）
+                        mCurrentPagePosition = FIRST_ITEM_INDEX;
+                    } else if (pPosition < FIRST_ITEM_INDEX) {// 首位之前，跳转到末尾（N）
+                        mCurrentPagePosition = POINT_LENGTH;
+                    } else {
+                        mCurrentPagePosition = pPosition;
                     }
-                }
-            }
 
-
-            @Override
-            public void onPageScrolled(int arg0, float arg1, int arg2) {
-
-            }
-
-
-            @Override
-            public void onPageScrollStateChanged(int pState) {
-                if (ViewPager.SCROLL_STATE_IDLE == pState) {
-                    if (mIsChanged) {
-                        mIsChanged = false;
-                        video_viewpage.setCurrentItem(mCurrentPagePosition, false);
-
-                        Video_Fragment video_fragment = (Video_Fragment) fragments.get(mCurrentPagePosition);
-                        video_fragment.start_Video();
-
-                        if(FIRST_ITEM_INDEX < mCurrentPagePosition && mCurrentPagePosition < POINT_LENGTH){
-                            Video_Fragment fragment_top = (Video_Fragment) fragments.get(mCurrentPagePosition-1);
-                            Video_Fragment fragment_btm = (Video_Fragment) fragments.get(mCurrentPagePosition+1);
-                            fragment_top.stop_Video();
-                            fragment_btm.stop_Video();
-                        }else if(mCurrentPagePosition == FIRST_ITEM_INDEX){
-                            Video_Fragment fragment_top = (Video_Fragment) fragments.get(POINT_LENGTH);
-                            Video_Fragment fragment_btm = (Video_Fragment) fragments.get(mCurrentPagePosition+1);
-                            fragment_top.stop_Video();
-                            fragment_btm.stop_Video();
-                        }else if(mCurrentPagePosition == POINT_LENGTH){
-                            Video_Fragment fragment_top = (Video_Fragment) fragments.get(FIRST_ITEM_INDEX);
-                            Video_Fragment fragment_btm = (Video_Fragment) fragments.get(mCurrentPagePosition-1);
-                            fragment_top.stop_Video();
-                            fragment_btm.stop_Video();
+                    for (int i = 1; i <= layout_point.getChildCount(); i++) {
+                        if (i == mCurrentPagePosition) {
+                            layout_point.getChildAt(i - 1).setBackgroundResource(R.drawable.point_enable);
+                        } else {
+                            layout_point.getChildAt(i - 1).setBackgroundResource(R.drawable.point_disable);
                         }
-
                     }
                 }
-            }
-        });
+
+
+                @Override
+                public void onPageScrolled(int arg0, float arg1, int arg2) {
+
+                }
+
+
+                @Override
+                public void onPageScrollStateChanged(int pState) {
+                    if (ViewPager.SCROLL_STATE_IDLE == pState) {
+                        if (mIsChanged) {
+                            mIsChanged = false;
+                            video_viewpage.setCurrentItem(mCurrentPagePosition, false);
+
+                            Video_Fragment video_fragment = (Video_Fragment) fragments.get(mCurrentPagePosition);
+                            video_fragment.start_Video();
+
+                            if (FIRST_ITEM_INDEX < mCurrentPagePosition && mCurrentPagePosition < POINT_LENGTH) {
+                                Video_Fragment fragment_top = (Video_Fragment) fragments.get(mCurrentPagePosition - 1);
+                                Video_Fragment fragment_btm = (Video_Fragment) fragments.get(mCurrentPagePosition + 1);
+                                fragment_top.stop_Video();
+                                fragment_btm.stop_Video();
+                            } else if (mCurrentPagePosition == FIRST_ITEM_INDEX) {
+                                Video_Fragment fragment_top = (Video_Fragment) fragments.get(POINT_LENGTH);
+                                Video_Fragment fragment_btm = (Video_Fragment) fragments.get(mCurrentPagePosition + 1);
+                                fragment_top.stop_Video();
+                                fragment_btm.stop_Video();
+                            } else if (mCurrentPagePosition == POINT_LENGTH) {
+                                Video_Fragment fragment_top = (Video_Fragment) fragments.get(FIRST_ITEM_INDEX);
+                                Video_Fragment fragment_btm = (Video_Fragment) fragments.get(mCurrentPagePosition - 1);
+                                fragment_top.stop_Video();
+                                fragment_btm.stop_Video();
+                            }
+
+                        }
+                    }
+                }
+            });
+        }
     }
 
     private void initData() {
         // 监听 SwipeDrawer 改变
         content.setOnDrawerChange(new OnDrawerChange() {
-
             // 刷新完毕
             private void topOver() {
                 // 显示刷新完成状态
-                SetList(0);
+                page=1;
+                ListData();
                 reTopIcon.clearAnimation();
                 reTopIcon.setRotation(0);
                 reTopIcon.setVisibility(View.GONE);
 
-                reTopText.setText("刷新完成");
+                reTopText.setText(getString(R.string.refresh_finish));
                 // 0.6秒后关闭
                 reTopText.postDelayed(new Runnable() {
                     @Override
@@ -379,12 +399,13 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
             // 加载完毕
             private void bottomOver() {
                 // 显示加载完成状态
-                SetList(20);
+                /*page++;
+                ListData();*/
                 reBottomIcon.clearAnimation();
                 reBottomIcon.setRotation(0);
                 reBottomIcon.setVisibility(View.GONE);
 
-                reBottomText.setText("加载完成");
+                reBottomText.setText(getString(R.string.load_more));
                 // 0.6秒后关闭
                 reBottomText.postDelayed(new Runnable() {
                     @Override
@@ -487,66 +508,61 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
             }
         });
 
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        recycle_view.setLayoutManager(layoutManager);
+        listAdapter = new FruitAdapter(getActivity());
+        recycle_view.setAdapter(listAdapter);
+
         ListData();
     }
 
 
     /**
-     * 更新 list 数据
-     *
-     * @param num 更新条数
-     */
-    private void SetList(int num) {
-        if (num > 0) {
-            for (int i = 0; i < num; i++) {
-                fruitList.add(new Fruit("orange", R.mipmap.wx_icon));
-                fruitList.add(new Fruit("waterMelon", R.mipmap.msm_icon));
-            }
-            listAdapter.notifyDataSetChanged();
-        } else {
-            fruitList.clear();
-            listAdapter.notifyDataSetChanged();
-            for (int i = 0; i < 20; i++) {
-                Fruit orange = new Fruit("orange", R.mipmap.wx_icon);
-                fruitList.add(orange);
-                Fruit waterMelon = new Fruit("waterMelon", R.mipmap.msm_icon);
-                fruitList.add(waterMelon);
-            }
-            listAdapter.notifyDataSetChanged();
-        }
-    }
-
-    /**
      * 给 RecyclerView 填充数据
      */
     private void ListData() {
-        for (int i = 20; i > 0; i--) {
-            Fruit orange = new Fruit("orange", R.mipmap.wx_icon);
-            fruitList.add(orange);
-            Fruit waterMelon = new Fruit("waterMelon", R.mipmap.msm_icon);
-            fruitList.add(waterMelon);
-        }
+        OkHttpUtil.postRequestNoDialog(Api.HEAD + "video_list", new OkHttpUtil.OnRequestNetWorkListener() {
+            @Override
+            public void notOk(String err) {
+                new Throwable("请求失败");
+            }
 
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        recycle_view.setLayoutManager(layoutManager);
-        listAdapter = new FruitAdapter(fruitList, getActivity());
-        recycle_view.setAdapter(listAdapter);
+            @Override
+            public void un_login_err() {
+
+            }
+
+            @Override
+            public void ok(String response, JSONObject jsonObject) {
+                try {
+                    int code = jsonObject.getInt("errCode");
+                    if (code == 200) {
+                        Video_Info_Bean video_info_bean = mgson.fromJson(response, Video_Info_Bean.class);
+                        List<Video_Info_Bean.DataBean> dataBeans = video_info_bean.data;
+
+                        if(dataBeans != null && dataBeans.size() > 0){
+                            dataBeanList = dataBeans;
+                            listAdapter.setDataList(dataBeanList);
+                            /*if (page == 1) {
+                                dataBeanList = dataBeans;
+                                listAdapter.setDataList(dataBeanList);
+                            } else {
+                                dataBeanList.addAll(dataBeans);
+                                listAdapter.notifyItemRangeInserted(listAdapter.getItemCount(), dataBeans.size());
+                            }*/
+                        } else {
+                            if(page == 1){
+                                listAdapter.clean();
+                            }
+                        }
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
-
-
-
-
-
-
-
-    /*private void initFruit() {
-        for(int i =20; i>0; i--){
-            Fruit orange = new Fruit("orange",R.mipmap.wx_icon);
-            fruitList.add(orange);
-            Fruit waterMelon = new Fruit("waterMelon",R.mipmap.msm_icon);
-            fruitList.add(waterMelon);
-        }
-    }*/
 
 
     private void doChoose(boolean b, Intent intent) {
@@ -727,12 +743,12 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
     }
 
 
-    public SlidingDrawerLayout getWrapSlidingDrawer(){
+    public SlidingDrawerLayout getWrapSlidingDrawer() {
         return sliding_lay;
     }
 
     @OnClick(R.id.tx_more)
-    public void tx_more(){
+    public void tx_more() {
         startActivity(new Intent(getActivity(), Video_More_Activity.class));
     }
 

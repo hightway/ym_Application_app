@@ -80,7 +80,7 @@ public class OkHttpUtil {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     int code = jsonObject.getInt("errCode");
-                    if (code == 422) {
+                    if (code == 401) {
                         //未登录
                         listener.un_login_err();
                     } else {
@@ -121,7 +121,7 @@ public class OkHttpUtil {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     int code = jsonObject.getInt("errCode");
-                    if (code == 422) {
+                    if (code == 401) {
                         //未登录
                         listener.un_login_err();
                     } else {
@@ -154,7 +154,7 @@ public class OkHttpUtil {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     int code = jsonObject.getInt("errCode");
-                    if (code == 422) {
+                    if (code == 401) {
                         //未登录
                         listener.un_login_err();
                     } else {
@@ -220,7 +220,7 @@ public class OkHttpUtil {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     int code = jsonObject.getInt("errCode");
-                    if (code == 422) {
+                    if (code == 401) {
                         //未登录
                         listener.un_login_err();
                     } else {
@@ -265,7 +265,38 @@ public class OkHttpUtil {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     int code = jsonObject.getInt("errCode");
-                    if (code == 422) {
+                    if (code == 401) {
+                        //未登录
+                        listener.un_login_err();
+                    } else {
+                        listener.ok(response, jsonObject);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public static void postRequestNoDialog(String url, final OnRequestNetWorkListener listener) {
+
+        PostFormBuilder builder = OkHttpUtils.post().url(url);
+        builder.addHeader("version", Api.version_code);
+        builder.addHeader("platform", "Android");
+        builder.addHeader("Authorization", "Bearer" + " " + UserConfig.instance().access_token);
+
+        builder.build().execute(new StringCallback() {
+            @Override
+            public void onError(okhttp3.Call call, Exception e, int id) {
+                listener.notOk(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    int code = jsonObject.getInt("errCode");
+                    if (code == 401) {
                         //未登录
                         listener.un_login_err();
                     } else {

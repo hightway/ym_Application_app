@@ -97,6 +97,11 @@
     <string name="intput_code">请输入验证码</string>
     <string name="hint_login">请输入您的手机号</string>
     <string name="agree_first">请先同意下方相关协议和政策</string>
+    <string name="load_more">已经在更新了，敬请期待哦～</string>
+    <string name="load_more_success">加载完成</string>
+    <string name="refresh_finish">刷新完成</string>
+    <string name="more_txt_1">免责声明</string>
+    <string name="more_txt_2">侵权举报</string>
 
     <string-array name="camer_item">
         <item>从相册选择</item>

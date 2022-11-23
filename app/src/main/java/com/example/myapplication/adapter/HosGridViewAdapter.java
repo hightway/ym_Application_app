@@ -14,18 +14,23 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.myapplication.R;
 import com.example.myapplication.bean.Hor_DateBean;
+import com.example.myapplication.custom.FillImageView;
+import com.example.myapplication.tools.Utils;
 
 import java.util.List;
 
 public class HosGridViewAdapter extends RecyclerView.Adapter<HosGridViewAdapter.ViewHolder> {
-    private List<Hor_DateBean> list;
+    private List<Hor_DateBean.DataBean.TopBean> list;
     private Context mContext;
     public int index;
     public OnRvItemClick onRvItemClick;
 
-    public HosGridViewAdapter(List<Hor_DateBean> list, Context mContext) {
+    public HosGridViewAdapter(List<Hor_DateBean.DataBean.TopBean> list, Context mContext) {
         this.list = list;
         this.mContext = mContext;
         index = 0;
@@ -45,7 +50,15 @@ public class HosGridViewAdapter extends RecyclerView.Adapter<HosGridViewAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ViewHolder viewHolder = (ViewHolder) holder;
         //设置内容
-        viewHolder.img_bg.setImageResource(list.get(position).getImg());
+        Glide.with(mContext)
+                .load(list.get(position).icon)
+                .apply(RequestOptions
+                        .bitmapTransform(new RoundedCorners(24))
+                        .error(R.mipmap.loading_pic)
+                        .placeholder(R.mipmap.loading_pic))
+                .into(viewHolder.img_bg);
+
+        viewHolder.txt_name.setText(list.get(position).title);
 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,7 +80,7 @@ public class HosGridViewAdapter extends RecyclerView.Adapter<HosGridViewAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView txt_name;
-        ImageView img_bg;
+        FillImageView img_bg;
         RelativeLayout rel_item;
 
         public ViewHolder(View itemView) {

@@ -19,13 +19,19 @@ import com.example.myapplication.R;
 import com.example.myapplication.adapter.FruitAdapter;
 import com.example.myapplication.base.BaseActivity;
 import com.example.myapplication.bean.Fruit;
+import com.example.myapplication.bean.Video_Info_Bean;
 import com.example.myapplication.custom.FabScrollListener;
 import com.example.myapplication.custom.MingRecyclerView;
+import com.example.myapplication.http.Api;
 import com.example.myapplication.plmd.HideScrollListener;
 import com.example.myapplication.swipeDrawer_view.Common;
 import com.example.myapplication.swipeDrawer_view.OnDrawerChange;
 import com.example.myapplication.swipeDrawer_view.SwipeDrawer;
+import com.example.myapplication.tools.OkHttpUtil;
 import com.example.myapplication.tools.Utils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,10 +60,9 @@ public class Video_More_Activity extends BaseActivity {
 
     private List<Fruit> fruitList = new ArrayList<>();
     private FruitAdapter listAdapter;
-    /*private int mFirstY;
-    private int mCurrentY;
-    private boolean direction;
-    private int marginTop;*/
+    private int page = 1;
+    private int pageSize = 20;
+    private List<Video_Info_Bean.DataBean> dataBeanList = new ArrayList<>();
 
 
     @Override
@@ -97,12 +102,13 @@ public class Video_More_Activity extends BaseActivity {
             // 刷新完毕
             private void topOver() {
                 // 显示刷新完成状态
-                SetList(0);
+                page = 1;
+                ListData();
                 reTopIcon.clearAnimation();
                 reTopIcon.setRotation(0);
                 reTopIcon.setVisibility(View.GONE);
 
-                reTopText.setText("刷新完成");
+                reTopText.setText(getString(R.string.refresh_finish));
                 // 0.6秒后关闭
                 reTopText.postDelayed(new Runnable() {
                     @Override
@@ -116,12 +122,13 @@ public class Video_More_Activity extends BaseActivity {
             // 加载完毕
             private void bottomOver() {
                 // 显示加载完成状态
-                SetList(20);
+                /*page++;
+                ListData();*/
                 reBottomIcon.clearAnimation();
                 reBottomIcon.setRotation(0);
                 reBottomIcon.setVisibility(View.GONE);
 
-                reBottomText.setText("加载完成");
+                reBottomText.setText(getString(R.string.load_more));
                 // 0.6秒后关闭
                 reBottomText.postDelayed(new Runnable() {
                     @Override
@@ -224,90 +231,60 @@ public class Video_More_Activity extends BaseActivity {
             }
         });
 
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        recycle_view.setLayoutManager(layoutManager);
+        listAdapter = new FruitAdapter(instance);
+        recycle_view.setAdapter(listAdapter);
+
         ListData();
     }
 
 
     /**
-     * 更新 list 数据
-     *
-     * @param num 更新条数
-     */
-    private void SetList(int num) {
-        if (num > 0) {
-            for (int i = 0; i < num; i++) {
-                fruitList.add(new Fruit("orange", R.mipmap.wx_icon));
-                fruitList.add(new Fruit("waterMelon", R.mipmap.msm_icon));
-            }
-            listAdapter.notifyDataSetChanged();
-        } else {
-            fruitList.clear();
-            listAdapter.notifyDataSetChanged();
-            for (int i = 0; i < 20; i++) {
-                Fruit orange = new Fruit("orange", R.mipmap.wx_icon);
-                fruitList.add(orange);
-                Fruit waterMelon = new Fruit("waterMelon", R.mipmap.msm_icon);
-                fruitList.add(waterMelon);
-            }
-            listAdapter.notifyDataSetChanged();
-        }
-    }
-
-    /**
      * 给 RecyclerView 填充数据
      */
     private void ListData() {
-        for (int i = 20; i > 0; i--) {
-            Fruit orange = new Fruit("orange", R.mipmap.wx_icon);
-            fruitList.add(orange);
-            Fruit waterMelon = new Fruit("waterMelon", R.mipmap.msm_icon);
-            fruitList.add(waterMelon);
-        }
-
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        recycle_view.setLayoutManager(layoutManager);
-        listAdapter = new FruitAdapter(fruitList, instance);
-        recycle_view.setAdapter(listAdapter);
-
-
-
-        /*recycle_view.setOnTouchListener(new View.OnTouchListener() {
-            @SuppressLint("ClickableViewAccessibility")
+        OkHttpUtil.postRequestNoDialog(Api.HEAD + "all_video_list", new OkHttpUtil.OnRequestNetWorkListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-
-                switch (motionEvent.getAction()) {
-                    case MotionEvent.ACTION_MOVE:
-                        mFirstY = recycle_view.getTouchPointY();
-                        mCurrentY = (int) motionEvent.getY();
-                        RelativeLayout.LayoutParams top = (RelativeLayout.LayoutParams) search_bar.getLayoutParams();
-                        if (mCurrentY - mFirstY > 0) {
-                            //向下滑动
-                            direction = false;
-                        } else {
-                            direction = true; //向上滑动
-                        }
-                        if (direction) {
-                            //Log.d("uuu","上滑");
-                            if (top.topMargin > -marginTop) {
-                                top.topMargin += mCurrentY - mFirstY;
-                                if(top.topMargin<-marginTop)
-                                    top.topMargin=-marginTop;
-                                //Log.d("uuu","top2:"+top.topMargin);
-                                search_bar.requestLayout();
-                            }
-                        } else {
-                            if (top.topMargin < 0) {
-                                top.topMargin += mCurrentY - mFirstY;
-                                if(top.topMargin>0)top.topMargin=0;
-                                search_bar.requestLayout();
-                            }
-                        }
-                        break;
-                }
-                return false;
+            public void notOk(String err) {
+                new Throwable("请求失败");
             }
-        });*/
+
+            @Override
+            public void un_login_err() {
+
+            }
+
+            @Override
+            public void ok(String response, JSONObject jsonObject) {
+                try {
+                    int code = jsonObject.getInt("errCode");
+                    if (code == 200) {
+                        Video_Info_Bean video_info_bean = mGson.fromJson(response, Video_Info_Bean.class);
+                        List<Video_Info_Bean.DataBean> dataBeans = video_info_bean.data;
+
+                        if(dataBeans != null && dataBeans.size() > 0){
+                            dataBeanList = dataBeans;
+                            listAdapter.setDataList(dataBeanList);
+                            /*if (page == 1) {
+                                dataBeanList = dataBeans;
+                                listAdapter.setDataList(dataBeanList);
+                            } else {
+                                dataBeanList.addAll(dataBeans);
+                                listAdapter.notifyItemRangeInserted(listAdapter.getItemCount(), dataBeans.size());
+                            }*/
+                        } else {
+                            if(page == 1){
+                                listAdapter.clean();
+                            }
+                        }
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 

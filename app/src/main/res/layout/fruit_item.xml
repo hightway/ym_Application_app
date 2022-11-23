@@ -5,23 +5,28 @@
     android:layout_height="wrap_content"
     android:id="@+id/lin_root">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="190dp"
         android:orientation="vertical"
-        android:background="@color/white"
         android:layout_margin="5dp">
 
-        <ImageView
+        <com.example.myapplication.custom.FillImageView
             android:layout_width="match_parent"
-            android:layout_height="140dp"
-            android:id="@+id/fruit_image"/>
+            android:layout_height="194dp"
+            android:id="@+id/fruit_image" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@mipmap/rectangle_bg"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize14"
+            android:layout_centerInParent="true"
             android:id="@+id/fruit_name"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

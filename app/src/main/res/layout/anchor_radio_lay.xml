@@ -7,81 +7,10 @@
     xmlns:sd="http://schemas.android.com/apk/res-auto">
 
 
-    <!--<RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:layout_margin="14dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/good_deream_13"
-            android:textSize="@dimen/textsize14"
-            android:textColor="@color/radio_txt_cocle"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/good_deream_14"
-            android:textSize="@dimen/textsize14"
-            android:layout_alignParentRight="true"
-            android:textColor="@color/get_code_cocle_un"/>
-
-    </RelativeLayout>
-
-
-
-    <HorizontalScrollView
-        android:id="@+id/hsv_hos"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:fadingEdge="horizontal"
-        android:scrollbars="none">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"/>
-        </RelativeLayout>
-
-    </HorizontalScrollView>
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:layout_margin="14dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/good_deream_15"
-            android:textSize="@dimen/textsize14"
-            android:textColor="@color/radio_txt_cocle"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/good_deream_16"
-            android:textSize="@dimen/textsize14"
-            android:layout_alignParentRight="true"
-            android:textColor="@color/get_code_cocle_un"/>
-
-    </RelativeLayout>-->
-
-
     <com.example.myapplication.swipeDrawer_view.SwipeDrawer
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/transparent_del"
         sd:bottomLayout="@+id/bottomLayout"
         sd:mainScroll="@+id/mainList"
         sd:topLayout="@+id/topLayout">
@@ -132,7 +61,12 @@
                 android:textSize="12sp" />
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
+        <!--<androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/mainList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />-->
+
+        <com.donkingliang.headerviewadapter.view.HeaderRecyclerView
             android:id="@+id/mainList"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

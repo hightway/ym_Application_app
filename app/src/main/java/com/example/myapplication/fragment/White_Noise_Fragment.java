@@ -15,12 +15,20 @@ import com.example.myapplication.adapter.FruitAdapter;
 import com.example.myapplication.adapter.White_Noise_Adapter;
 import com.example.myapplication.base.BaseLazyFragment;
 import com.example.myapplication.bean.Fruit;
+import com.example.myapplication.bean.Video_Info_Bean;
+import com.example.myapplication.bean.White_Noise_Bean;
+import com.example.myapplication.http.Api;
 import com.example.myapplication.plmd.Put_Top;
 import com.example.myapplication.swipeDrawer_view.Common;
 import com.example.myapplication.swipeDrawer_view.OnDrawerChange;
 import com.example.myapplication.swipeDrawer_view.SwipeDrawer;
+import com.example.myapplication.tools.OkHttpUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -41,9 +49,10 @@ public class White_Noise_Fragment extends BaseLazyFragment {
     @BindView(R.id.reBottomText)
     TextView reBottomText;
 
-    private List<Fruit> fruitList = new ArrayList<>();
+    private List<White_Noise_Bean.DataBean> dataBeanList = new ArrayList<>();
     private White_Noise_Adapter listAdapter;
-    //private Put_Top put_top;
+    private int page = 1;
+    private int pageSize = 999;
 
 
     /*public White_Noise_Fragment(Put_Top put_top){
@@ -60,24 +69,6 @@ public class White_Noise_Fragment extends BaseLazyFragment {
     protected void initView(View view) {
         ButterKnife.bind(this, view);
 
-
-        /*mainList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if(dy > 10){
-                    put_top.go_top();
-                }else if(dy < 50){
-                    put_top.go_buttom();
-                }
-            }
-        });*/
-
         initData();
     }
 
@@ -90,14 +81,14 @@ public class White_Noise_Fragment extends BaseLazyFragment {
             // 刷新完毕
             private void topOver() {
                 // 显示刷新完成状态
-                SetList(0);
+                //SetList(0);
+                page=1;
+                ListData();
                 reTopIcon.clearAnimation();
                 reTopIcon.setRotation(0);
                 reTopIcon.setVisibility(View.GONE);
 
-                //put_top.go_buttom();
-
-                reTopText.setText("刷新完成");
+                reTopText.setText(getString(R.string.refresh_finish));
                 // 0.6秒后关闭
                 reTopText.postDelayed(new Runnable() {
                     @Override
@@ -111,14 +102,14 @@ public class White_Noise_Fragment extends BaseLazyFragment {
             // 加载完毕
             private void bottomOver() {
                 // 显示加载完成状态
-                SetList(20);
+                //SetList(20);
+                page++;
+                ListData();
                 reBottomIcon.clearAnimation();
                 reBottomIcon.setRotation(0);
                 reBottomIcon.setVisibility(View.GONE);
 
-                //put_top.go_top();
-
-                reBottomText.setText("加载完成");
+                //reBottomText.setText("加载完成");
                 // 0.6秒后关闭
                 reBottomText.postDelayed(new Runnable() {
                     @Override
@@ -168,7 +159,7 @@ public class White_Noise_Fragment extends BaseLazyFragment {
                             reBottomText.setText("正在加载");
                             reBottomIcon.setImageResource(R.mipmap.icon_more);
                             Common.animRotate(reBottomIcon, 800); // 底部加载图标旋转动画
-                            // 1.5秒后结束加载
+                            // 1.2秒后结束加载
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -221,50 +212,58 @@ public class White_Noise_Fragment extends BaseLazyFragment {
             }
         });
 
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
+        mainList.setLayoutManager(layoutManager);
+        listAdapter = new White_Noise_Adapter(getActivity());
+        mainList.setAdapter(listAdapter);
+
         ListData();
     }
 
-
-    /**
-     * 更新 list 数据
-     *
-     * @param num 更新条数
-     */
-    private void SetList(int num) {
-        if (num > 0) {
-            for (int i = 0; i < num; i++) {
-                fruitList.add(new Fruit("白噪音", R.mipmap.wx_icon));
-                fruitList.add(new Fruit("黑噪音", R.mipmap.msm_icon));
-            }
-            listAdapter.notifyDataSetChanged();
-        } else {
-            fruitList.clear();
-            listAdapter.notifyDataSetChanged();
-            for (int i = 0; i < 20; i++) {
-                Fruit orange = new Fruit("绿噪音", R.mipmap.wx_icon);
-                fruitList.add(orange);
-                Fruit waterMelon = new Fruit("红噪音", R.mipmap.msm_icon);
-                fruitList.add(waterMelon);
-            }
-            listAdapter.notifyDataSetChanged();
-        }
-    }
-
-    /**
-     * 给 RecyclerView 填充数据
-     */
     private void ListData() {
-        for (int i = 20; i > 0; i--) {
-            Fruit orange = new Fruit("绿噪音", R.mipmap.wx_icon);
-            fruitList.add(orange);
-            Fruit waterMelon = new Fruit("红噪音", R.mipmap.msm_icon);
-            fruitList.add(waterMelon);
-        }
+        HashMap<String, String> map = new HashMap<>();
+        map.put("page", String.valueOf(page));
+        map.put("size", String.valueOf(pageSize));
+        OkHttpUtil.postRequestNoDialog(Api.HEAD + "white_noises", map, new OkHttpUtil.OnRequestNetWorkListener() {
+            @Override
+            public void notOk(String err) {
+                new Throwable("请求失败");
+            }
 
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
-        mainList.setLayoutManager(layoutManager);
-        listAdapter = new White_Noise_Adapter(fruitList, getActivity());
-        mainList.setAdapter(listAdapter);
+            @Override
+            public void un_login_err() {
+
+            }
+
+            @Override
+            public void ok(String response, JSONObject jsonObject) {
+                try {
+                    int code = jsonObject.getInt("errCode");
+                    if (code == 200) {
+                        White_Noise_Bean white_noise_bean = mgson.fromJson(response, White_Noise_Bean.class);
+                        List<White_Noise_Bean.DataBean> dataBeans = white_noise_bean.data;
+                        if(dataBeans != null && dataBeans.size() > 0){
+                            //listAdapter.setDataList(dataBeans);
+                            if (page == 1) {
+                                dataBeanList = dataBeans;
+                                listAdapter.setDataList(dataBeanList);
+                            } else {
+                                reBottomText.setText(getString(R.string.load_more_success));
+                                dataBeanList.addAll(dataBeans);
+                                listAdapter.notifyItemRangeInserted(listAdapter.getItemCount(), dataBeans.size());
+                            }
+                        }else{
+                            if(page == 1){
+                                listAdapter.clean();
+                            }else{
+                                reBottomText.setText(getString(R.string.load_more));
+                            }
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
-
 }

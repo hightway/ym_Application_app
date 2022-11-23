@@ -136,7 +136,7 @@ public class TabFragment_4 extends BaseLazyFragment {
         MainActivity.mUIConfig.configAuthPage();
         MainActivity.mPhoneNumberAuthHelper.getLoginToken(getActivity(), 5000);*/
 
-        Aliyun_Login_Util.getInstance().initSDK(getActivity(), this);
+        Aliyun_Login_Util.getInstance().initSDK(getActivity());
     }
 
     @OnClick(R.id.tx_unlogin)
@@ -225,33 +225,20 @@ public class TabFragment_4 extends BaseLazyFragment {
     }*/
 
 
-    public void put_Token(String token){
+    /*public void put_Token(String token){
         //拿到token
         getResultWithToken(token);
-    }
+    }*/
 
-    public void getResultWithToken(final String token) {
-        /*ExecutorManager.run(new Runnable() {
-            @Override
-            public void run() {
-                final String result = getPhoneNumber(token);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mPhoneNumberAuthHelper.quitLoginPage();
-                    }
-                });
-            }
-        });*/
-
+    /*public void getResultWithToken(final String token) {
         //上传服务器
         if(!token.isEmpty()){
             post_data(token);
         }
-    }
+    }*/
 
 
-    private void post_data(String token) {
+    /*private void post_data(String token) {
         DialogUtils.getInstance().showDialog(getActivity(), "加载中...");
         HashMap<String, String> map = new HashMap<>();
         map.put("access_token", token);
@@ -297,6 +284,6 @@ public class TabFragment_4 extends BaseLazyFragment {
                 }
             }
         });
-    }
+    }*/
 
 }
