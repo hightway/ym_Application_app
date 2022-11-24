@@ -8,11 +8,13 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 public class VideoPlayTask {
     private SimpleExoPlayerView mSimpleExoPlayerView;
     private ImageView start;
+    private ImageView img_video_pic;
     private String mVideoUrl;
 
-    public VideoPlayTask(SimpleExoPlayerView simpleExoPlayerView, String uri) {
+    public VideoPlayTask(SimpleExoPlayerView simpleExoPlayerView, ImageView img_video_pic, ImageView start, String uri) {
         this.mSimpleExoPlayerView = simpleExoPlayerView;
         this.mVideoUrl = uri;
+        this.img_video_pic = img_video_pic;
         this.start = start;
     }
 
@@ -25,6 +27,14 @@ public class VideoPlayTask {
 
     public void setStart(ImageView start) {
         this.start = start;
+    }
+
+    public ImageView getImg_video_pic() {
+        return img_video_pic;
+    }
+
+    public void setImg_video_pic(ImageView img_video_pic) {
+        this.img_video_pic = img_video_pic;
     }
 
     public SimpleExoPlayerView getSimpleExoPlayerView() {

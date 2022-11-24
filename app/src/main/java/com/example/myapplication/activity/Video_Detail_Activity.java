@@ -4,56 +4,32 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.graphics.Color;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.aliyun.player.AliPlayer;
-import com.aliyun.player.AliPlayerFactory;
-import com.aliyun.player.IPlayer;
-import com.aliyun.player.nativeclass.PlayerConfig;
-import com.aliyun.player.source.UrlSource;
-import com.aliyun.subtitle.SubtitleView;
 import com.example.myapplication.MyApp;
 import com.example.myapplication.R;
-import com.example.myapplication.adapter.Mainpage_Adapter;
 import com.example.myapplication.adapter.VideoViewPagerAdapter;
-import com.example.myapplication.adapter.ViewPage_Adapter;
-import com.example.myapplication.adapter.ViewPage_Meua_Adapter;
 import com.example.myapplication.base.BaseActivity;
 import com.example.myapplication.bean.Video_Detail_Bean;
-import com.example.myapplication.bean.Video_Info_Bean;
 import com.example.myapplication.custom.DialogFragment;
 import com.example.myapplication.custom.ImageRound;
 import com.example.myapplication.custom.MyCircleProgress;
-import com.example.myapplication.custom.MyDialogFragment;
 import com.example.myapplication.custom.VoisePlayingIcon;
-import com.example.myapplication.fragment.Anchor_Radio_Fragment;
-import com.example.myapplication.fragment.Play_History_Fragment;
-import com.example.myapplication.fragment.Video_Fragment;
-import com.example.myapplication.fragment.White_Noise_Fragment;
 import com.example.myapplication.http.Api;
-import com.example.myapplication.tools.Aliyun_Login_Util;
+import com.example.myapplication.tools.DialogUtils;
 import com.example.myapplication.tools.ExpandOrCollapse;
 import com.example.myapplication.tools.OkHttpUtil;
 import com.example.myapplication.tools.Utils;
@@ -61,9 +37,7 @@ import com.example.myapplication.videoplayTool.AppUtil;
 import com.example.myapplication.videoplayTool.VideoPlayManager;
 import com.example.myapplication.videoplayTool.VideoPlayTask;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -96,8 +70,8 @@ public class Video_Detail_Activity extends BaseActivity {
     ViewPager2 mViewPager2;
     @BindView(R.id.img_4)
     ImageView img_4;
-    @BindView(R.id.layout_point)
-    LinearLayout layout_point;
+    /*@BindView(R.id.layout_point)
+    LinearLayout layout_point;*/
     @BindView(R.id.scrollView)
     ScrollView scrollView;
     @BindView(R.id.lin_roll)
@@ -113,9 +87,9 @@ public class Video_Detail_Activity extends BaseActivity {
     private int prevWidth = 0;
     private boolean threadFlag = false;
     private VideoViewPagerAdapter mVideoViewPagerAdapter;
-    private boolean onFragmentResume;
-    private boolean onFragmentVisible;
-    private int pos = 0;
+    //private int pos = 0;
+    private List<Video_Detail_Bean.DataBean.DetailBean> detailBeanList = new ArrayList<>();
+    private List<Integer> data_id = new ArrayList<>();
 
     @Override
     protected int getLayoutID() {
@@ -155,7 +129,6 @@ public class Video_Detail_Activity extends BaseActivity {
         thread.start();
 
 
-        List<String> urls = new ArrayList<>();
         //获取详情
         //get_detail(detail_id);
 
@@ -165,6 +138,17 @@ public class Video_Detail_Activity extends BaseActivity {
         //初始化纯音频
         MyApp.app_mAliPlayer = MyApp.get_app_mAliPlayer();
         Utils.init_Aliyun(MyApp.app_mAliPlayer, MyApp.Aapp_context, lin_roll);
+
+        if(detail_bean != null){
+            initViewPage2(detail_bean.data);
+            add_VideoData_Id(detail_bean.data.detail.id);
+        }
+    }
+
+    private void add_VideoData_Id(Integer id) {
+        if(!data_id.contains(id)){
+            data_id.add(id);
+        }
     }
 
     /*private void get_detail(int detail_id) {
@@ -203,9 +187,16 @@ public class Video_Detail_Activity extends BaseActivity {
         });
     }*/
 
-    private void initViewPage2(List<String> urls) {
+    //private void initViewPage2(List<String> urls) {
+    private void initViewPage2(Video_Detail_Bean.DataBean dataBean) {
+
+        detailBeanList.add(dataBean.detail);
+        if(dataBean.next_list != null && dataBean.next_list.size() > 0){
+            detailBeanList.addAll(dataBean.next_list);
+        }
+
         mVideoViewPagerAdapter = new VideoViewPagerAdapter(instance);
-        mVideoViewPagerAdapter.setDataList(urls);
+        mVideoViewPagerAdapter.setDataList(detailBeanList);
         mViewPager2.setOrientation(ViewPager2.ORIENTATION_VERTICAL);
         mViewPager2.setAdapter(mVideoViewPagerAdapter);
         mViewPager2.setOffscreenPageLimit(2);
@@ -218,16 +209,18 @@ public class Video_Detail_Activity extends BaseActivity {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                Log.d("Video_Play_TAG", " on page selected = " + position);
-                View itemView = mViewPager2.findViewWithTag(position);
-                SimpleExoPlayerView simpleExoPlayerView = itemView.findViewById(R.id.video_view);
-                VideoPlayManager.getInstance(AppUtil.getApplicationContext()).setCurVideoPlayTask(new VideoPlayTask(simpleExoPlayerView,
-                        mVideoViewPagerAdapter.getUrlByPos(position)));
 
-                //开始播放
-                VideoPlayManager.getInstance(AppUtil.getApplicationContext()).startPlay();
 
-                for(int i=0; i<layout_point.getChildCount(); i++){
+                if(!TextUtils.isEmpty(mVideoViewPagerAdapter.getUrlByPos(position))){
+                    start_play(mVideoViewPagerAdapter.get_id(position), mVideoViewPagerAdapter.getUrlByPos(position), position);
+                }else{
+                    //请求数据
+                    get_Video_Detail(mVideoViewPagerAdapter.get_Bean(position), position);
+                }
+
+
+
+                /*for(int i=0; i<layout_point.getChildCount(); i++){
                     if(i == position){
                         layout_point.getChildAt(i).setBackgroundResource(R.drawable.point_enable);
                     }else{
@@ -251,8 +244,7 @@ public class Video_Detail_Activity extends BaseActivity {
                         }
                     }
                 }
-
-                pos = position;
+                pos = position;*/
             }
 
             @Override
@@ -262,7 +254,7 @@ public class Video_Detail_Activity extends BaseActivity {
         });
 
 
-        for(int i=0; i<urls.size(); i++){
+        /*for(int i=0; i<urls.size(); i++){
             //创建下标小白点，然后用LinearLayout作为父容器，把小白点加进去
             View view = new View(instance);
             view.setBackgroundResource(R.drawable.point_disable);
@@ -273,23 +265,97 @@ public class Video_Detail_Activity extends BaseActivity {
             layout_point.addView(view,lp);
         }
         //设置小白点的默认位置0是选中状态的白点。
-        layout_point.getChildAt(0).setBackgroundResource(R.drawable.point_enable);
+        layout_point.getChildAt(0).setBackgroundResource(R.drawable.point_enable);*/
+    }
+
+
+    private void start_play(int id, String url, int position) {
+        if(TextUtils.isEmpty(url)){
+            return;
+        }
+
+        //添加到exclude
+        add_VideoData_Id(id);
+
+        View itemView = mViewPager2.findViewWithTag(position);
+        SimpleExoPlayerView simpleExoPlayerView = itemView.findViewById(R.id.video_view);
+        ImageView img_video_pic = itemView.findViewById(R.id.img_video_pic);
+        ImageView start = itemView.findViewById(R.id.start);
+        //VideoPlayManager.getInstance(AppUtil.getApplicationContext()).setCurVideoPlayTask(new VideoPlayTask(simpleExoPlayerView, img_video_pic, start, mVideoViewPagerAdapter.getUrlByPos(position)));
+        VideoPlayManager.getInstance(AppUtil.getApplicationContext()).setCurVideoPlayTask(new VideoPlayTask(simpleExoPlayerView, img_video_pic, start, url));
+
+        //开始播放
+        VideoPlayManager.getInstance(AppUtil.getApplicationContext()).startPlay();
+    }
+
+
+    private void get_Video_Detail(Video_Detail_Bean.DataBean.DetailBean detail, int position) {
+        DialogUtils.getInstance().showDialog(instance, "加载中...");
+        HashMap<String, String> map = new HashMap<>();
+        map.put("detail_id", String.valueOf(detail.id));
+        if(data_id.size() > 0){
+            //map.put("exclude[]", data_id.toArray(new Integer[data_id.size()]).toString());
+            //Integer[] aaa = data_id.toArray(new Integer[data_id.size()]);
+
+            String code = String.valueOf(data_id);
+            String bb = code.replace("[", "");
+            String cc = bb.replace("]", "");
+
+            map.put("exclude[]", cc);
+        }
+        OkHttpUtil.postRequest(Api.HEAD + "featured_video/detail", map, new OkHttpUtil.OnRequestNetWorkListener() {
+            @Override
+            public void notOk(String err) {
+                new Throwable("请求失败");
+                if(!TextUtils.isEmpty(err) && err.contains("401")){
+                    //未登录，看详情需要登录
+                    //Aliyun_Login_Util.getInstance().initSDK((Activity) instance);
+                }
+            }
+
+            @Override
+            public void un_login_err() {
+                //未登录，看详情需要登录
+                //Aliyun_Login_Util.getInstance().initSDK((Activity) instance);
+            }
+
+            @Override
+            public void ok(String response, JSONObject jsonObject) {
+                try {
+                    int code = jsonObject.getInt("errCode");
+                    if (code == 200) {
+                        Video_Detail_Bean video_detail_bean = new Gson().fromJson(response, Video_Detail_Bean.class);
+                        if(video_detail_bean != null){
+                            detail.resource_url = video_detail_bean.data.detail.resource_url;
+                            //播放
+                            start_play(detail.id, detail.resource_url, position);
+
+
+                            //添加下一个bean
+                            if(video_detail_bean.data.next_list != null && video_detail_bean.data.next_list.size() > 0){
+                                mVideoViewPagerAdapter.addDataList(video_detail_bean.data.next_list);
+                            }
+                        }
+                    }else{
+                        toast(jsonObject.getString("errMsg"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
-        onFragmentResume = true;
-        if(onFragmentVisible) {
-            VideoPlayManager.getInstance(AppUtil.getApplicationContext()).resumePlay();
-        }
+        VideoPlayManager.getInstance(AppUtil.getApplicationContext()).resumePlay();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        onFragmentResume = false;
         VideoPlayManager.getInstance(AppUtil.getApplicationContext()).pausePlay();
     }
 

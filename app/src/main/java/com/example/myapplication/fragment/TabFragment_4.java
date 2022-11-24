@@ -104,28 +104,6 @@ public class TabFragment_4 extends BaseLazyFragment {
     }
 
 
-    public static int getTodayFlag() {
-        // 获取系统时间
-        Calendar c = Calendar.getInstance();
-        // 提取他的时钟值，int型
-        int hour = c.get(Calendar.HOUR_OF_DAY);
-        if (hour < 5) {
-            return R.string.date_1;
-        } else if (hour < 12) {
-            return R.string.date_2;
-        } else if (hour < 13) {
-            return R.string.date_3;
-        } else if (hour < 16) {
-            return R.string.date_4;
-        } else if (hour < 18) {
-            return R.string.date_5;
-        } else if (hour < 24) {
-            return R.string.date_6;
-        }
-        return R.string.date_2;
-    }
-
-
     @OnClick(R.id.tx_login)
     public void tx_login() {
         /*if(MainActivity.getInstance() == null){
@@ -217,73 +195,5 @@ public class TabFragment_4 extends BaseLazyFragment {
             }
         }
     };
-
-
-    /*@Override
-    public void pop_show() {
-        PopupWindow popupWindow = PopWindowUtil.getInstance().getPopupWindow(getActivity(), rel_search_bar, 0, 0, R.style.showPopupAnimation);
-    }*/
-
-
-    /*public void put_Token(String token){
-        //拿到token
-        getResultWithToken(token);
-    }*/
-
-    /*public void getResultWithToken(final String token) {
-        //上传服务器
-        if(!token.isEmpty()){
-            post_data(token);
-        }
-    }*/
-
-
-    /*private void post_data(String token) {
-        DialogUtils.getInstance().showDialog(getActivity(), "加载中...");
-        HashMap<String, String> map = new HashMap<>();
-        map.put("access_token", token);
-
-        OkHttpUtil.postRequest(Api.HEAD + "login_token", map, new OkHttpUtil.OnRequestNetWorkListener() {
-            @Override
-            public void notOk(String err) {
-                new Throwable("请求失败");
-            }
-
-            @Override
-            public void un_login_err() {
-
-            }
-
-            @Override
-            public void ok(String response, JSONObject jsonObject) {
-                try {
-                    int code = jsonObject.getInt("errCode");
-                    toast(jsonObject.getString("errMsg"));
-                    if(code == 200){
-                        UserBean userBean = new Gson().fromJson(response, UserBean.class);
-                        UserBean.DataBean dataBean = userBean.getData();
-
-                        UserConfig.instance().name = dataBean.getName();
-                        UserConfig.instance().phone = dataBean.getPhone();
-                        UserConfig.instance().access_token = dataBean.getAccess_token();
-                        UserConfig.instance().user_id = dataBean.getUser_id();
-                        UserConfig.instance().expires_in = dataBean.getExpires_in();
-                        UserConfig.instance().token_type = dataBean.getToken_type();
-                        //保存
-                        UserConfig.instance().saveUserConfig(getActivity());
-
-                        //刷新数据
-
-
-                        //跳转主页面
-                        //startActivity(new Intent(instance, MainActivity.class));
-                        //finish();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }*/
 
 }

@@ -188,6 +188,14 @@
                 android:resource="@xml/filepaths" />
         </provider>
 
+
+        <meta-data
+            android:name="com.aliyun.alivc_license.licensekey"
+            android:value="zoM0CNl4dmVFRLVaK7afc1a394daa4869b621f01fb28093c9"/>
+        <meta-data
+            android:name="com.aliyun.alivc_license.licensefile"
+            android:value="assets/license.crt" />
+
     </application>
 
 </manifest>

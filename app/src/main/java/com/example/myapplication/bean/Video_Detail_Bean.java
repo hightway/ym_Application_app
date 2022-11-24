@@ -13,7 +13,7 @@ public class Video_Detail_Bean implements Serializable {
 
     public static class DataBean implements Serializable{
         public DetailBean detail;
-        public List<NextListBean> next_list;
+        public List<DetailBean> next_list;
         public List<WhiteNoisesBean> white_noises;
 
         public static class DetailBean implements Serializable{
@@ -57,7 +57,7 @@ public class Video_Detail_Bean implements Serializable {
             }
         }
 
-        public static class NextListBean implements Serializable{
+        /*public static class NextListBean implements Serializable{
             public Integer id;
             public String title;
             public Integer free;
@@ -69,7 +69,7 @@ public class Video_Detail_Bean implements Serializable {
             public DetailBean.LevelsBean levels;
             public DetailBean.PrivilegesBean privileges;
             public List<DetailBean.TagsBean> tags;
-        }
+        }*/
 
         public static class WhiteNoisesBean implements Serializable{
             public Integer id;

@@ -3,6 +3,7 @@ package com.example.myapplication.videoplayTool;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
+import android.view.View;
 
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -81,8 +82,8 @@ public class VideoPlayManager {
         DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
 
         //获取代理url
+        //String url = mCurVideoPlayTask.getVideoUrl();
         String proxyUrl = getProxy().getProxyUrl(mCurVideoPlayTask.getVideoUrl());
-        //Log.d("Video_Play_TAG", "start play orginal url = " + mCurVideoPlayTask.getVideoUrl() + " , proxy url = " + proxyUrl);
         Uri proxyUri = Uri.parse(proxyUrl);
 
         //配置数据源
@@ -96,6 +97,9 @@ public class VideoPlayManager {
         //绑定player和playerView
         mCurVideoPlayTask.getSimpleExoPlayerView().setPlayer(mSimpleExoPlayer);
         mSimpleExoPlayer.setPlayWhenReady(true);
+
+        mCurVideoPlayTask.getImg_video_pic().setVisibility(View.GONE);
+        mCurVideoPlayTask.getStart().setVisibility(View.GONE);
 
         //预缓存
         //DataSpec dataSpec = new DataSpec(uri, 0, 100 * 1024, null);
@@ -114,12 +118,16 @@ public class VideoPlayManager {
         if(mSimpleExoPlayer != null) {
             mSimpleExoPlayer.release();
             mSimpleExoPlayer = null;
+
+            mCurVideoPlayTask.getStart().setVisibility(View.VISIBLE);
         }
     }
 
     public void resumePlay() {
         if(mSimpleExoPlayer != null) {
             mSimpleExoPlayer.setPlayWhenReady(true);
+            mCurVideoPlayTask.getImg_video_pic().setVisibility(View.GONE);
+            mCurVideoPlayTask.getStart().setVisibility(View.GONE);
         } else {
             startPlay();
         }
@@ -128,6 +136,7 @@ public class VideoPlayManager {
     public void pausePlay() {
         if(mSimpleExoPlayer != null) {
             mSimpleExoPlayer.setPlayWhenReady(false);
+            mCurVideoPlayTask.getStart().setVisibility(View.VISIBLE);
         }
     }
 

@@ -5,24 +5,71 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/app_dark">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/img_msg"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@mipmap/my_icon_2"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:padding="8dp"/>
+
+                <ImageView
+                    android:id="@+id/img_setting"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@mipmap/my_icon_1"
+                    android:layout_toLeftOf="@+id/img_msg"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:padding="8dp"/>
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <ImageView
+                    android:id="@+id/user_account"
+                    android:layout_width="53dp"
+                    android:layout_height="53dp"
+                    android:layout_marginLeft="20dp"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
 
 
     <RelativeLayout
         android:id="@+id/rel_search_bar"
         android:layout_width="match_parent"
-        android:layout_height="80dp">
-
-        <!--<TextView
-            android:id="@+id/tx_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="30dp"
-            android:text="上午好"
-            android:textStyle="bold"
-            android:textColor="@color/gray_del"
-            android:textSize="@dimen/textsize18" />-->
+        android:layout_height="80dp"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tx_unlogin"
@@ -58,7 +105,8 @@
         android:layout_height="match_parent"
         android:background="@color/transparent"
         app:allowHorizontalScroll="false"
-        app:isSupportExit="true">
+        app:isSupportExit="true"
+        android:visibility="gone">
 
         <com.yinglan.scrolllayout.content.ContentScrollView
             android:id="@+id/content_scroll_layout"
@@ -108,19 +156,5 @@
         </com.yinglan.scrolllayout.content.ContentScrollView>
 
     </com.yinglan.scrolllayout.ScrollLayout>
-
-    <!--<androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        app:title="所得到的"
-        android:titleTextColor="@android:color/white"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        android:visibility="gone">
-
-    </androidx.appcompat.widget.Toolbar>-->
 
 </RelativeLayout>

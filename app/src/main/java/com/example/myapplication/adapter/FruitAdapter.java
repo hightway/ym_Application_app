@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -136,6 +137,8 @@ public class FruitAdapter extends RecyclerView.Adapter<FruitAdapter.ViewHolder> 
                     if (code == 200) {
                         Video_Detail_Bean video_detail_bean = new Gson().fromJson(response, Video_Detail_Bean.class);
                         mContext.startActivity(new Intent(mContext, Video_Detail_Activity.class).putExtra("detail_bean", video_detail_bean));
+                    }else{
+                        Toast.makeText(instance, jsonObject.getString("errMsg"), Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
