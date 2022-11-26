@@ -3,6 +3,7 @@ package com.example.myapplication.activity;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.provider.AlarmClock;
@@ -23,6 +24,9 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.myapplication.R;
 import com.example.myapplication.base.BaseActivity;
 import com.example.myapplication.custom.DatePickerAdapter;
@@ -53,6 +57,8 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
     ScrollPickerView datepicker_year_2;
     @BindView(R.id.img_more)
     ImageView img_more;
+    @BindView(R.id.img_bg)
+    ImageView img_bg;
 
 
     private DatePickerAdapter mDayAdapter;
@@ -62,6 +68,7 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
 
     @Override
     protected int getLayoutID() {
+        setBar_color_transparent(R.color.transparent);
         instance = this;
         return R.layout.sleep_set_lay;
     }
@@ -88,6 +95,14 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         datepicker_year_2.setOnItemSelectedListener(this);
         datepicker_year_1.setSelectedPosition(t_hour);
         datepicker_year_2.setSelectedPosition(t_minute);
+
+        //加载gif背景图
+        String url = "file:///android_asset/gif_bg.gif";
+        Glide.with(instance)
+                .asGif()
+                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
+                .load(url)
+                .into(img_bg);
     }
 
     private void get_Time() {
@@ -279,6 +294,5 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         intent.putExtra(AlarmClock.EXTRA_VIBRATE, true);
         startActivity(intent);
     }
-
 
 }

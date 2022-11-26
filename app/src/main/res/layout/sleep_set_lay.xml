@@ -5,10 +5,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/black_1">
 
+    <ImageView
+        android:id="@+id/img_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/trans"/>
+
     <RelativeLayout
         android:id="@+id/search_bar"
         android:layout_width="match_parent"
         android:layout_height="44dp"
+        android:layout_marginTop="30dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:gravity="center_vertical">
@@ -32,22 +45,13 @@
 
     </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/image_m"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/search_bar"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="56dp"
-        android:layout_marginRight="56dp"
-        android:src="@mipmap/m_oval"/>
 
     <RelativeLayout
         android:id="@+id/rel_time"
         android:layout_width="match_parent"
         android:layout_height="170dp"
-        android:layout_marginTop="30dp"
-        android:layout_below="@+id/image_m">
+        android:layout_above="@+id/tx_set_time"
+        android:layout_marginBottom="14dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -103,17 +107,19 @@
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/tx_set_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/good_deream_10"
-        android:layout_marginTop="12dp"
         android:textSize="@dimen/textsize14"
-        android:layout_below="@+id/rel_time"
+        android:layout_above="@+id/lin_but"
+        android:layout_marginBottom="100dp"
         android:layout_centerHorizontal="true"
         android:textColor="@color/white"/>
 
 
     <LinearLayout
+        android:id="@+id/lin_but"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -132,6 +138,7 @@
         <ImageView
             android:layout_width="54dp"
             android:layout_height="54dp"
+            android:layout_centerInParent="true"
             android:src="@mipmap/sleep_icon_3"/>
 
         <ImageView
