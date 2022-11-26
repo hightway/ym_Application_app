@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -37,8 +38,24 @@ public class VideoViewPagerAdapter extends RecyclerView.Adapter<VideoViewPagerAd
     }
 
     public void addDataList(List<Video_Detail_Bean.DataBean.DetailBean> videoUrls) {
-        mVieoUrls.addAll(videoUrls);
-        notifyDataSetChanged();
+        boolean is_same = false;
+        if(videoUrls != null && videoUrls.size() > 0){
+            Video_Detail_Bean.DataBean.DetailBean detailBean = videoUrls.get(0);
+            if(detailBean != null && mVieoUrls.size() > 0){
+                for(Video_Detail_Bean.DataBean.DetailBean bean : mVieoUrls){
+                    if(bean.id.equals(detailBean.id)){
+                        is_same = true;
+                        break;
+                    }
+                }
+            }
+
+            if(!is_same){
+                mVieoUrls.add(detailBean);
+                notifyItemInserted(getItemCount());
+                //notifyDataSetChanged();
+            }
+        }
     }
 
     @NonNull
@@ -52,9 +69,16 @@ public class VideoViewPagerAdapter extends RecyclerView.Adapter<VideoViewPagerAd
     public void onBindViewHolder(@NonNull VideoViewPagerAdapter.VideoViewHolder holder, int position) {
         Video_Detail_Bean.DataBean.DetailBean detailBean = mVieoUrls.get(position);
         if(detailBean != null){
-            /*Glide.with(mContext)
+            Glide.with(mContext)
                     .load(detailBean.icon)
-                    .into(holder.img_video_pic);*/
+                    .into(holder.img_video_pic);
+
+            holder.roll.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    exoPlayerView_click.view_vlick();
+                }
+            });
 
             //holder.videoUrl = mVieoUrls.get(position);
             holder.itemView.setTag(position);
@@ -68,8 +92,8 @@ public class VideoViewPagerAdapter extends RecyclerView.Adapter<VideoViewPagerAd
 
     public class VideoViewHolder extends RecyclerView.ViewHolder {
         public SimpleExoPlayerView mVideoView;
-        public SurfaceView surface_view;
         public ImageView start;
+        public FrameLayout roll;
         public ImageView img_video_pic;
         //public String videoUrl;
 
@@ -78,6 +102,7 @@ public class VideoViewPagerAdapter extends RecyclerView.Adapter<VideoViewPagerAd
             mVideoView = itemView.findViewById(R.id.video_view);
             img_video_pic = itemView.findViewById(R.id.img_video_pic);
             start = itemView.findViewById(R.id.start);
+            roll = itemView.findViewById(R.id.roll);
             /*surface_view = itemView.findViewById(R.id.surface_view);
             start = itemView.findViewById(R.id.start);*/
         }
@@ -93,6 +118,19 @@ public class VideoViewPagerAdapter extends RecyclerView.Adapter<VideoViewPagerAd
 
     public Video_Detail_Bean.DataBean.DetailBean get_Bean(int pos) {
         return mVieoUrls.get(pos);
+    }
+
+    public Video_Detail_Bean.DataBean.DetailBean get_Radio(int pos) {
+        return mVieoUrls.get(pos);
+    }
+
+
+    private ExoPlayerView_Click exoPlayerView_click;
+    public void setExoPlayerView_Click(ExoPlayerView_Click exoPlayerView_click){
+        this.exoPlayerView_click = exoPlayerView_click;
+    }
+    public interface ExoPlayerView_Click{
+        void view_vlick();
     }
 
 }

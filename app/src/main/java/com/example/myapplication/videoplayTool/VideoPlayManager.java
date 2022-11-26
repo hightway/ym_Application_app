@@ -82,9 +82,10 @@ public class VideoPlayManager {
         DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
 
         //获取代理url
-        //String url = mCurVideoPlayTask.getVideoUrl();
         String proxyUrl = getProxy().getProxyUrl(mCurVideoPlayTask.getVideoUrl());
         Uri proxyUri = Uri.parse(proxyUrl);
+        //预缓存
+        //DataSpec dataSpec = new DataSpec(proxyUri, 0, 100 * 1024, null);
 
         //配置数据源
         MediaSource mediaSource = new ExtractorMediaSource(proxyUri, mediaDataSourceFactory, extractorsFactory, null, null);
@@ -100,9 +101,6 @@ public class VideoPlayManager {
 
         mCurVideoPlayTask.getImg_video_pic().setVisibility(View.GONE);
         mCurVideoPlayTask.getStart().setVisibility(View.GONE);
-
-        //预缓存
-        //DataSpec dataSpec = new DataSpec(uri, 0, 100 * 1024, null);
 
         //静音播放
         //mSimpleExoPlayer.setVolume(0f);

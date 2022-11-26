@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import com.aliyun.player.AliPlayer;
 import com.aliyun.player.AliPlayerFactory;
 import com.aliyun.player.nativeclass.PlayerConfig;
+import com.bumptech.glide.request.target.ViewTarget;
 import com.example.myapplication.aliyun_oss.AliyunOSSUtils;
 import com.example.myapplication.config.Get_AssetsUtil;
 import com.example.myapplication.http.Api;
@@ -71,6 +72,7 @@ public class MyApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        ViewTarget.setTagId(R.id.glide_tag);
         Aapp_context = getApplicationContext();
         disableAPIDialog();
 

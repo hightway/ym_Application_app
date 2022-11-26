@@ -31,7 +31,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class More_Radio_Fragment extends BaseLazyFragment {
+public class More_Radio_Fragment extends BaseLazyFragment implements More_Radio_Adapter.OnRvItemClick {
 
     private int cate_id;
     @BindView(R.id.mainList)
@@ -212,6 +212,7 @@ public class More_Radio_Fragment extends BaseLazyFragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mainList.setLayoutManager(layoutManager);
         listAdapter = new More_Radio_Adapter(getActivity());
+        listAdapter.setOnHosGridItemClick(this);
         mainList.setAdapter(listAdapter);
 
         ListData();
@@ -266,5 +267,10 @@ public class More_Radio_Fragment extends BaseLazyFragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void OnRvItemClick(View view) {
+
     }
 }

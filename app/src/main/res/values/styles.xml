@@ -155,4 +155,11 @@
     </style>
 
 
+    <declare-styleable name="RealtimeBlurView_New">
+        <attr format="dimension" name="realtimeBlurRadius"/>
+        <attr format="float" name="realtimeDownsampleFactor"/>
+        <attr format="color" name="realtimeOverlayColor"/>
+    </declare-styleable>
+
+
 </resources>

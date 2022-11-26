@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -21,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public class Utils {
 
@@ -128,62 +130,100 @@ public class Utils {
 
 
 
-    public static void init_Aliyun(AliPlayer mAliPlayer, Context instance, LinearLayout lin_roll){
-        //用于显示SRT和VTT字幕
-        SubtitleView subtitleView = new SubtitleView(instance);
+    public static void init_Aliyun(AliPlayer mAliPlayer, Context instance, LinearLayout lin_roll, String url, String srt){
+        //字幕
+        if(!TextUtils.isEmpty(srt)){
+            lin_roll.setVisibility(View.VISIBLE);
+            //用于显示SRT和VTT字幕
+            SubtitleView subtitleView = new SubtitleView(instance);
 
-        SubtitleView.DefaultValueBuilder defaultValueBuilder = new SubtitleView.DefaultValueBuilder();
-        defaultValueBuilder.setColor("#FFFFFFFF");
-        defaultValueBuilder.setSize(45);
-        subtitleView.setDefaultValue(defaultValueBuilder);
-        //用于显示ASS和SSA字幕
-        //AssSubtitleView assSubtitleView = new AssSubtitleView(instance);
-        //将字幕View添加到布局视图中
-        lin_roll.addView(subtitleView);
-        mAliPlayer.setOnSubtitleDisplayListener(new IPlayer.OnSubtitleDisplayListener() {
-            @Override
-            public void onSubtitleExtAdded(int trackIndex, String url) {
-                mAliPlayer.selectExtSubtitle(trackIndex, true);
-            }
+            SubtitleView.DefaultValueBuilder defaultValueBuilder = new SubtitleView.DefaultValueBuilder();
+            defaultValueBuilder.setColor("#FFFFFFFF");
+            defaultValueBuilder.setSize(45);
+            subtitleView.setDefaultValue(defaultValueBuilder);
+            //用于显示ASS和SSA字幕
+            //AssSubtitleView assSubtitleView = new AssSubtitleView(instance);
+            //将字幕View添加到布局视图中
+            lin_roll.addView(subtitleView);
+            mAliPlayer.setOnSubtitleDisplayListener(new IPlayer.OnSubtitleDisplayListener() {
+                @Override
+                public void onSubtitleExtAdded(int trackIndex, String url) {
+                    mAliPlayer.selectExtSubtitle(trackIndex, true);
+                }
 
-            @Override
-            public void onSubtitleShow(int trackIndex, long id, String data) {
-                // ass 字幕
-                //assSubtitleView.show(id,data);
+                @Override
+                public void onSubtitleShow(int trackIndex, long id, String data) {
+                    // ass 字幕
+                    //assSubtitleView.show(id,data);
 
-                // srt 字幕
-                SubtitleView.Subtitle subtitle = new SubtitleView.Subtitle();
+                    // srt 字幕
+                    SubtitleView.Subtitle subtitle = new SubtitleView.Subtitle();
 
-                subtitle.id = id + "";
-                subtitle.content = data;
-                subtitleView.show(subtitle);
+                    subtitle.id = id + "";
+                    subtitle.content = data;
+                    subtitleView.show(subtitle);
 
                 /*lin_roll.bringToFront();
                 lin_roll.setStateListAnimator(null);*/
-            }
+                }
 
-            @Override
-            public void onSubtitleHide(int trackIndex, long id) {
-                // ass 字幕
-                //assSubtitleView.dismiss(id);
-                // srt 字幕
-                subtitleView.dismiss(id + "");
-            }
+                @Override
+                public void onSubtitleHide(int trackIndex, long id) {
+                    // ass 字幕
+                    //assSubtitleView.dismiss(id);
+                    // srt 字幕
+                    subtitleView.dismiss(id + "");
+                }
 
-            @Override
-            public void onSubtitleHeader(int trackIndex, String header) {
+                @Override
+                public void onSubtitleHeader(int trackIndex, String header) {
 
-            }
-        });
+                }
+            });
+            mAliPlayer.addExtSubtitle(srt);
+        }else{
+            lin_roll.setVisibility(View.GONE);
+        }
 
-        mAliPlayer.addExtSubtitle("https://test-maoyu.oss-cn-guangzhou.aliyuncs.com/%E5%81%8F%E7%88%B1.srt");
         UrlSource urlSource = new UrlSource();
-        urlSource.setUri("https://test-maoyu.oss-cn-guangzhou.aliyuncs.com/%E5%81%8F%E7%88%B1.mp3");
+        urlSource.setUri(url);
         //设置播放源
         mAliPlayer.setLoop(true);
         mAliPlayer.setDataSource(urlSource);
         mAliPlayer.setAutoPlay(true);
         mAliPlayer.prepare();
+    }
+
+
+
+    /**
+     * list拼接成字符串
+     */
+    public static String listToString(List list, String separator) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < list.size(); i++) {
+            sb.append(list.get(i));
+            if (i < list.size() - 1) {
+                sb.append(separator);
+            }
+        }
+        return sb.toString();
+    }
+
+
+
+    public static String transfom(int time) {
+        long shi= time / 3600;
+        long fen= (time % 3600) / 60;
+        long miao= (time % 3600) % 60;
+        //shi< 10 ? ("0" + shi) : shi)判断时否大于10时的话就执行shi,否则执行括号中的
+        String str;
+        if(shi >= 1){
+            str = (shi< 10 ? ("0" + shi) : shi) + ":" + (fen< 10 ? ("0" + fen) : fen) + ":" + (miao< 10 ? ("0" + miao) : miao);
+        }else{
+            str = (fen< 10 ? ("0" + fen) : fen) + ":" + (miao< 10 ? ("0" + miao) : miao);
+        }
+        return str;
     }
 
 

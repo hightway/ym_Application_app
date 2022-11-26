@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:voisePlayingIconAttr="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/app_dark">
 
 
@@ -65,7 +66,8 @@
         android:layout_marginLeft="30dp"
         android:layout_marginBottom="20dp"
         android:layout_above="@+id/rel_bnt"
-        android:orientation="horizontal" />
+        android:orientation="horizontal"
+        android:visibility="gone"/>
 
 
     <RelativeLayout
@@ -81,24 +83,27 @@
             android:id="@+id/rel_root"
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/video_play_bg">
+            android:layout_alignParentRight="true">
+
+            <com.example.myapplication.custom.RealtimeBlurView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
             <RelativeLayout
                 android:id="@+id/rel_icon"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"/>
 
             <com.example.myapplication.custom.ImageRound
                 android:id="@+id/image_round_1"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
-                android:src="@mipmap/ic_launcher"
+                android:src="@mipmap/loading_icon"
                 android:visibility="invisible"/>
 
             <LinearLayout
@@ -122,8 +127,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="28dp"
                         android:layout_toLeftOf="@+id/tx_long"
-                        android:text="是当时的时代"
                         android:gravity="center"
+                        android:singleLine="true"
                         android:layout_marginRight="20dp"
                         android:layout_centerVertical="true"
                         android:textColor="@color/white"
@@ -133,8 +138,8 @@
                         android:id="@+id/tx_long"
                         android:layout_width="wrap_content"
                         android:layout_height="28dp"
-                        android:text="02:00"
                         android:gravity="center"
+                        android:singleLine="true"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:textColor="@color/white"
@@ -145,7 +150,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="28dp"
+                    android:layout_height="32dp"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -156,8 +161,9 @@
 
                         <ImageView
                             android:id="@+id/img_1"
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:padding="4dp"
                             android:src="@mipmap/img_play_1" />
 
                     </LinearLayout>
@@ -176,8 +182,9 @@
 
                         <ImageView
                             android:id="@+id/img_2"
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:padding="4dp"
                             android:src="@mipmap/img_play_2" />
 
                     </LinearLayout>
@@ -196,8 +203,9 @@
 
                         <ImageView
                             android:id="@+id/img_3"
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:padding="4dp"
                             android:src="@mipmap/img_play_3" />
 
                     </LinearLayout>
@@ -216,8 +224,9 @@
 
                         <ImageView
                             android:id="@+id/img_4"
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:padding="4dp"
                             android:src="@mipmap/img_play_4" />
 
                     </LinearLayout>
@@ -232,22 +241,22 @@
 
         <RelativeLayout
             android:id="@+id/rel_round"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp">
 
             <com.example.myapplication.custom.MyCircleProgress
                 android:id="@+id/circle_progress"
-                android:layout_width="60dp"
-                android:layout_height="60dp" />
+                android:layout_width="64dp"
+                android:layout_height="64dp" />
 
             <com.example.myapplication.custom.ImageRound
                 android:id="@+id/image_round"
-                android:layout_width="51dp"
-                android:layout_height="51dp"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
                 android:layout_centerInParent="true"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@mipmap/loading_icon" />
 
             <com.example.myapplication.custom.VoisePlayingIcon
                 android:id="@+id/voise_icon"

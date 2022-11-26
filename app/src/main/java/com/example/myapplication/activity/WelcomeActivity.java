@@ -303,7 +303,7 @@ public class WelcomeActivity extends BaseActivity {
                     int code = jsonObject.getInt("errCode");
                     toast(jsonObject.getString("errMsg"));
                     if(code == 200){
-                        UserBean userBean = new Gson().fromJson(response, UserBean.class);
+                        UserBean userBean = mGson.fromJson(response, UserBean.class);
                         UserBean.DataBean dataBean = userBean.getData();
 
                         UserConfig.instance().name = dataBean.getName();

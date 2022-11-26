@@ -74,7 +74,7 @@ public class My_Video_Detail_Activity extends BaseActivity {
 
         initViewPager();
 
-        Utils.init_Aliyun(MyApp.get_app_mAliPlayer(), MyApp.Aapp_context, lin_roll);
+        Utils.init_Aliyun(MyApp.get_app_mAliPlayer(), MyApp.Aapp_context, lin_roll, "", "");
     }
 
 

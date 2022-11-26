@@ -12,6 +12,7 @@ android {
         targetSdk 32
         versionCode 100
         versionName "1.0.0"
+        renderscriptSupportModeEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

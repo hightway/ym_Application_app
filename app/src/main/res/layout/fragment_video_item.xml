@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/app_dark">
+    android:background="@color/app_dark"
+    android:id="@+id/roll">
 
 
     <com.google.android.exoplayer2.ui.SimpleExoPlayerView
@@ -16,8 +17,7 @@
     <ImageView
         android:id="@+id/img_video_pic"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"/>
+        android:layout_height="match_parent" />
 
     <ImageView
         android:id="@+id/start"

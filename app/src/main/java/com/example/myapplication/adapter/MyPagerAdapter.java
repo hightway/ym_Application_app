@@ -33,7 +33,7 @@ import java.util.List;
 
 public class MyPagerAdapter extends PagerAdapter {
 
-    ArrayList<PlayerInfo> playerInfoList = new ArrayList<>();
+    private ArrayList<PlayerInfo> playerInfoList = new ArrayList<>();
     private LinkedList<View> mViewCache = new LinkedList<>();
     private Context context;
     private List<Video> mlist;
