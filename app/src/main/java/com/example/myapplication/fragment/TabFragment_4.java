@@ -3,6 +3,7 @@ package com.example.myapplication.fragment;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -43,6 +44,8 @@ public class TabFragment_4 extends BaseLazyFragment {
     TextView tx_top;
     @BindView(R.id.rel_search_bar)
     RelativeLayout rel_search_bar;
+    @BindView(R.id.img_msg)
+    ImageView img_msg;
 
 
     @Override
@@ -117,7 +120,7 @@ public class TabFragment_4 extends BaseLazyFragment {
         Aliyun_Login_Util.getInstance().initSDK(getActivity());
     }
 
-    @OnClick(R.id.tx_unlogin)
+    @OnClick(R.id.img_msg)
     public void tx_unlogin() {
         //退出登陆
         DialogUtils.getInstance().showDialog(getActivity(), "退出登录中...");

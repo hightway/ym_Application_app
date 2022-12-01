@@ -4,10 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.Display;
 import android.view.Gravity;
@@ -31,14 +27,22 @@ import com.example.myapplication.MyApp;
 import com.example.myapplication.R;
 import com.example.myapplication.adapter.VideoViewPagerAdapter;
 import com.example.myapplication.base.BaseActivity;
+import com.example.myapplication.bean.Audio_Detail_Bean;
+import com.example.myapplication.bean.Hor_DateBean;
 import com.example.myapplication.bean.Noise_Bean;
 import com.example.myapplication.bean.Video_Detail_Bean;
+import com.example.myapplication.bean.White_Noise_Bean;
 import com.example.myapplication.custom.DialogFragment;
-import com.example.myapplication.custom.Fglass;
+import com.example.myapplication.custom.FloatWindow_View;
 import com.example.myapplication.custom.ImageRound;
 import com.example.myapplication.custom.MyCircleProgress;
 import com.example.myapplication.custom.VoisePlayingIcon;
 import com.example.myapplication.http.Api;
+import com.example.myapplication.plmd.AliPlayer_Noise_Callback;
+import com.example.myapplication.plmd.Radio_Click;
+import com.example.myapplication.plmd.Radio_Click_Set;
+import com.example.myapplication.plmd.White_Noise_Cliack;
+import com.example.myapplication.plmd.White_Noise_Cliack_Set;
 import com.example.myapplication.tools.DialogUtils;
 import com.example.myapplication.tools.ExpandOrCollapse;
 import com.example.myapplication.tools.OkHttpUtil;
@@ -59,7 +63,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class Video_Detail_Activity extends BaseActivity implements VideoViewPagerAdapter.ExoPlayerView_Click {
+public class Video_Detail_Activity extends BaseActivity implements VideoViewPagerAdapter.ExoPlayerView_Click, White_Noise_Cliack, Radio_Click {
 
     private Video_Detail_Activity instance;
     @BindView(R.id.image_round)
@@ -116,6 +120,9 @@ public class Video_Detail_Activity extends BaseActivity implements VideoViewPage
     private int current_noise_index = 0;
     private String current_noise_url;
     private boolean is_noise_play = false;
+    private int current_noise_max;
+    private DialogFragment dialogFragment;
+    private String current_type;
 
     @Override
     protected int getLayoutID() {
@@ -137,24 +144,6 @@ public class Video_Detail_Activity extends BaseActivity implements VideoViewPage
         //音乐栏动画
         mAnimationManager = new ExpandOrCollapse();
 
-        //进度圆环
-        circle_progress.SetMax(500);
-        Thread thread = new Thread(() -> {
-            int j = 0;
-            while (!threadFlag && j < 500) {
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                j++;
-                int finalJ = j;
-                runOnUiThread(() -> circle_progress.SetCurrent(finalJ));
-            }
-        });
-        thread.start();
-
-
         //init viewpager2
         //initViewPage2(urls);
 
@@ -165,6 +154,11 @@ public class Video_Detail_Activity extends BaseActivity implements VideoViewPage
             white_noises.clear();
             white_noises.addAll(detail_bean.data.white_noises);
         }
+
+        //设置白噪音点击监听事件
+        White_Noise_Cliack_Set.setWhite_Noise_Cliack(this);
+        //设置电台点击事件
+        Radio_Click_Set.setRadio_Cliack(this);
     }
 
     private void add_VideoData_Id(Integer id) {
@@ -185,7 +179,7 @@ public class Video_Detail_Activity extends BaseActivity implements VideoViewPage
         mVideoViewPagerAdapter.setDataList(detailBeanList);
         mViewPager2.setOrientation(ViewPager2.ORIENTATION_VERTICAL);
         mViewPager2.setAdapter(mVideoViewPagerAdapter);
-        mViewPager2.setOffscreenPageLimit(2);
+        mViewPager2.setOffscreenPageLimit(1);
         mViewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -306,18 +300,32 @@ public class Video_Detail_Activity extends BaseActivity implements VideoViewPage
             mVideoViewPagerAdapter.addDataList(list);
         }
 
-
-        //停止上一个白噪音播放
-        current_noise_index = 0;
-        stop_noise_play();
-        //重置白噪音
-        List<Video_Detail_Bean.DataBean.WhiteNoisesBean> noisesBeans = (List<Video_Detail_Bean.DataBean.WhiteNoisesBean>) img_video_pic.getTag();
-        if (noisesBeans != null && noisesBeans.size() > 0) {
+        //如果播放是电台，不切换
+        if(!TextUtils.isEmpty(current_type) && current_type.equals("radio_stations")){
+            //获取当前播放的电台
+            Video_Detail_Bean.DataBean.WhiteNoisesBean whiteNoisesBean = white_noises.get(current_noise_index);
             white_noises.clear();
-            white_noises.addAll(noisesBeans);
-            init_noises();
-        } else {
-            image_round.setImageResource(R.mipmap.loading_icon);
+
+            current_noise_index = 0;
+            white_noises.add(whiteNoisesBean);
+            //重置白噪音
+            List<Video_Detail_Bean.DataBean.WhiteNoisesBean> noisesBeans = (List<Video_Detail_Bean.DataBean.WhiteNoisesBean>) img_video_pic.getTag();
+            if (noisesBeans != null && noisesBeans.size() > 0) {
+                white_noises.addAll(noisesBeans);
+            }
+        }else{
+            //停止上一个白噪音播放
+            current_noise_index = 0;
+            stop_noise_play();
+            //重置白噪音
+            List<Video_Detail_Bean.DataBean.WhiteNoisesBean> noisesBeans = (List<Video_Detail_Bean.DataBean.WhiteNoisesBean>) img_video_pic.getTag();
+            if (noisesBeans != null && noisesBeans.size() > 0) {
+                white_noises.clear();
+                white_noises.addAll(noisesBeans);
+                init_noises();
+            } else {
+                image_round.setImageResource(R.mipmap.loading_icon);
+            }
         }
     }
 
@@ -356,6 +364,11 @@ public class Video_Detail_Activity extends BaseActivity implements VideoViewPage
      * */
     private void stop_noise_play() {
         current_noise_url = "";
+        current_noise_max = 0;
+        current_pro = 0;
+        threadFlag = true;
+        lin_roll.setVisibility(View.GONE);
+        circle_progress.SetCurrent(0);
         is_noise_play = false;
         voise_icon.setVisibility(View.GONE);
         voise_icon.stop();
@@ -372,9 +385,6 @@ public class Video_Detail_Activity extends BaseActivity implements VideoViewPage
         HashMap<String, String> map = new HashMap<>();
         map.put("detail_id", String.valueOf(detail.id));
         if (data_id.size() > 0) {
-            /*String code = String.valueOf(data_id);
-            String bb = code.replace("[", "");
-            String cc = bb.replace("]", "");*/
             map.put("exclude[]", Utils.listToString(data_id, ","));
         }
         OkHttpUtil.postRequest(Api.HEAD + "featured_video/detail", map, new OkHttpUtil.OnRequestNetWorkListener() {
@@ -469,6 +479,7 @@ public class Video_Detail_Activity extends BaseActivity implements VideoViewPage
         threadFlag = true;
         VideoPlayManager.getInstance(AppUtil.getApplicationContext()).stopPlay();
         stop_noise_play();
+        //initView_FloatWindow();
         super.onDestroy();
     }
 
@@ -480,6 +491,13 @@ public class Video_Detail_Activity extends BaseActivity implements VideoViewPage
         stop_noise_play();
         finish();
     }
+
+    /*private void initView_FloatWindow() {
+        if(MyApp.floatWindow_view == null){
+            MyApp.floatWindow_view = new FloatWindow_View(getApplicationContext());
+            MyApp.floatWindow_view.showFloatWindow();
+        }
+    }*/
 
     @OnClick(R.id.img_more)
     public void img_more() {
@@ -601,33 +619,8 @@ public class Video_Detail_Activity extends BaseActivity implements VideoViewPage
         /*MyDialogFragment customLoseDialog = new MyDialogFragment();
         customLoseDialog.show(getSupportFragmentManager(), "lose");*/
 
-        DialogFragment dialogFragment = new DialogFragment();
+        dialogFragment = new DialogFragment();
         dialogFragment.show(getSupportFragmentManager(), "ss");
-
-        /*BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(instance);
-        //BottomSheetDialogFragment mBottomSheetDialog = new BottomSheetDialogFragment();
-
-        View view1 = getLayoutInflater().inflate(R.layout.layout_meua, null);
-        view1.setBackgroundResource(R.color.transparent);
-        mBottomSheetDialog.setContentView(view1);
-
-        TabLayout tl_tabs = mBottomSheetDialog.getWindow().findViewById(R.id.meua_tabs);
-        ViewPager meua_viewpage = mBottomSheetDialog.getWindow().findViewById(R.id.meua_viewpage);
-        List<String> tab_name = new ArrayList<>();
-        List<Fragment> fragmentList = new ArrayList<>();
-
-        tab_name.add(getString(R.string.meua_1));
-        tab_name.add(getString(R.string.meua_2));
-        tab_name.add(getString(R.string.meua_3));
-        fragmentList.add(new White_Noise_Fragment());
-        fragmentList.add(new Anchor_Radio_Fragment());
-        fragmentList.add(new Play_History_Fragment());
-        ViewPage_Meua_Adapter adapter = new ViewPage_Meua_Adapter(getSupportFragmentManager(), fragmentList, tab_name);
-        meua_viewpage.setAdapter(adapter);
-        tl_tabs.setupWithViewPager(meua_viewpage);
-
-        mBottomSheetDialog.show();*/
-
     }
 
 
@@ -686,7 +679,15 @@ public class Video_Detail_Activity extends BaseActivity implements VideoViewPage
         if (TextUtils.isEmpty(current_noise_url)) {
             //请求白噪音资源
             if (white_noises.size() > 0 && current_noise_index < white_noises.size()) {
-                getwhite_noise_detail(white_noises.get(current_noise_index).id);
+                Video_Detail_Bean.DataBean.WhiteNoisesBean bean = white_noises.get(current_noise_index);
+                if(bean != null){
+                    if(bean.resource_type.equals("radio_stations")){
+                        //电台
+                        getradio_station_detail(bean);
+                    }else{
+                        getwhite_noise_detail(bean);
+                    }
+                }
             }
         } else {
             if (MyApp.app_mAliPlayer == null) {
@@ -722,8 +723,27 @@ public class Video_Detail_Activity extends BaseActivity implements VideoViewPage
             }
             //请求白噪音资源
             if (current_noise_index < white_noises.size()) {
-                init_noise_data(white_noises.get(current_noise_index));
-                getwhite_noise_detail(white_noises.get(current_noise_index).id);
+                Video_Detail_Bean.DataBean.WhiteNoisesBean whiteNoisesBean = white_noises.get(current_noise_index);
+                init_noise_data(whiteNoisesBean);
+
+                if(!TextUtils.isEmpty(whiteNoisesBean.resource_url)){
+                    //直接播放
+                    current_noise_url = whiteNoisesBean.resource_url;
+                    current_noise_max = whiteNoisesBean.resource_duration;
+                    current_type = whiteNoisesBean.resource_type;
+                    if(!TextUtils.isEmpty(whiteNoisesBean.resource_type) && whiteNoisesBean.resource_type.equals("radio_stations")){
+                        start_noise_play(current_noise_url, whiteNoisesBean.draft_url, current_type);
+                    }else{
+                        start_noise_play(current_noise_url, "", current_type);
+                    }
+                }else{
+                    if(whiteNoisesBean.resource_type.equals("radio_stations")){
+                        //电台
+                        getradio_station_detail(whiteNoisesBean);
+                    }else{
+                        getwhite_noise_detail(whiteNoisesBean);
+                    }
+                }
             }
         }
     }
@@ -746,16 +766,38 @@ public class Video_Detail_Activity extends BaseActivity implements VideoViewPage
             }
             //请求白噪音资源
             if (current_noise_index < white_noises.size()) {
-                init_noise_data(white_noises.get(current_noise_index));
-                getwhite_noise_detail(white_noises.get(current_noise_index).id);
+                Video_Detail_Bean.DataBean.WhiteNoisesBean whiteNoisesBean = white_noises.get(current_noise_index);
+                init_noise_data(whiteNoisesBean);
+
+                if(!TextUtils.isEmpty(whiteNoisesBean.resource_url)){
+                    //直接播放
+                    current_noise_url = whiteNoisesBean.resource_url;
+                    current_noise_max = whiteNoisesBean.resource_duration;
+                    current_type = whiteNoisesBean.resource_type;
+                    if(!TextUtils.isEmpty(whiteNoisesBean.resource_type) && whiteNoisesBean.resource_type.equals("radio_stations")){
+                        start_noise_play(current_noise_url, whiteNoisesBean.draft_url, current_type);
+                    }else{
+                        start_noise_play(current_noise_url, "", current_type);
+                    }
+                }else{
+                    if(whiteNoisesBean.resource_type.equals("radio_stations")){
+                        //电台
+                        getradio_station_detail(whiteNoisesBean);
+                    }else{
+                        getwhite_noise_detail(whiteNoisesBean);
+                    }
+                }
             }
         }
     }
 
 
-    private void getwhite_noise_detail(Integer id) {
+    /**
+     *  获取白噪音详情
+     * */
+    private void getwhite_noise_detail(Video_Detail_Bean.DataBean.WhiteNoisesBean whiteNoisesBean) {
         HashMap<String, String> map = new HashMap<>();
-        map.put("detail_id", String.valueOf(id));
+        map.put("detail_id", String.valueOf(whiteNoisesBean.id));
         OkHttpUtil.postRequestNoDialog(Api.HEAD + "white_noise/detail", map, new OkHttpUtil.OnRequestNetWorkListener() {
             @Override
             public void notOk(String err) {
@@ -775,12 +817,18 @@ public class Video_Detail_Activity extends BaseActivity implements VideoViewPage
                         Noise_Bean video_detail_bean = mGson.fromJson(response, Noise_Bean.class);
                         Noise_Bean.DataBean dataBean = video_detail_bean.data;
                         if (dataBean != null) {
+                            //设置url
+                            whiteNoisesBean.resource_url = dataBean.resource_url;
+
                             current_noise_url = dataBean.resource_url;
+                            current_noise_max = dataBean.resource_duration;
                             if (!TextUtils.isEmpty(current_noise_url)) {
-                                start_noise_play(current_noise_url);
+                                current_type = dataBean.resource_type;
+                                start_noise_play(current_noise_url, "", current_type);
                             }
                         }
                     } else {
+                        current_type = "white_noises";
                         toast(jsonObject.getString("errMsg"));
                         /*if(code == 6451){
                             //Video_Detail_Bean video_detail_bean = mGson.fromJson(response, Video_Detail_Bean.class);
@@ -791,14 +839,259 @@ public class Video_Detail_Activity extends BaseActivity implements VideoViewPage
                 }
             }
         });
-
     }
 
-    private void start_noise_play(String url) {
+    private void start_noise_play(String url, String draft_url, String current_type) {
+        //终止循环
+        threadFlag = true;
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         //开始播放白噪音
         is_noise_play = true;
         img_2.setImageResource(R.mipmap.img_play_pause);
-        Utils.init_Aliyun(MyApp.get_app_mAliPlayer(), MyApp.Aapp_context, lin_roll, url, "");
+        Utils.init_Aliyun(MyApp.get_app_mAliPlayer(), MyApp.Aapp_context, lin_roll, url, draft_url, new AliPlayer_Noise_Callback(){
+            @Override
+            public void play_start() {
+                current_pro = 0;
+                threadFlag = false;
+                setProgress();
+            }
+
+            @Override
+            public void play_pause() {
+                threadFlag = true;
+            }
+
+            @Override
+            public void play_reStart() {
+                if(threadFlag){
+                    threadFlag = false;
+                    setProgress();
+                }
+            }
+        });
+    }
+
+
+    /**
+     *  进度圆环
+     * */
+    private int current_pro = 0;
+    public void setProgress(){
+        if(current_noise_max <= 0){
+            return;
+        }
+
+        int max = current_noise_max*1000;
+        circle_progress.SetMax(max);
+        Thread thread = new Thread(() -> {
+            while (!threadFlag && current_pro < max) {
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                current_pro+=200;
+                int finalJ = current_pro;
+                runOnUiThread(() -> circle_progress.SetCurrent(finalJ));
+
+                //循环播放，重置
+                if(current_pro >= max){
+                    current_pro = 0;
+                }
+            }
+        });
+        thread.start();
+    }
+
+    @Override
+    public void noise_click(White_Noise_Bean.DataBean dataBean) {
+        if(dialogFragment != null){
+            dialogFragment.dismiss();
+        }
+        if(dataBean == null){
+            return;
+        }
+        //去重
+        boolean is_same = false;
+        Video_Detail_Bean.DataBean.WhiteNoisesBean move_nioseBean = null;
+        if(white_noises.size() > 0){
+            for(Video_Detail_Bean.DataBean.WhiteNoisesBean whiteNoisesBean : white_noises){
+                if(whiteNoisesBean.id.equals(dataBean.id) && whiteNoisesBean.resource_type.equals(dataBean.resource_type)){
+                    //相同资源，不加入
+                    is_same = true;
+                    move_nioseBean = whiteNoisesBean;
+                    if(!TextUtils.isEmpty(whiteNoisesBean.resource_url)){
+                        dataBean.resource_url = whiteNoisesBean.resource_url;
+                    }
+                    break;
+                }
+            }
+        }
+
+        Video_Detail_Bean.DataBean.WhiteNoisesBean whiteNoisesBean = getBean(dataBean);
+        //插入白噪音，并播放
+        if(white_noises.size() == 0){
+            white_noises.add(whiteNoisesBean);
+        }else{
+            white_noises.add(current_noise_index+1, whiteNoisesBean);
+        }
+
+        current_noise_index = white_noises.indexOf(whiteNoisesBean);
+        init_noise_data(whiteNoisesBean);
+
+        if(!TextUtils.isEmpty(whiteNoisesBean.resource_url)){
+            //直接播放
+            current_noise_url = whiteNoisesBean.resource_url;
+            current_noise_max = whiteNoisesBean.resource_duration;
+            current_type = whiteNoisesBean.resource_type;
+            start_noise_play(current_noise_url, "", current_type);
+        }else{
+            getwhite_noise_detail(whiteNoisesBean);
+        }
+
+        //判断是否有相同的资源，有则移除
+        if(is_same && move_nioseBean != null){
+            white_noises.remove(move_nioseBean);
+        }
+    }
+
+    private Video_Detail_Bean.DataBean.WhiteNoisesBean getBean(White_Noise_Bean.DataBean dataBean) {
+        Video_Detail_Bean.DataBean.WhiteNoisesBean whiteNoisesBean = new Video_Detail_Bean.DataBean.WhiteNoisesBean();
+        whiteNoisesBean.id = dataBean.id;
+        whiteNoisesBean.title = dataBean.title;
+        whiteNoisesBean.free = dataBean.free;
+        whiteNoisesBean.play_volume = dataBean.play_volume;
+        whiteNoisesBean.resource_duration = dataBean.resource_duration;
+        whiteNoisesBean.resource_type = dataBean.resource_type;
+        whiteNoisesBean.icon = dataBean.icon;
+        whiteNoisesBean.updated_at = dataBean.updated_at;
+        return whiteNoisesBean;
+    }
+
+
+    private Video_Detail_Bean.DataBean.WhiteNoisesBean getRadioBean(Hor_DateBean.DataBean.ListBean dataBean) {
+        Video_Detail_Bean.DataBean.WhiteNoisesBean whiteNoisesBean = new Video_Detail_Bean.DataBean.WhiteNoisesBean();
+        whiteNoisesBean.id = dataBean.id;
+        whiteNoisesBean.title = dataBean.title;
+        whiteNoisesBean.free = dataBean.free;
+        whiteNoisesBean.play_volume = dataBean.play_volume;
+        whiteNoisesBean.resource_duration = dataBean.resource_duration;
+        whiteNoisesBean.resource_type = dataBean.resource_type;
+        whiteNoisesBean.icon = dataBean.icon;
+        whiteNoisesBean.updated_at = dataBean.updated_at;
+        return whiteNoisesBean;
+    }
+
+    @Override
+    public void audio_click(Hor_DateBean.DataBean.ListBean dataBean) {
+        if(dialogFragment != null){
+            dialogFragment.set_dismiss();
+            dialogFragment.dismiss();
+        }
+        if(dataBean == null){
+            return;
+        }
+
+        //去重
+        boolean is_same = false;
+        Video_Detail_Bean.DataBean.WhiteNoisesBean move_nioseBean = null;
+        if(white_noises.size() > 0){
+            for(Video_Detail_Bean.DataBean.WhiteNoisesBean whiteNoisesBean : white_noises){
+                if(whiteNoisesBean.id.equals(dataBean.id) && whiteNoisesBean.resource_type.equals(dataBean.resource_type)){
+                    //相同资源，不加入
+                    is_same = true;
+                    move_nioseBean = whiteNoisesBean;
+                    if(!TextUtils.isEmpty(whiteNoisesBean.resource_url)){
+                        dataBean.resource_url = whiteNoisesBean.resource_url;
+                    }
+                    if(!TextUtils.isEmpty(whiteNoisesBean.draft_url)){
+                        dataBean.draft_url = whiteNoisesBean.draft_url;
+                    }
+                    break;
+                }
+            }
+        }
+
+        Video_Detail_Bean.DataBean.WhiteNoisesBean radio_bean = getRadioBean(dataBean);
+        //插入电台，并播放
+        if(white_noises.size() == 0){
+            white_noises.add(radio_bean);
+        }else{
+            white_noises.add(current_noise_index+1, radio_bean);
+        }
+
+        current_noise_index = white_noises.indexOf(radio_bean);
+        init_noise_data(radio_bean);
+
+        if(!TextUtils.isEmpty(radio_bean.resource_url)){
+            //直接播放
+            current_noise_url = radio_bean.resource_url;
+            current_noise_max = radio_bean.resource_duration;
+            current_type = radio_bean.resource_type;
+            start_noise_play(current_noise_url, radio_bean.draft_url, current_type);
+        }else{
+            //获取电台详情
+            lin_roll.setVisibility(View.GONE);
+            getradio_station_detail(radio_bean);
+        }
+
+        //判断是否有相同的资源，有则移除
+        if(is_same && move_nioseBean != null){
+            white_noises.remove(move_nioseBean);
+        }
+    }
+
+
+    /**
+     *  获取电台详情
+     * */
+    private void getradio_station_detail(Video_Detail_Bean.DataBean.WhiteNoisesBean radio_bean) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("detail_id", String.valueOf(radio_bean.id));
+        OkHttpUtil.postRequestNoDialog(Api.HEAD + "radio_station/detail", map, new OkHttpUtil.OnRequestNetWorkListener() {
+            @Override
+            public void notOk(String err) {
+                new Throwable("请求失败");
+            }
+
+            @Override
+            public void un_login_err() {
+
+            }
+
+            @Override
+            public void ok(String response, JSONObject jsonObject) {
+                try {
+                    int code = jsonObject.getInt("errCode");
+                    if (code == 200) {
+                        Audio_Detail_Bean audio_detail_bean = mGson.fromJson(response, Audio_Detail_Bean.class);
+                        Audio_Detail_Bean.DataBean dataBean = audio_detail_bean.data;
+                        if (dataBean != null) {
+                            //设置url
+                            radio_bean.resource_url = dataBean.resource_url;
+                            radio_bean.draft_url = dataBean.draft_url;
+
+                            current_noise_url = dataBean.resource_url;
+                            current_noise_max = dataBean.resource_duration;
+                            if (!TextUtils.isEmpty(current_noise_url)) {
+                                current_type = dataBean.resource_type;
+                                start_noise_play(current_noise_url, dataBean.draft_url, current_type);
+                            }
+                        }
+                    } else {
+                        toast(jsonObject.getString("errMsg"));
+                        stop_noise_play();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 }

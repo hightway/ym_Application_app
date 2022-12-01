@@ -13,9 +13,11 @@ import android.widget.LinearLayout;
 import com.aliyun.player.AliPlayer;
 import com.aliyun.player.AliPlayerFactory;
 import com.aliyun.player.IPlayer;
+import com.aliyun.player.bean.ErrorInfo;
 import com.aliyun.player.nativeclass.PlayerConfig;
 import com.aliyun.player.source.UrlSource;
 import com.aliyun.subtitle.SubtitleView;
+import com.example.myapplication.plmd.AliPlayer_Noise_Callback;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -129,10 +131,9 @@ public class Utils {
     }
 
 
-
-    public static void init_Aliyun(AliPlayer mAliPlayer, Context instance, LinearLayout lin_roll, String url, String srt){
+    public static void init_Aliyun(AliPlayer mAliPlayer, Context instance, LinearLayout lin_roll, String url, String srt, AliPlayer_Noise_Callback callback) {
         //字幕
-        if(!TextUtils.isEmpty(srt)){
+        if (!TextUtils.isEmpty(srt)) {
             lin_roll.setVisibility(View.VISIBLE);
             //用于显示SRT和VTT字幕
             SubtitleView subtitleView = new SubtitleView(instance);
@@ -181,9 +182,41 @@ public class Utils {
                 }
             });
             mAliPlayer.addExtSubtitle(srt);
-        }else{
+        } else {
             lin_roll.setVisibility(View.GONE);
         }
+
+        /*mAliPlayer.setOnCompletionListener(new IPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion() {
+                //播放完成事件
+                callback.play_loop();
+            }
+        });*/
+
+        mAliPlayer.setOnStateChangedListener(new IPlayer.OnStateChangedListener() {
+            @Override
+            public void onStateChanged(int newState) {
+                //播放器状态改变事件
+                /*int idle = 0;
+                  int initalized = 1;
+                  int prepared = 2;
+                  int started = 3;
+                  int paused = 4;
+                  int stopped = 5;
+                  int completion = 6;
+                  int error = 7;*/
+                if(newState == IPlayer.prepared){
+                    callback.play_start();
+                }else if(newState == IPlayer.paused){
+                    callback.play_pause();
+                }else if(newState == IPlayer.started){
+                    callback.play_reStart();
+                }/*else if(newState == IPlayer.completion){
+                    callback.play_loop();
+                }*/
+            }
+        });
 
         UrlSource urlSource = new UrlSource();
         urlSource.setUri(url);
@@ -193,7 +226,6 @@ public class Utils {
         mAliPlayer.setAutoPlay(true);
         mAliPlayer.prepare();
     }
-
 
 
     /**
@@ -211,17 +243,16 @@ public class Utils {
     }
 
 
-
     public static String transfom(int time) {
-        long shi= time / 3600;
-        long fen= (time % 3600) / 60;
-        long miao= (time % 3600) % 60;
+        long shi = time / 3600;
+        long fen = (time % 3600) / 60;
+        long miao = (time % 3600) % 60;
         //shi< 10 ? ("0" + shi) : shi)判断时否大于10时的话就执行shi,否则执行括号中的
         String str;
-        if(shi >= 1){
-            str = (shi< 10 ? ("0" + shi) : shi) + ":" + (fen< 10 ? ("0" + fen) : fen) + ":" + (miao< 10 ? ("0" + miao) : miao);
-        }else{
-            str = (fen< 10 ? ("0" + fen) : fen) + ":" + (miao< 10 ? ("0" + miao) : miao);
+        if (shi >= 1) {
+            str = (shi < 10 ? ("0" + shi) : shi) + ":" + (fen < 10 ? ("0" + fen) : fen) + ":" + (miao < 10 ? ("0" + miao) : miao);
+        } else {
+            str = (fen < 10 ? ("0" + fen) : fen) + ":" + (miao < 10 ? ("0" + miao) : miao);
         }
         return str;
     }

@@ -120,4 +120,7 @@ dependencies {
     implementation 'com.zhy:base-rvadapter:3.0.3'
 
     implementation 'com.github.donkingliang:HeaderViewAdapter:1.2.2'
+
+    //全局悬浮
+    //implementation 'com.github.yhaolpz:FloatWindow:1.0.9'
 }

@@ -20,12 +20,14 @@ import com.example.myapplication.activity.Video_Detail_Activity;
 import com.example.myapplication.bean.Fruit;
 import com.example.myapplication.bean.Video_Info_Bean;
 import com.example.myapplication.bean.White_Noise_Bean;
+import com.example.myapplication.plmd.White_Noise_Cliack_Set;
 import com.example.myapplication.tools.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class White_Noise_Adapter extends RecyclerView.Adapter<White_Noise_Adapter.ViewHolder> {
+
     private List<White_Noise_Bean.DataBean> mFruitList = new ArrayList<>();
     private Context mContext;
 
@@ -76,10 +78,12 @@ public class White_Noise_Adapter extends RecyclerView.Adapter<White_Noise_Adapte
                 .into(holder.fruitImage);
         holder.fruitName.setText(fruit.title);
 
+        holder.lin_root.setTag(fruit);
         holder.lin_root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //mContext.startActivity(new Intent(mContext, Video_Detail_Activity.class));
+                White_Noise_Bean.DataBean dataBean = (White_Noise_Bean.DataBean) view.getTag();
+                White_Noise_Cliack_Set.set_noise_click(dataBean);
             }
         });
     }
@@ -88,4 +92,5 @@ public class White_Noise_Adapter extends RecyclerView.Adapter<White_Noise_Adapte
     public int getItemCount(){
         return mFruitList.size();
     }
+
 }

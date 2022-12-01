@@ -77,8 +77,11 @@ public class Video_Detail_Bean implements Serializable {
             public Integer free;
             public Integer play_volume;
             public Integer resource_duration;
+            public String resource_url;
+            public String resource_type;
             public String icon;
             public String updated_at;
+            public String draft_url;
             public DetailBean.LevelsBean levels;
             public DetailBean.PrivilegesBean privileges;
             public List<DetailBean.TagsBean> tags;

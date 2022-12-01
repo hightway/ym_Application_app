@@ -3,32 +3,27 @@ package com.example.myapplication.fragment;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.donkingliang.headerviewadapter.view.HeaderRecyclerView;
 import com.example.myapplication.R;
 import com.example.myapplication.adapter.Anchor_Radio_CommonAdapter;
 import com.example.myapplication.adapter.HosGridViewAdapter;
 import com.example.myapplication.adapter.Radio_CommonAdapter;
-import com.example.myapplication.adapter.White_Noise_Adapter;
 import com.example.myapplication.base.BaseLazyFragment;
-import com.example.myapplication.bean.Fruit;
 import com.example.myapplication.bean.Hor_DateBean;
-import com.example.myapplication.bean.White_Noise_Bean;
-import com.example.myapplication.custom.DialogFragment;
 import com.example.myapplication.custom.More_DialogFragment;
 import com.example.myapplication.http.Api;
+import com.example.myapplication.plmd.Radio_Click;
+import com.example.myapplication.plmd.Radio_Click_Set;
 import com.example.myapplication.swipeDrawer_view.Common;
 import com.example.myapplication.swipeDrawer_view.OnDrawerChange;
 import com.example.myapplication.swipeDrawer_view.SwipeDrawer;
 import com.example.myapplication.tools.OkHttpUtil;
-import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import org.json.JSONException;
@@ -63,6 +58,7 @@ public class Anchor_Radio_Fragment extends BaseLazyFragment {
     private int pageSize = 20;
     private RecyclerView hor_recycleview;
     private Radio_CommonAdapter radio_commonAdapter;
+    private More_DialogFragment dialogFragment;
 
 
     @Override
@@ -76,6 +72,9 @@ public class Anchor_Radio_Fragment extends BaseLazyFragment {
 
         //初始化布局
         initData();
+
+        //设置电台点击事件
+        //Radio_Click_Set.setRadio_Cliack(this);
     }
 
 
@@ -280,16 +279,10 @@ public class Anchor_Radio_Fragment extends BaseLazyFragment {
 
 
     //水平滑动布局
-    private void init_hor(List<Hor_DateBean.DataBean.TopBean> topBeans) {
+    private void init_hor(List<Hor_DateBean.DataBean.ListBean> topBeans) {
         hor_recycleview.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         HosGridViewAdapter hosGridViewAdapter = new HosGridViewAdapter(topBeans, getActivity());
         hor_recycleview.setAdapter(hosGridViewAdapter);
-        hosGridViewAdapter.setOnHosGridItemClick(new HosGridViewAdapter.OnRvItemClick() {
-            @Override
-            public void OnRvItemClick(View view) {
-
-            }
-        });
     }
 
 
@@ -318,7 +311,7 @@ public class Anchor_Radio_Fragment extends BaseLazyFragment {
                     if (code == 200) {
                         Hor_DateBean white_noise_bean = mgson.fromJson(response, Hor_DateBean.class);
                         Hor_DateBean.DataBean dataBean = white_noise_bean.data;
-                        List<Hor_DateBean.DataBean.TopBean> topBeans = dataBean.top;
+                        List<Hor_DateBean.DataBean.ListBean> topBeans = dataBean.top;
                         if(page == 1 && topBeans != null && topBeans.size() > 0){
                             init_hor(topBeans);
                         }
@@ -350,9 +343,21 @@ public class Anchor_Radio_Fragment extends BaseLazyFragment {
 
 
     private void more_audio() {
-        More_DialogFragment dialogFragment = new More_DialogFragment();
+        dialogFragment = new More_DialogFragment();
         dialogFragment.show(getChildFragmentManager(), "ss");
     }
 
 
+    public void set_dismiss(){
+        if(dialogFragment != null){
+            dialogFragment.dismiss();
+        }
+    }
+
+    /*@Override
+    public void audio_click(Hor_DateBean.DataBean.ListBean dataBean) {
+        if(dialogFragment != null){
+            dialogFragment.dismiss();
+        }
+    }*/
 }

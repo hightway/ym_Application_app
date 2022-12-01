@@ -104,6 +104,7 @@
     <string name="more_txt_2">侵权举报</string>
     <string name="noise_no">暂无</string>
     <string name="noise_no_more">暂无更多白噪音资源</string>
+    <string name="noise">白噪音</string>
 
     <string-array name="camer_item">
         <item>从相册选择</item>

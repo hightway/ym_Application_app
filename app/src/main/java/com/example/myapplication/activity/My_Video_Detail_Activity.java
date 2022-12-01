@@ -74,7 +74,7 @@ public class My_Video_Detail_Activity extends BaseActivity {
 
         initViewPager();
 
-        Utils.init_Aliyun(MyApp.get_app_mAliPlayer(), MyApp.Aapp_context, lin_roll, "", "");
+        //Utils.init_Aliyun(MyApp.get_app_mAliPlayer(), MyApp.Aapp_context, lin_roll, "", "");
     }
 
 
@@ -115,7 +115,7 @@ public class My_Video_Detail_Activity extends BaseActivity {
 
         myPagerAdapter = new MyPagerAdapter(instance, list);
         vp.setAdapter(myPagerAdapter);
-        vp.setOffscreenPageLimit(3);
+        vp.setOffscreenPageLimit(1);
         vp.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {

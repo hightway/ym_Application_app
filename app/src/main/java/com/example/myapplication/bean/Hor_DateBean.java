@@ -9,10 +9,10 @@ public class Hor_DateBean {
     public DataBean data;
 
     public static class DataBean {
-        public List<TopBean> top;
+        public List<ListBean> top;
         public List<ListBean> list;
 
-        public static class TopBean {
+        /*public static class TopBean {
             public Integer id;
             public String title;
             public String draft;
@@ -21,6 +21,28 @@ public class Hor_DateBean {
             public Integer top;
             public Integer play_volume;
             public Integer resource_duration;
+            public String icon;
+            public String updated_at;
+            public LevelsBean levels;
+            public PrivilegesBean privileges;
+            public AlbumsBean albums;
+            public AnchorsBean anchors;
+            public CategorysBean categorys;
+            public List<TagsBean> tags;
+
+        }*/
+
+        public static class ListBean {
+            public Integer id;
+            public String title;
+            public String draft;
+            public String draft_url;
+            public Integer free;
+            public Integer top;
+            public Integer play_volume;
+            public Integer resource_duration;
+            public String resource_type;
+            public String resource_url;
             public String icon;
             public String updated_at;
             public LevelsBean levels;
@@ -61,31 +83,12 @@ public class Hor_DateBean {
                 public String category_title;
             }
 
-            public static class TagsBean {
+            /*public static class TagsBean {
                 public Integer id;
                 public String name;
                 public Integer taggable_id;
                 public String taggable_type;
-            }
-        }
-
-        public static class ListBean {
-            public Integer id;
-            public String title;
-            public String draft;
-            public String draft_url;
-            public Integer free;
-            public Integer top;
-            public Integer play_volume;
-            public Integer resource_duration;
-            public String icon;
-            public String updated_at;
-            public TopBean.LevelsBean levels;
-            public TopBean.PrivilegesBean privileges;
-            public TopBean.AlbumsBean albums;
-            public TopBean.AnchorsBean anchors;
-            public TopBean.CategorysBean categorys;
-            public List<TopBean.TagsBean> tags;
+            }*/
         }
     }
 }

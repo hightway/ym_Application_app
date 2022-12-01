@@ -3,6 +3,7 @@ package com.example.myapplication.activity;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -30,6 +31,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.myapplication.R;
 import com.example.myapplication.base.BaseActivity;
 import com.example.myapplication.custom.DatePickerAdapter;
+import com.example.myapplication.custom.FrameAnimation;
 import com.example.myapplication.custom.ScrollPickerView;
 import com.example.myapplication.tools.IcallUtils;
 import com.example.myapplication.tools.NumberUtil;
@@ -57,8 +59,8 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
     ScrollPickerView datepicker_year_2;
     @BindView(R.id.img_more)
     ImageView img_more;
-    @BindView(R.id.img_bg)
-    ImageView img_bg;
+    @BindView(R.id.img_bg_water)
+    ImageView img_bg_water;
 
 
     private DatePickerAdapter mDayAdapter;
@@ -97,13 +99,42 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         datepicker_year_2.setSelectedPosition(t_minute);
 
         //加载gif背景图
-        String url = "file:///android_asset/gif_bg.gif";
+        String url = "file:///android_asset/gif_1.gif";
         Glide.with(instance)
                 .asGif()
                 .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
                 .load(url)
-                .into(img_bg);
+                .into(img_bg_water);
+
+        /*FrameAnimation frameAnimation = new FrameAnimation(img_bg_water, getRes(), 50, true);
+        frameAnimation.setAnimationListener(new FrameAnimation.AnimationListener() {
+            @Override
+            public void onAnimationStart() {
+                //Log.d(TAG, "start");
+            }
+
+            @Override
+            public void onAnimationEnd() {
+                //Log.d(TAG, "end");
+            }
+
+            @Override
+            public void onAnimationRepeat() {
+                //Log.d(TAG, "repeat");
+            }
+        });*/
     }
+
+    /*private int[] getRes() {
+        TypedArray typedArray = getResources().obtainTypedArray(R.array.c);
+        int len = typedArray.length();
+        int[] resId = new int[len];
+        for (int i = 0; i < len; i++) {
+            resId[i] = typedArray.getResourceId(i, -1);
+        }
+        typedArray.recycle();
+        return resId;
+    }*/
 
     private void get_Time() {
         // 获取系统时间

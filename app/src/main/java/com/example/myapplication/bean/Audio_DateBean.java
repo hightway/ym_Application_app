@@ -4,13 +4,12 @@ import java.util.List;
 
 public class Audio_DateBean {
 
-
     public Integer errCode;
     public Integer time;
     public String errMsg;
-    public List<DataBean> data;
+    public List<Hor_DateBean.DataBean.ListBean> data;
 
-    public static class DataBean {
+    /*public static class DataBean {
         public Integer id;
         public String title;
         public String draft;
@@ -19,6 +18,7 @@ public class Audio_DateBean {
         public Integer top;
         public Integer play_volume;
         public Integer resource_duration;
+        public String resource_type;
         public String icon;
         public String updated_at;
         public LevelsBean levels;
@@ -58,5 +58,5 @@ public class Audio_DateBean {
             public Integer category_id;
             public String category_title;
         }
-    }
+    }*/
 }

@@ -4,8 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,8 +16,9 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.myapplication.R;
 import com.example.myapplication.bean.Hor_DateBean;
+import com.example.myapplication.bean.TagsBean;
 import com.example.myapplication.custom.FillImageView;
-import com.example.myapplication.tools.Utils;
+import com.example.myapplication.plmd.Radio_Click_Set;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,9 +70,9 @@ public class Radio_CommonAdapter extends RecyclerView.Adapter<Radio_CommonAdapte
             }
 
             holder.lin_tag.removeAllViews();
-            List<Hor_DateBean.DataBean.TopBean.TagsBean> tagsBeans = data.tags;
+            List<TagsBean> tagsBeans = data.tags;
             if(tagsBeans != null && tagsBeans.size() > 0){
-                for(Hor_DateBean.DataBean.TopBean.TagsBean tagsBean : tagsBeans){
+                for(TagsBean tagsBean : tagsBeans){
                     View add_view = LayoutInflater.from(mContext).inflate(R.layout.add_tx_view, holder.lin_tag, false);
                     TextView txt_msg = add_view.findViewById(R.id.txt_msg);
                     txt_msg.setText(tagsBean.name);
@@ -79,31 +80,19 @@ public class Radio_CommonAdapter extends RecyclerView.Adapter<Radio_CommonAdapte
                 }
             }
 
-            /*String id = data.getStationId();
-            holder.lin_root.setTag(id);
-            holder.lin_root.setOnClickListener(new View.OnClickListener() {
+            holder.rel_item.setTag(data);
+            holder.rel_item.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     // 点击事件
-                    //mContext.startActivity(new Intent(mContext, Charge_Station_DetailActivity.class).putExtra("gas_id", id));
-                    String id = (String) view.getTag();
-                    if(callback != null){
-                        callback.charge_id(id);
-                    }
+                    Hor_DateBean.DataBean.ListBean bean = (Hor_DateBean.DataBean.ListBean) view.getTag();
+                    Radio_Click_Set.set_Click(bean);
                 }
-            });*/
+            });
 
         }
     }
 
-
-    private Charge_Callback callback;
-    public void setCharge_Callback(Charge_Callback charge_callback){
-        this.callback = charge_callback;
-    }
-    public interface Charge_Callback{
-        void charge_id(String id);
-    }
 
 
     @Override
@@ -116,6 +105,7 @@ public class Radio_CommonAdapter extends RecyclerView.Adapter<Radio_CommonAdapte
         public TextView tx_author;
         public FillImageView img_bg;
         public LinearLayout lin_tag;
+        public RelativeLayout rel_item;
 
         public Re_ViewHolder(View itemView) {
             super(itemView);
@@ -123,6 +113,7 @@ public class Radio_CommonAdapter extends RecyclerView.Adapter<Radio_CommonAdapte
             txt_name = itemView.findViewById(R.id.txt_name);
             tx_author = itemView.findViewById(R.id.tx_author);
             lin_tag = itemView.findViewById(R.id.lin_tag);
+            rel_item = itemView.findViewById(R.id.rel_item);
         }
     }
 

@@ -15,6 +15,8 @@ public class White_Noise_Bean {
         public Integer free;
         public Integer play_volume;
         public Integer resource_duration;
+        public String resource_type;
+        public String resource_url;
         public String icon;
         public String updated_at;
         public LevelsBean levels;
@@ -35,11 +37,11 @@ public class White_Noise_Bean {
             public String rule;
         }
 
-        public static class TagsBean {
+        /*public static class TagsBean {
             public Integer id;
             public String name;
             public Integer taggable_id;
             public String taggable_type;
-        }
+        }*/
     }
 }

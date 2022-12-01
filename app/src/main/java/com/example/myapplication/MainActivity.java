@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
@@ -13,10 +15,14 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -34,6 +40,7 @@ import com.example.myapplication.bean.User_Msg_Bean;
 import com.example.myapplication.bean.Weather_Bean;
 import com.example.myapplication.bean.Weather_Video_Bean;
 import com.example.myapplication.config.BaseUIConfig;
+import com.example.myapplication.custom.FloatWindow_View;
 import com.example.myapplication.custom.MyViewPage;
 import com.example.myapplication.custom.SlidingDrawerLayout;
 import com.example.myapplication.custom.WrapSlidingDrawer;
@@ -90,7 +97,6 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     private String city_id;
     public static PhoneNumberAuthHelper mPhoneNumberAuthHelper;
     public static TokenResultListener mTokenResultListener;
-    public static BaseUIConfig mUIConfig;
     private static final String[] PERMISSION = new String[]{
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -117,13 +123,6 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mUIConfig != null) {
-            mUIConfig.onResume();
-        }
-    }
 
     @Override
     protected void initView() {
@@ -175,14 +174,66 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
         getUser_info();
 
         view_view.setVisibility(View.GONE);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, StatusBarUtil.getStatusBarHeight(instance));
-        view_view.setLayoutParams(params);
-
+        //计算高度，跟状态栏高度一致
+        /*RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, StatusBarUtil.getStatusBarHeight(instance));
+        view_view.setLayoutParams(params);*/
 
         //获取定位权限
         askPermission();
 
+
+        /*View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.float_window, null);
+        FloatWindow
+                .with(getApplicationContext())
+                .setView(view)
+                .setWidth(100)                               //设置控件宽高
+                .setHeight(Screen.width,0.2f)
+                .setX(100)                                   //设置控件初始位置
+                .setY(Screen.height,0.3f)
+                .setDesktopShow(true)                        //桌面显示
+                //.setViewStateListener(mViewStateListener)    //监听悬浮控件状态改变
+                //.setPermissionListener(mPermissionListener)  //监听权限申请结果
+                .build();*/
+
+
+        // 权限判断
+        if (Build.VERSION.SDK_INT >= 23) {
+            if(!Settings.canDrawOverlays(getApplicationContext())) {
+                // 启动Activity让用户授权
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent,10);
+            } else {
+                // 执行6.0以上绘制代码
+                //initView_FloatWindow();
+            }
+        } else {
+            // 执行6.0以下绘制代码
+            //initView_FloatWindow();
+        }
     }
+
+    /*@Override
+    protected void onResume() {
+        super.onResume();
+        // 权限判断
+        if (Build.VERSION.SDK_INT >= 23) {
+            if(Settings.canDrawOverlays(getApplicationContext())) {
+                initView_FloatWindow();
+            }
+        } else {
+            //执行6.0以下绘制代码
+            initView_FloatWindow();
+        }
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (null != floatWindow_view) {
+            floatWindow_view.hideFloatWindow();
+        }
+    }*/
+
+
 
     private void getUser_info() {
         if (TextUtils.isEmpty(UserConfig.instance().access_token)) {

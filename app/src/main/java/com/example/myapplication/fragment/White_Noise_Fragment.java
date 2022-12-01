@@ -266,4 +266,5 @@ public class White_Noise_Fragment extends BaseLazyFragment {
             }
         });
     }
+
 }

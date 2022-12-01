@@ -6,6 +6,8 @@ import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.os.Build;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.aliyun.player.AliPlayer;
@@ -14,6 +16,7 @@ import com.aliyun.player.nativeclass.PlayerConfig;
 import com.bumptech.glide.request.target.ViewTarget;
 import com.example.myapplication.aliyun_oss.AliyunOSSUtils;
 import com.example.myapplication.config.Get_AssetsUtil;
+import com.example.myapplication.custom.FloatWindow_View;
 import com.example.myapplication.http.Api;
 import com.example.myapplication.http.UserConfig;
 import com.example.myapplication.videoplayTool.AppUtil;
@@ -41,7 +44,9 @@ public class MyApp extends Application {
     public static AliPlayer app_mAliPlayer;
     public static Context Aapp_context;
     public static HashMap<String, String> city_code_map;
-
+    private int appCount = 0;
+    private boolean isRunInBackground = false;
+    public static FloatWindow_View floatWindow_view;
 
     public MyApp() {
 
@@ -110,7 +115,82 @@ public class MyApp extends Application {
 
         //获取区域号
         getJson_data("city_code", Aapp_context);
+
+        //监听app在前台后台
+        register_Background_app();
     }
+
+
+    private void register_Background_app() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
+                @Override
+                public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                }
+
+                @Override
+                public void onActivityStarted(Activity activity) {
+                    appCount++;
+                    if (isRunInBackground) {
+                        //应用从后台回到前台 需要做的操作
+                        back2App(activity);
+                    }
+                }
+
+                @Override
+                public void onActivityResumed(Activity activity) {
+                }
+
+                @Override
+                public void onActivityPaused(Activity activity) {
+                }
+
+                @Override
+                public void onActivityStopped(Activity activity) {
+                    appCount--;
+                    if (appCount == 0) {
+                        //应用进入后台 需要做的操作
+                        leaveApp(activity);
+                    }
+                }
+
+                @Override
+                public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+                }
+
+                @Override
+                public void onActivityDestroyed(Activity activity) {
+                }
+            });
+        }
+    }
+
+    /**
+     * 从后台回到前台需要执行的逻辑
+     *
+     * @param activity
+     */
+    private void back2App(Activity activity) {
+        isRunInBackground = false;
+        if(floatWindow_view != null){
+            floatWindow_view.visible_FloatWindow();
+        }
+    }
+
+    /**
+     * 离开应用 压入后台或者退出应用
+     *
+     * @param activity
+     */
+    private void leaveApp(Activity activity) {
+        isRunInBackground = true;
+        if(floatWindow_view != null){
+            floatWindow_view.gone_FloatWindow();
+        }
+    }
+
+
+
 
 
     public void getJson_data(String fileName, Context context) {

@@ -31,7 +31,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class More_Radio_Fragment extends BaseLazyFragment implements More_Radio_Adapter.OnRvItemClick {
+public class More_Radio_Fragment extends BaseLazyFragment {
 
     private int cate_id;
     @BindView(R.id.mainList)
@@ -51,7 +51,7 @@ public class More_Radio_Fragment extends BaseLazyFragment implements More_Radio_
     private More_Radio_Adapter listAdapter;
     private int page = 1;
     private int pageSize = 20;
-    private List<Audio_DateBean.DataBean> dataBeanList;
+    private List<Hor_DateBean.DataBean.ListBean> dataBeanList;
 
     public More_Radio_Fragment(int id){
         cate_id = id;
@@ -212,7 +212,6 @@ public class More_Radio_Fragment extends BaseLazyFragment implements More_Radio_
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mainList.setLayoutManager(layoutManager);
         listAdapter = new More_Radio_Adapter(getActivity());
-        listAdapter.setOnHosGridItemClick(this);
         mainList.setAdapter(listAdapter);
 
         ListData();
@@ -244,7 +243,7 @@ public class More_Radio_Fragment extends BaseLazyFragment implements More_Radio_
                     int code = jsonObject.getInt("errCode");
                     if (code == 200) {
                         Audio_DateBean audio_dateBean = mgson.fromJson(response, Audio_DateBean.class);
-                        List<Audio_DateBean.DataBean> listBeans = audio_dateBean.data;
+                        List<Hor_DateBean.DataBean.ListBean> listBeans = audio_dateBean.data;
                         if(listBeans != null && listBeans.size() > 0){
                             if (page == 1) {
                                 dataBeanList = listBeans;
@@ -267,10 +266,5 @@ public class More_Radio_Fragment extends BaseLazyFragment implements More_Radio_
                 }
             }
         });
-    }
-
-    @Override
-    public void OnRvItemClick(View view) {
-
     }
 }

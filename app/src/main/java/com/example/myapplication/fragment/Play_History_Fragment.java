@@ -13,11 +13,17 @@ import com.example.myapplication.adapter.Play_History_Adapter;
 import com.example.myapplication.base.BaseLazyFragment;
 import com.example.myapplication.bean.His_DateBean;
 import com.example.myapplication.bean.Hor_DateBean;
+import com.example.myapplication.http.Api;
 import com.example.myapplication.swipeDrawer_view.Common;
 import com.example.myapplication.swipeDrawer_view.OnDrawerChange;
 import com.example.myapplication.swipeDrawer_view.SwipeDrawer;
+import com.example.myapplication.tools.OkHttpUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -37,8 +43,10 @@ public class Play_History_Fragment extends BaseLazyFragment {
     TextView reTopText;
     @BindView(R.id.reBottomText)
     TextView reBottomText;
+    private int page = 1;
+    private int pageSize = 20;
 
-    private List<His_DateBean> fruitList = new ArrayList<>();
+    private List<His_DateBean.DataBean> dataBeanList = new ArrayList<>();
     private Play_History_Adapter listAdapter;
 
     @Override
@@ -58,11 +66,11 @@ public class Play_History_Fragment extends BaseLazyFragment {
     private void initData() {
         // 监听 SwipeDrawer 改变
         content.setOnDrawerChange(new OnDrawerChange() {
-
             // 刷新完毕
             private void topOver() {
                 // 显示刷新完成状态
-                SetList(0);
+                page=1;
+                ListData();
                 reTopIcon.clearAnimation();
                 reTopIcon.setRotation(0);
                 reTopIcon.setVisibility(View.GONE);
@@ -81,7 +89,8 @@ public class Play_History_Fragment extends BaseLazyFragment {
             // 加载完毕
             private void bottomOver() {
                 // 显示加载完成状态
-                SetList(20);
+                page++;
+                ListData();
                 reBottomIcon.clearAnimation();
                 reBottomIcon.setRotation(0);
                 reBottomIcon.setVisibility(View.GONE);
@@ -189,50 +198,62 @@ public class Play_History_Fragment extends BaseLazyFragment {
             }
         });
 
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        mainList.setLayoutManager(layoutManager);
+        listAdapter = new Play_History_Adapter(getActivity());
+        mainList.setAdapter(listAdapter);
+
         ListData();
-    }
-
-
-    /**
-     * 更新 list 数据
-     *
-     * @param num 更新条数
-     */
-    private void SetList(int num) {
-        if (num > 0) {
-            for (int i = 0; i < num; i++) {
-                fruitList.add(new His_DateBean("白噪音", R.mipmap.wx_icon));
-                fruitList.add(new His_DateBean("黑噪音", R.mipmap.msm_icon));
-            }
-            listAdapter.notifyDataSetChanged();
-        } else {
-            fruitList.clear();
-            listAdapter.notifyDataSetChanged();
-            for (int i = 0; i < 20; i++) {
-                His_DateBean orange = new His_DateBean("绿噪音", R.mipmap.wx_icon);
-                fruitList.add(orange);
-                His_DateBean waterMelon = new His_DateBean("红噪音", R.mipmap.msm_icon);
-                fruitList.add(waterMelon);
-            }
-            listAdapter.notifyDataSetChanged();
-        }
     }
 
     /**
      * 给 RecyclerView 填充数据
      */
     private void ListData() {
-        for (int i = 20; i > 0; i--) {
-            His_DateBean orange = new His_DateBean("绿噪音", R.mipmap.wx_icon);
-            fruitList.add(orange);
-            His_DateBean waterMelon = new His_DateBean("红噪音", R.mipmap.msm_icon);
-            fruitList.add(waterMelon);
-        }
+        HashMap<String, String> map = new HashMap<>();
+        map.put("page", String.valueOf(page));
+        map.put("size", String.valueOf(pageSize));
+        OkHttpUtil.postRequestNoDialog(Api.HEAD + "history/play_history", map, new OkHttpUtil.OnRequestNetWorkListener() {
+            @Override
+            public void notOk(String err) {
+                new Throwable("请求失败");
+            }
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        mainList.setLayoutManager(layoutManager);
-        listAdapter = new Play_History_Adapter(fruitList, getActivity());
-        mainList.setAdapter(listAdapter);
+            @Override
+            public void un_login_err() {
+
+            }
+
+            @Override
+            public void ok(String response, JSONObject jsonObject) {
+                try {
+                    int code = jsonObject.getInt("errCode");
+                    if (code == 200) {
+                        His_DateBean his_dateBean = mgson.fromJson(response, His_DateBean.class);
+                        List<His_DateBean.DataBean> listBeans = his_dateBean.data;
+
+                        if(listBeans != null && listBeans.size() > 0){
+                            if (page == 1) {
+                                dataBeanList = listBeans;
+                                listAdapter.setGridDataList(dataBeanList);
+                            } else {
+                                reBottomText.setText(getString(R.string.load_more_success));
+                                dataBeanList.addAll(listBeans);
+                                listAdapter.notifyItemRangeInserted(listAdapter.getItemCount(), listBeans.size());
+                            }
+                        }else{
+                            if(page == 1){
+                                listAdapter.clean();
+                            }else{
+                                reBottomText.setText(getString(R.string.load_more));
+                            }
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 }

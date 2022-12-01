@@ -36,6 +36,8 @@ import biz.laenger.android.vpbs.ViewPagerBottomSheetDialogFragment;
 
 public class DialogFragment extends ViewPagerBottomSheetDialogFragment {
 
+    private Anchor_Radio_Fragment anchor_radio_fragment;
+
     @SuppressLint("RestrictedApi")
     @Override
     public void setupDialog(Dialog dialog, int style) {
@@ -54,7 +56,8 @@ public class DialogFragment extends ViewPagerBottomSheetDialogFragment {
         tab_name.add(getString(R.string.meua_2));
         tab_name.add(getString(R.string.meua_3));
         fragmentList.add(new White_Noise_Fragment());
-        fragmentList.add(new Anchor_Radio_Fragment());
+        anchor_radio_fragment = new Anchor_Radio_Fragment();
+        fragmentList.add(anchor_radio_fragment);
         fragmentList.add(new Play_History_Fragment());
         ViewPage_Meua_Adapter adapter = new ViewPage_Meua_Adapter(getChildFragmentManager(), fragmentList, tab_name);
         meua_viewpage.setAdapter(adapter);
@@ -64,6 +67,11 @@ public class DialogFragment extends ViewPagerBottomSheetDialogFragment {
 
         //设置背景透明
         ((View) contentView.getParent()).setBackgroundColor(getResources().getColor(android.R.color.transparent));
+    }
+
+
+    public void set_dismiss(){
+        anchor_radio_fragment.set_dismiss();
     }
 
 }

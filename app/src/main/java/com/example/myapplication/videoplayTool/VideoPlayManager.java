@@ -94,7 +94,7 @@ public class VideoPlayManager {
         //隐藏播放工具
         mCurVideoPlayTask.getSimpleExoPlayerView().setUseController(false);
         //设置播放视频的宽高为Fit模式
-        mCurVideoPlayTask.getSimpleExoPlayerView().setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+        mCurVideoPlayTask.getSimpleExoPlayerView().setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
         //绑定player和playerView
         mCurVideoPlayTask.getSimpleExoPlayerView().setPlayer(mSimpleExoPlayer);
         mSimpleExoPlayer.setPlayWhenReady(true);

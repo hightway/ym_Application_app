@@ -36,8 +36,9 @@ public class Video_Fragment extends BaseLazyFragment {
     private Weather_Video_Bean.DataBean.VideoListBean videoListBean;
     private boolean is_first = true;
     private boolean is_start;
+    private boolean is_visible;
 
-    public Video_Fragment(Weather_Video_Bean.DataBean.VideoListBean videoListBean){
+    public Video_Fragment(Weather_Video_Bean.DataBean.VideoListBean videoListBean) {
         this.videoListBean = videoListBean;
     }
 
@@ -50,7 +51,7 @@ public class Video_Fragment extends BaseLazyFragment {
     protected void initView(View view) {
         ButterKnife.bind(this, view);
 
-        if(!TextUtils.isEmpty(videoListBean.icon)){
+        if (!TextUtils.isEmpty(videoListBean.icon)) {
             img_gone.setVisibility(View.VISIBLE);
             Glide.with(getActivity())
                     .load(videoListBean.icon)
@@ -58,9 +59,6 @@ public class Video_Fragment extends BaseLazyFragment {
         }
 
         aliyunVodPlayer = AliPlayerFactory.createAliPlayer(getActivity());
-
-        //自动播放
-        aliyunVodPlayer.setAutoPlay(false);
         aliyunVodPlayer.setOnCompletionListener(new IPlayer.OnCompletionListener() {
             @Override
             public void onCompletion() {
@@ -200,16 +198,19 @@ public class Video_Fragment extends BaseLazyFragment {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
                 aliyunVodPlayer.setDisplay(holder);
+                //aliyunVodPlayer.setSurface(holder.getSurface());
             }
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
                 aliyunVodPlayer.redraw();
+                //aliyunVodPlayer.surfaceChanged();
             }
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
                 aliyunVodPlayer.setDisplay(null);
+                //aliyunVodPlayer.setSurface(null);
             }
         });
 
@@ -217,20 +218,43 @@ public class Video_Fragment extends BaseLazyFragment {
         update_view();
     }
 
+
+    //可见或不可见
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            // 相当于onResume()方法--获取焦点
+            is_visible = true;
+        } else {
+            // 相当于onpause()方法---失去焦点
+            //暂停播放
+            is_visible = false;
+            //stop_Video();
+        }
+    }
+
+
     private void update_view() {
         if (videoListBean != null && !TextUtils.isEmpty(videoListBean.resource_url)) {
-            /*if (handler != null) {
-                handler.removeMessages(0);
-            }
-            second_now = 0;
-            seekBar.setProgress(0);*/
+            //自动播放 如果开启了自动播放，则不需要调用aliPlayer.start()
+
+            /*if (is_visible){
+                aliyunVodPlayer.setAutoPlay(true);
+            }else{
+                aliyunVodPlayer.setAutoPlay(false);
+            }*/
+
+            aliyunVodPlayer.setAutoPlay(false);
+
             is_first = true;
-            is_start = false;
+            is_start = true;
 
             UrlSource urlSource = new UrlSource();
             urlSource.setUri(videoListBean.resource_url);
             //设置播放源
             aliyunVodPlayer.setDataSource(urlSource);
+            //设置宽高比填充（将按照视频宽高比等比放大，充满view，不会有画面变形）
+            aliyunVodPlayer.setScaleMode(IPlayer.ScaleMode.SCALE_ASPECT_FILL);
             //设置循环播放
             aliyunVodPlayer.setLoop(true);
             //准备播放
@@ -242,7 +266,7 @@ public class Video_Fragment extends BaseLazyFragment {
 
 
     @OnClick(R.id.surface_view)
-    public void surface_view(){
+    public void surface_view() {
         //播放与暂停
         if (is_start) {
             // 开始播放。
@@ -275,22 +299,22 @@ public class Video_Fragment extends BaseLazyFragment {
         }
     }
 
-    public void start_Video(){
+    public void start_Video() {
         if (aliyunVodPlayer != null) {
             aliyunVodPlayer.start();
             is_start = true;
-            if(start != null){
+            if (start != null) {
                 start.setVisibility(View.GONE);
                 img_gone.setVisibility(View.GONE);
             }
         }
     }
 
-    public void stop_Video(){
+    public void stop_Video() {
         if (aliyunVodPlayer != null) {
             aliyunVodPlayer.pause();
             is_start = false;
-            if(start != null){
+            if (start != null) {
                 start.setVisibility(View.VISIBLE);
             }
         }

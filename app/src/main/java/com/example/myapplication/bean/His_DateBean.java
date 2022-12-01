@@ -1,29 +1,32 @@
 package com.example.myapplication.bean;
 
+import java.util.List;
+
 public class His_DateBean {
 
-    private String txt;
-    private int img;
 
-    public His_DateBean(String date, int img) {
-        this.txt = date;
-        this.img = img;
+    public Integer errCode;
+    public Integer time;
+    public String errMsg;
+    public List<DataBean> data;
+
+    public static class DataBean {
+        public String resource_type;
+        public String updated_at;
+        public Integer free;
+        public String title;
+        public Integer resource_id;
+        public Integer status;
+        public String resource_icon;
+        public Integer anchor_id;
+        public String anchor_name;
+        public String anchor_avatar;
+        public Integer resource_duration;
+        public List<TagsBean> tags;
+
+        /*public static class TagsBean {
+            public Integer id;
+            public String name;
+        }*/
     }
-
-    public String getTxt() {
-        return txt;
-    }
-
-    public void setTxt(String txt) {
-        this.txt = txt;
-    }
-
-    public int getImg() {
-        return img;
-    }
-
-    public void setImg(int img) {
-        this.img = img;
-    }
-
 }

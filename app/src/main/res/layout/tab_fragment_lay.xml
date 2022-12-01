@@ -16,6 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
+
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/video_viewpage"
             android:layout_width="match_parent"
@@ -156,7 +157,7 @@
         android:layout_gravity="bottom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:direction="0"
-        app:visiableLength="80dp"
+        app:visiableLength="70dp"
         android:visibility="invisible">
 
         <LinearLayout
@@ -168,7 +169,7 @@
             <RelativeLayout
                 android:id="@+id/handle"
                 android:layout_width="match_parent"
-                android:layout_height="62dp"
+                android:layout_height="52dp"
                 android:background="@color/transparent_d">
 
                 <TextView

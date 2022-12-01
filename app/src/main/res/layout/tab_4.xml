@@ -1,11 +1,40 @@
-<RelativeLayout class="androidx.appcompat.app.AlertController$RecycleListView"
+<LinearLayout class="androidx.appcompat.app.AlertController$RecycleListView"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_dark">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="38dp">
+
+        <ImageView
+            android:id="@+id/img_msg"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@mipmap/my_icon_2"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:padding="10dp"/>
+
+        <ImageView
+            android:id="@+id/img_setting"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@mipmap/my_icon_1"
+            android:layout_toLeftOf="@+id/img_msg"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:padding="10dp"/>
+
+    </RelativeLayout>
 
 
     <ScrollView
@@ -17,33 +46,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/img_msg"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@mipmap/my_icon_2"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="20dp"
-                    android:padding="8dp"/>
-
-                <ImageView
-                    android:id="@+id/img_setting"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@mipmap/my_icon_1"
-                    android:layout_toLeftOf="@+id/img_msg"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
-                    android:padding="8dp"/>
-
-            </RelativeLayout>
-
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -157,4 +159,4 @@
 
     </com.yinglan.scrolllayout.ScrollLayout>
 
-</RelativeLayout>
+</LinearLayout>

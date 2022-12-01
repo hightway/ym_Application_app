@@ -294,7 +294,7 @@ public class TabFragment extends BaseLazyFragment implements AliyunOSSUtils.Uplo
 
             video_viewpage.setAdapter(new ViewPage_Adapter(getChildFragmentManager(), fragments));
             video_viewpage.setCurrentItem(1, false);
-            video_viewpage.setOffscreenPageLimit(3);//设置预加载的个数
+            video_viewpage.setOffscreenPageLimit(1);//设置预加载的个数
 
 
             for (int i = 0; i < POINT_LENGTH; i++) {

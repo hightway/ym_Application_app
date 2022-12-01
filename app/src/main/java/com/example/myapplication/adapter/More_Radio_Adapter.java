@@ -16,27 +16,24 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.myapplication.R;
-import com.example.myapplication.bean.Audio_DateBean;
-import com.example.myapplication.bean.His_DateBean;
-import com.example.myapplication.bean.White_Noise_Bean;
+import com.example.myapplication.bean.Hor_DateBean;
 import com.example.myapplication.custom.FillImageView;
-import com.example.myapplication.tools.Utils;
+import com.example.myapplication.plmd.Radio_Click_Set;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class More_Radio_Adapter extends RecyclerView.Adapter<More_Radio_Adapter.ViewHolder> {
-    private List<Audio_DateBean.DataBean> list = new ArrayList<>();
+    private List<Hor_DateBean.DataBean.ListBean> list = new ArrayList<>();
     private Context mContext;
     public int index;
-    public OnRvItemClick onRvItemClick;
 
     public More_Radio_Adapter(Context mContext) {
         this.mContext = mContext;
         index = 0;
     }
 
-    public void setDataList(List<Audio_DateBean.DataBean> list) {
+    public void setDataList(List<Hor_DateBean.DataBean.ListBean> list) {
         this.list = list;
         notifyDataSetChanged();
     }
@@ -46,9 +43,6 @@ public class More_Radio_Adapter extends RecyclerView.Adapter<More_Radio_Adapter.
         notifyDataSetChanged();
     }
 
-    public void setOnHosGridItemClick(OnRvItemClick onRvItemClick) {
-        this.onRvItemClick = onRvItemClick;
-    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -59,7 +53,7 @@ public class More_Radio_Adapter extends RecyclerView.Adapter<More_Radio_Adapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ViewHolder viewHolder = (ViewHolder) holder;
-        Audio_DateBean.DataBean dataBean = list.get(position);
+        Hor_DateBean.DataBean.ListBean dataBean = list.get(position);
 
         if(dataBean != null){
             //设置内容
@@ -83,10 +77,12 @@ public class More_Radio_Adapter extends RecyclerView.Adapter<More_Radio_Adapter.
                         .into(viewHolder.img_icon);
             }
 
+            viewHolder.itemView.setTag(dataBean);
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
-                    onRvItemClick.OnRvItemClick(v);
+                public void onClick(View view) {
+                    Hor_DateBean.DataBean.ListBean bean = (Hor_DateBean.DataBean.ListBean) view.getTag();
+                    Radio_Click_Set.set_Click(bean);
                 }
             });
         }
@@ -118,9 +114,5 @@ public class More_Radio_Adapter extends RecyclerView.Adapter<More_Radio_Adapter.
             img_icon = itemView.findViewById(R.id.img_icon);
             txt_msg = itemView.findViewById(R.id.txt_msg);
         }
-    }
-
-    public interface OnRvItemClick {
-        void OnRvItemClick(View view);
     }
 }

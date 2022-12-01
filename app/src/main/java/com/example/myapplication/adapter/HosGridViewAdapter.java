@@ -20,24 +20,21 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.myapplication.R;
 import com.example.myapplication.bean.Hor_DateBean;
 import com.example.myapplication.custom.FillImageView;
+import com.example.myapplication.plmd.Radio_Click_Set;
 import com.example.myapplication.tools.Utils;
 
 import java.util.List;
 
 public class HosGridViewAdapter extends RecyclerView.Adapter<HosGridViewAdapter.ViewHolder> {
-    private List<Hor_DateBean.DataBean.TopBean> list;
+    private List<Hor_DateBean.DataBean.ListBean> list;
     private Context mContext;
     public int index;
-    public OnRvItemClick onRvItemClick;
 
-    public HosGridViewAdapter(List<Hor_DateBean.DataBean.TopBean> list, Context mContext) {
+
+    public HosGridViewAdapter(List<Hor_DateBean.DataBean.ListBean> list, Context mContext) {
         this.list = list;
         this.mContext = mContext;
         index = 0;
-    }
-
-    public void setOnHosGridItemClick(OnRvItemClick onRvItemClick) {
-        this.onRvItemClick = onRvItemClick;
     }
 
     @Override
@@ -60,10 +57,12 @@ public class HosGridViewAdapter extends RecyclerView.Adapter<HosGridViewAdapter.
 
         viewHolder.txt_name.setText(list.get(position).title);
 
+        viewHolder.itemView.setTag(list.get(position));
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                onRvItemClick.OnRvItemClick(v);
+            public void onClick(View view) {
+                Hor_DateBean.DataBean.ListBean bean = (Hor_DateBean.DataBean.ListBean) view.getTag();
+                Radio_Click_Set.set_Click(bean);
             }
         });
     }
@@ -89,9 +88,5 @@ public class HosGridViewAdapter extends RecyclerView.Adapter<HosGridViewAdapter.
             txt_name = itemView.findViewById(R.id.txt_name);
             rel_item = itemView.findViewById(R.id.rel_item);
         }
-    }
-
-    public interface OnRvItemClick {
-        void OnRvItemClick(View view);
     }
 }
