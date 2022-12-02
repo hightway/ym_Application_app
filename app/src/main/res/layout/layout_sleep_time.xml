@@ -160,6 +160,7 @@
 
 
                 <RelativeLayout
+                    android:id="@+id/rel_close"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:gravity="center_vertical">
@@ -208,6 +209,7 @@
 
 
                 <RelativeLayout
+                    android:id="@+id/rel_sleep"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:gravity="center_vertical">

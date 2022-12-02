@@ -57,6 +57,9 @@
     <string name="good_deream_15">大家都在听</string>
     <string name="good_deream_16">换一换</string>
     <string name="good_deream_17">更多电台</string>
+    <string name="good_deream_18">再睡一会儿</string>
+    <string name="good_deream_19">分钟</string>
+    <string name="good_deream_20">计时结束后将暂停</string>
 
     <string name="sleep_tip_1">自定义闹钟铃声</string>
     <string name="sleep_tip_2">睡眠监测</string>
@@ -105,6 +108,8 @@
     <string name="noise_no">暂无</string>
     <string name="noise_no_more">暂无更多白噪音资源</string>
     <string name="noise">白噪音</string>
+    <string name="call_up">后唤醒你</string>
+    <string name="clock_success">闹铃设置成功</string>
 
     <string-array name="camer_item">
         <item>从相册选择</item>

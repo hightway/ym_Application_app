@@ -57,7 +57,7 @@
         android:layout_width="match_parent"
         android:layout_height="170dp"
         android:layout_above="@+id/tx_set_time"
-        android:layout_marginBottom="14dp">
+        android:layout_marginBottom="10dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -118,10 +118,128 @@
         android:layout_height="wrap_content"
         android:text="@string/good_deream_10"
         android:textSize="@dimen/textsize14"
+        android:padding="10dp"
+        android:layout_above="@+id/lin_but"
+        android:layout_marginBottom="90dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white" />
+
+
+    <RelativeLayout
+        android:id="@+id/rel_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/lin_but"
         android:layout_marginBottom="100dp"
-        android:layout_centerHorizontal="true"
-        android:textColor="@color/white"/>
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tx_time_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:textSize="@dimen/textsize14"
+            android:textColor="#99EBEBF5" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:background="@mipmap/sleep_clock_bg"
+            android:orientation="horizontal"
+            android:layout_below="@+id/tx_time_num"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/tx_clock_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:textSize="@dimen/textsize24"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="闹钟"
+                    android:textSize="@dimen/textsize10"
+                    android:textColor="#99EBEBF5" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="30dp"
+                android:background="#EFEFEF"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/tx_db"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0db"
+                    android:textSize="@dimen/textsize24"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="分贝"
+                    android:textSize="@dimen/textsize10"
+                    android:textColor="#99EBEBF5" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="30dp"
+                android:background="#EFEFEF"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/tx_noise"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00"
+                    android:textSize="@dimen/textsize24"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="环境"
+                    android:textSize="@dimen/textsize10"
+                    android:textColor="#99EBEBF5" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 
     <LinearLayout
@@ -142,6 +260,7 @@
             android:src="@mipmap/sleep_icon_1"/>
 
         <ImageView
+            android:id="@+id/set_clock"
             android:layout_width="54dp"
             android:layout_height="54dp"
             android:layout_centerInParent="true"

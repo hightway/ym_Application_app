@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -24,6 +25,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class Utils {
@@ -72,7 +75,7 @@ public class Utils {
     }
 
 
-    public static Uri saveSong(Context context, int song) {
+    public static File saveSong(Context context, int song) {
         byte[] buffer = null;
         InputStream fIn = context.getResources().openRawResource(song);
         int size = 0;
@@ -127,7 +130,9 @@ public class Utils {
                 return null;
             }
         }
-        return Uri.fromFile(new File(path + filename));
+        //return Uri.fromFile(new File(path + filename));
+        File song_file = new File(path + filename);
+        return song_file;
     }
 
 
@@ -256,6 +261,82 @@ public class Utils {
         }
         return str;
     }
+
+    public static String transfom_min(int time) {
+        String str;
+        if(time >= 60){
+            long shi = time / 60;
+            long fen = time % 60;
+            str = (shi + "h" + (fen > 0 ? (fen + "min") : ""));
+        }else{
+            str = (time + "min");
+        }
+        return str;
+    }
+
+
+    //days * (1000 * 60 * 60 * 24)
+    public static String transfom_time(int s_h, int s_m, int e_h, int e_m) {
+        String code;
+        if(s_h == 0){
+            s_h = 24;
+        }
+        if(e_h == 0){
+            e_h = 24;
+        }
+        if(s_m == 0){
+            s_m = 60;
+        }
+        if(e_m == 0){
+            e_m = 60;
+        }
+        if(e_h > s_h){
+            //当天
+            int data_min;
+            int data_hour = e_h - s_h;
+            if(e_m > s_m){
+                //当天
+                data_min = e_m - s_m;
+            }else if(e_m == s_m){
+                data_min = 0;
+            }else{
+                data_min = 60 - s_m + e_m;
+                data_hour--;
+            }
+            code = (data_hour > 0 ? (data_hour+"小时") : "") + (data_min > 0 ? (data_min+"分") : "");
+        }else if(s_h == e_h){
+            //判断分钟
+            if(e_m > s_m){
+                //当天
+                int data_min = e_m - s_m;
+                code = data_min + "分";
+            }else if(s_m == e_m){
+                code = "24小时";
+            }else{
+                int data_min = 60 - s_m + e_m;
+                code = "23小时" + data_min + "分";
+            }
+        }else{
+            //第二天
+            int data_min;
+            int d = s_h - e_h;
+            int data_hour = 24 - d;
+            if(e_m > s_m){
+                //当天
+                data_min = e_m - s_m;
+            }else if(e_m == s_m){
+                data_min = 0;
+            }else{
+                data_min = 60 - s_m + e_m;
+                data_hour--;
+            }
+            code = (data_hour > 0 ? (data_hour+"小时") : "") + (data_min > 0 ? (data_min+"分") : "");
+        }
+        return code;
+    }
+
+
+
 
 
 }
