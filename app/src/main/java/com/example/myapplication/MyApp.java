@@ -6,6 +6,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -47,6 +48,8 @@ public class MyApp extends Application {
     private int appCount = 0;
     private boolean isRunInBackground = false;
     public static FloatWindow_View floatWindow_view;
+    public static String Audio_Name;
+    public static Uri Audio_Uri;
 
     public MyApp() {
 

@@ -156,10 +156,15 @@
 
 
     <declare-styleable name="RealtimeBlurView_New">
-        <attr format="dimension" name="realtimeBlurRadius"/>
-        <attr format="float" name="realtimeDownsampleFactor"/>
-        <attr format="color" name="realtimeOverlayColor"/>
+        <attr name="realtimeBlurRadius" format="dimension" />
+        <attr name="realtimeDownsampleFactor" format="float" />
+        <attr name="realtimeOverlayColor" format="color" />
     </declare-styleable>
 
+
+    <style name="MyAlertButton" parent="@style/Theme.AppCompat.Light.Dialog.Alert">
+        <!--修改AlertDialog按钮的颜色-->
+        <item name="colorAccent">#FF0000</item>
+    </style>
 
 </resources>

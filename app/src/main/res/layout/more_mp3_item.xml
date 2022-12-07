@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:voisePlayingIconAttr="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:id="@+id/rel_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
+
+        <RelativeLayout
+            android:id="@+id/rel_roll"
+            android:layout_width="44dp"
+            android:layout_height="44dp">
+
+            <ImageView
+                android:id="@+id/text_num"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_centerVertical="true" />
+
+            <com.example.myapplication.custom.VoisePlayingIcon
+                android:id="@+id/voise_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:padding="3dp"
+                android:visibility="gone"
+                voisePlayingIconAttr:pointer_color="@color/white"
+                voisePlayingIconAttr:pointer_num="3"
+                voisePlayingIconAttr:pointer_speed="30"
+                voisePlayingIconAttr:pointer_width="3" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/rel_roll"
+            android:layout_marginLeft="12dp">
+
+            <TextView
+                android:id="@+id/txt_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize16" />
+
+            <TextView
+                android:id="@+id/txt_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_name"
+                android:layout_marginTop="8dp"
+                android:text="30"
+                android:textColor="@color/gray_"
+                android:textSize="@dimen/textsize11" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+</LinearLayout>

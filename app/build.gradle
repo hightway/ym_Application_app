@@ -121,6 +121,9 @@ dependencies {
 
     implementation 'com.github.donkingliang:HeaderViewAdapter:1.2.2'
 
+    //加载json动画
+    implementation 'com.airbnb.android:lottie:3.1.0'
+
     //全局悬浮
     //implementation 'com.github.yhaolpz:FloatWindow:1.0.9'
 }

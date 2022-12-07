@@ -267,9 +267,9 @@ public class Utils {
         if(time >= 60){
             long shi = time / 60;
             long fen = time % 60;
-            str = (shi + "h" + (fen > 0 ? (fen + "min") : ""));
+            str = (shi + "小时" + (fen > 0 ? (fen + "分") : ""));
         }else{
-            str = (time + "min");
+            str = (time + "分钟");
         }
         return str;
     }

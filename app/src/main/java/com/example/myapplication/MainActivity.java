@@ -1,6 +1,9 @@
 package com.example.myapplication;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.Manifest;
@@ -8,7 +11,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -75,7 +80,8 @@ import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 import pub.devrel.easypermissions.PermissionRequest;
 
-public class MainActivity extends BaseActivity implements EasyPermissions.PermissionCallbacks, BackHandledInterface {
+//implements EasyPermissions.PermissionCallbacks, BackHandledInterface
+public class MainActivity extends BaseActivity {
 
     @BindView(R.id.tl_tabs)
     TabLayout tl_tabs;
@@ -103,6 +109,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
             Manifest.permission.RECORD_AUDIO
     };
     private TabFragment tabFragment;
+    private static final int MY_PERMISSION_REQUEST_CODE = 10000;
 
 
     public static MainActivity getInstance() {
@@ -196,20 +203,20 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                 .build();*/
 
 
-        // 权限判断
-        if (Build.VERSION.SDK_INT >= 23) {
-            if(!Settings.canDrawOverlays(getApplicationContext())) {
+        // 悬浮窗权限判断
+        /*if (Build.VERSION.SDK_INT >= 23) {
+            if (!Settings.canDrawOverlays(getApplicationContext())) {
                 // 启动Activity让用户授权
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-                startActivityForResult(intent,10);
+                startActivityForResult(intent, 10);
             } else {
                 // 执行6.0以上绘制代码
-                //initView_FloatWindow();
+                initView_FloatWindow();
             }
         } else {
             // 执行6.0以下绘制代码
-            //initView_FloatWindow();
-        }
+            initView_FloatWindow();
+        }*/
     }
 
     /*@Override
@@ -232,7 +239,6 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
             floatWindow_view.hideFloatWindow();
         }
     }*/
-
 
 
     private void getUser_info() {
@@ -420,8 +426,6 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
             e.printStackTrace();
         }
     }*/
-
-
     private void getOssStsToken() {
         //DialogUtils.getInstance().showDialog(this, "初始化中...");
         OkHttpUtil.postRequest(Api.HEAD + "getOssStsToken", new OkHttpUtil.OnRequestNetWorkListener() {
@@ -526,9 +530,9 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                     }
 
                     int index = tab.getPosition();
-                    if(index == 0){
+                    if (index == 0) {
                         view_view.setVisibility(View.GONE);
-                    }else{
+                    } else {
                         view_view.setVisibility(View.VISIBLE);
                     }
                     TextView textView = tab.getCustomView().findViewById(R.id.tabtext);
@@ -622,14 +626,52 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     }
 
 
+    /**
+     * 检查是否拥有指定的所有权限
+     */
+    private boolean checkPermissionAllGranted(String[] permissions) {
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                // 只要有一个权限没有被授予, 则直接返回 false
+                return false;
+            }
+        }
+        return true;
+    }
+
     // 申请权限
-    private String[] locationPermission = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-    private String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO};
+    //private String[] locationPermission = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+    //private String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO};
 
     private void askPermission() {
         //askPermission_more();
 
-        if (EasyPermissions.hasPermissions(this, locationPermission)) {
+        boolean isAllGranted = checkPermissionAllGranted(
+                new String[] {
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                }
+        );
+
+        // 如果这3个权限全都拥有, 则直接执行备份代码
+        if (isAllGranted) {
+            //有全部的权限，做对应的操作
+            initLocation();
+        }else{
+            // 一次请求多个权限, 如果其他有权限是已经授予的将会自动忽略掉
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[] {
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    }, MY_PERMISSION_REQUEST_CODE
+            );
+        }
+
+
+        /*if (EasyPermissions.hasPermissions(this, locationPermission)) {
             //有全部的权限，做对应的操作
             initLocation();
         } else {
@@ -645,7 +687,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
         if (EasyPermissions.hasPermissions(this, permissions)) {
             //有全部的权限，做对应的操作
-            //initLocation();
+
         } else {
             PermissionRequest request = new PermissionRequest.Builder(this, 2, permissions)
                     .setRationale("该App正常使用需要用到的权限")
@@ -654,29 +696,63 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                     //.setTheme(R.style.myPermissionStyle)
                     .build();
             EasyPermissions.requestPermissions(request);
-        }
+        }*/
     }
 
 
-
-    /*private void askPermission_more(){
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            //Android 6.0申请权限
-            ActivityCompat.requestPermissions(this, PERMISSION, 2);
-        } else {
-
-        }
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            //Android 6.0申请权限
-            ActivityCompat.requestPermissions(this, PERMISSION, 3);
-        } else {
-
-        }
-    }*/
-
-
+    /**
+     * 第 3 步: 申请权限结果返回处理
+     */
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == MY_PERMISSION_REQUEST_CODE) {
+            boolean isAllGranted = true;
+
+            // 判断是否所有的权限都已经授予了
+            for (int grant : grantResults) {
+                if (grant != PackageManager.PERMISSION_GRANTED) {
+                    isAllGranted = false;
+                    break;
+                }
+            }
+
+            if (isAllGranted) {
+                // 如果所有的权限都授予了, 则执行备份代码
+                initLocation();
+            } else {
+                // 弹出对话框告诉用户需要权限的原因, 并引导用户去应用权限管理中手动打开权限按钮
+                openAppDetails();
+            }
+        }
+    }
+
+    /**
+     * 打开 APP 的详情设置
+     */
+    private void openAppDetails() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(instance, R.style.MyAlertButton);
+        builder.setMessage("软件需要进行定位并访问“外部存储器”，请到 “应用信息 -> 权限” 中授予！");
+        builder.setPositiveButton("手动授权", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                intent.addCategory(Intent.CATEGORY_DEFAULT);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                startActivity(intent);
+            }
+        });
+        builder.setNegativeButton("取消", null);
+        builder.show();
+    }
+
+
+    /*@Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         //将请求结果交由 EasyPermissions处理
@@ -688,11 +764,11 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
         //权限申请成功
         if (perms != null && perms.size() > 0) {
-            /*StringBuffer stringBuffer = new StringBuffer();
+            *//*StringBuffer stringBuffer = new StringBuffer();
             for (String item : perms) {
                 stringBuffer.append(item).append(",");
             }
-            Toast.makeText(this, "该应用已允许权限:" + stringBuffer.toString().trim(), Toast.LENGTH_SHORT).show();*/
+            Toast.makeText(this, "该应用已允许权限:" + stringBuffer.toString().trim(), Toast.LENGTH_SHORT).show();*//*
 
             if (requestCode == 1) {
                 initLocation();
@@ -706,10 +782,9 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
             new AppSettingsDialog.Builder(this).build().show();
         }
-    }
+    }*/
 
     //初始化
-    @SuppressLint("MissingPermission")
     private void initLocation() {
         // 移除监听
         removeLocationListener();
@@ -733,6 +808,16 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
 
         //获取Location
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         Location location = locationManager.getLastKnownLocation(locationProvider);
         if (location != null) {
             getAddress(location);
@@ -904,18 +989,17 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
             @Override
             public void un_login_err() {
                 //去登录
-                Login_Util.go_Login(instance);
+                //Login_Util.go_Login(instance);
             }
         });
     }
 
 
-    private BaseLazyFragment mBackHandedFragment;
-
+    /*private BaseLazyFragment mBackHandedFragment;
     @Override
     public void setSelectedFragment(BaseLazyFragment selectedFragment) {
         this.mBackHandedFragment = selectedFragment;
-    }
+    }*/
 
 
     /*@Override

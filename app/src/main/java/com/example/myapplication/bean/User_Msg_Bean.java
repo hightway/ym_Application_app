@@ -48,7 +48,15 @@ public class User_Msg_Bean {
         private String created_at;
         private String updated_at;
         private List<Members_Bean> members;
+        private Extends_Bean user_extends;
 
+        public Extends_Bean getUser_extends() {
+            return user_extends;
+        }
+
+        public void setUser_extends(Extends_Bean user_extends) {
+            this.user_extends = user_extends;
+        }
 
         public Integer getUnread_notify() {
             return unread_notify;
@@ -222,6 +230,16 @@ public class User_Msg_Bean {
             public void setLv_icon(String lv_icon) {
                 this.lv_icon = lv_icon;
             }
+        }
+
+
+        public class Extends_Bean {
+            public String bedtime;
+            public String awaken_time;
+            public String sleep_monitoring;
+            public String painless_arousal;
+            public String timed_close;
+            public String delay;
         }
 
     }

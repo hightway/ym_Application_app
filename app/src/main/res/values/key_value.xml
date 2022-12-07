@@ -11,5 +11,6 @@
     <string name="ymapp_userRegister_type">ymapp_userRegister_type</string>
     <string name="ymapp_userAvatar">ymapp_userAvatar</string>
     <string name="ymapp_userEmail">ymapp_userEmail</string>
+    <string name="ymapp_userRaw_Audio">ymapp_userRaw_Audio</string>
 
 </resources>

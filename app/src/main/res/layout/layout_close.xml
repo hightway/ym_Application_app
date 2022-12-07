@@ -28,7 +28,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/good_deream_18"
+                    android:text="@string/sleep_tip_10"
                     android:textColor="@color/white"
                     android:textSize="@dimen/textsize18" />
 
@@ -64,13 +64,13 @@
                 android:id="@+id/seekbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxHeight="3dp"
+                android:maxHeight="4dp"
                 android:layout_centerInParent="true"
                 android:thumb="@drawable/seekbar_thumb"
                 android:max="100"
                 android:progress="1"
-                android:paddingEnd="0dp"
-                android:paddingStart="0dp"
+                android:paddingEnd="8dp"
+                android:paddingStart="8dp"
                 android:progressDrawable="@drawable/seek_bar_bg"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"/>
@@ -104,10 +104,10 @@
                 android:id="@+id/tv_progress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="5min"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="3dp"
+                android:gravity="center"
                 android:textSize="@dimen/textsize10"
                 android:layout_above="@+id/seekbar"
                 android:textColor="#EEEEEE"/>

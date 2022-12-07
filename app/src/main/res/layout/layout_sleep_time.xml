@@ -52,6 +52,7 @@
                 android:layout_marginLeft="20dp">
 
                 <RelativeLayout
+                    android:id="@+id/rel_audio_list"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:gravity="center_vertical">
@@ -65,21 +66,22 @@
                         android:text="@string/sleep_tip_1"/>
 
                     <TextView
+                        android:id="@+id/tx_raw_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/textsize10"
                         android:textColor="@color/gray_"
                         android:layout_marginRight="4dp"
                         android:layout_toLeftOf="@+id/img_1"
-                        android:layout_centerVertical="true"
-                        android:text="乡间小路"/>
+                        android:layout_centerVertical="true" />
 
                     <ImageView
                         android:id="@+id/img_1"
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
+                        android:layout_width="19dp"
+                        android:layout_height="19dp"
                         android:layout_centerVertical="true"
-                        android:layout_alignParentRight="true" />
+                        android:layout_alignParentRight="true"
+                        android:src="@mipmap/right_icon"/>
 
                 </RelativeLayout>
 
@@ -113,10 +115,11 @@
                     </LinearLayout>
 
                     <ImageView
+                        android:id="@+id/img_sleep"
                         android:layout_width="51dp"
                         android:layout_height="31dp"
                         android:layout_centerVertical="true"
-                        android:src="@mipmap/sleep_tag_sel"
+                        android:src="@mipmap/ic_switch_close"
                         android:layout_alignParentRight="true" />
 
                 </RelativeLayout>
@@ -150,10 +153,11 @@
                     </LinearLayout>
 
                     <ImageView
+                        android:id="@+id/img_rouse"
                         android:layout_width="51dp"
                         android:layout_height="31dp"
                         android:layout_centerVertical="true"
-                        android:src="@mipmap/sleep_tag_sel"
+                        android:src="@mipmap/ic_switch_open"
                         android:layout_alignParentRight="true" />
 
                 </RelativeLayout>
@@ -189,21 +193,22 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/tx_timed_close"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/textsize10"
                         android:textColor="@color/gray_"
                         android:layout_marginRight="4dp"
                         android:layout_centerVertical="true"
-                        android:layout_toLeftOf="@+id/img_2"
-                        android:text="5分钟"/>
+                        android:layout_toLeftOf="@+id/img_2" />
 
                     <ImageView
                         android:id="@+id/img_2"
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
+                        android:layout_width="19dp"
+                        android:layout_height="19dp"
                         android:layout_centerVertical="true"
-                        android:layout_alignParentRight="true" />
+                        android:layout_alignParentRight="true"
+                        android:src="@mipmap/right_icon"/>
 
                 </RelativeLayout>
 
@@ -238,21 +243,22 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/tx_delay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/textsize10"
                         android:textColor="@color/gray_"
                         android:layout_marginRight="4dp"
                         android:layout_centerVertical="true"
-                        android:layout_toLeftOf="@+id/img_3"
-                        android:text="5分钟"/>
+                        android:layout_toLeftOf="@+id/img_3" />
 
                     <ImageView
                         android:id="@+id/img_3"
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
+                        android:layout_width="19dp"
+                        android:layout_height="19dp"
                         android:layout_centerVertical="true"
-                        android:layout_alignParentRight="true" />
+                        android:layout_alignParentRight="true"
+                        android:src="@mipmap/right_icon"/>
 
                 </RelativeLayout>
 

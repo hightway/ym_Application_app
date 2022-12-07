@@ -117,4 +117,26 @@ public class UserConfig {
 
 		editor.commit();
 	}
+
+
+
+	public void save_RawAudio_Sel(Context context, String word){
+		if (context == null)
+			return;
+		SharedPreferences share = PreferenceManager.getDefaultSharedPreferences(context);
+		Editor editor = share.edit();
+
+		editor.putString(context.getString(R.string.ymapp_userRaw_Audio), word);
+
+		editor.commit();
+	}
+
+	public String get_RawAudio_Sel(Context context) {
+		if (context == null)
+			return "";
+		SharedPreferences share = PreferenceManager.getDefaultSharedPreferences(context);
+
+		return share.getString(context.getString(R.string.ymapp_userRaw_Audio), "");
+	}
+
 }
