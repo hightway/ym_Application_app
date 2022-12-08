@@ -167,6 +167,10 @@
             android:name="com.example.myapplication.activity.Sleep_Time_Set_Activity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name="com.example.myapplication.activity.Alarm_Activity"
+            android:screenOrientation="portrait" />
+
 
 
         <activity
@@ -184,7 +188,12 @@
             android:screenOrientation="portrait"></activity>
 
 
-        <receiver android:name="com.example.myapplication.receiver.AlarmReceiver" android:process=":remote"/>
+        <!--<receiver android:name="com.example.myapplication.receiver.AlarmReceiver" android:process=":remote"/>-->
+        <receiver
+            android:name="com.example.myapplication.receiver.AlarmReceiver"
+            android:enabled="true"
+            android:exported="false">
+        </receiver>
 
 
         <provider

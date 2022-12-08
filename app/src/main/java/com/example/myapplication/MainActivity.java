@@ -269,6 +269,16 @@ public class MainActivity extends BaseActivity {
                         UserConfig.instance().avatar = dataBean.getAvatar();
                         UserConfig.instance().name = dataBean.getName();
                         UserConfig.instance().phone = dataBean.getPhone();
+
+                        User_Msg_Bean.DataBean.Extends_Bean extends_bean = dataBean.getUser_extends();
+                        if(extends_bean != null){
+                            UserConfig.instance().user_awaken_time = extends_bean.awaken_time;
+                            UserConfig.instance().user_bedtime = extends_bean.bedtime;
+                            UserConfig.instance().user_sleep_monitoring = extends_bean.sleep_monitoring;
+                            UserConfig.instance().user_painless_arousal = extends_bean.painless_arousal;
+                            UserConfig.instance().user_timed_close = extends_bean.timed_close;
+                            UserConfig.instance().user_delay = extends_bean.delay;
+                        }
                         //保存
                         UserConfig.instance().saveUserConfig(instance);
                     }

@@ -61,6 +61,7 @@
     <string name="good_deream_19">分钟</string>
     <string name="good_deream_20">计时结束后将暂停</string>
     <string name="good_deream_21">选择铃声</string>
+    <string name="good_deream_22">再睡一会</string>
 
     <string name="sleep_tip_1">自定义闹钟铃声</string>
     <string name="sleep_tip_2">睡眠监测</string>
@@ -72,6 +73,10 @@
     <string name="sleep_tip_8">再睡会儿</string>
     <string name="sleep_tip_9">懒床一下，自定义懒床时长</string>
     <string name="sleep_tip_10">多久关闭</string>
+    <string name="sleep_tip_11">使用</string>
+    <string name="sleep_tip_12">请选择铃声</string>
+    <string name="sleep_tip_13">闹铃已取消</string>
+    <string name="sleep_tip_14">闹钟已关闭</string>
 
     <string name="ok_msg">确定</string>
 

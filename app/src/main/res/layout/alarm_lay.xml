@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app_Lottie="http://schemas.android.com/apk/res-auto"
+    android:background="@color/app_dark">
+
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/set_clock_stop"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app_Lottie:lottie_autoPlay="false"
+        app_Lottie:lottie_fileName="pic_data.json"
+        app_Lottie:lottie_loop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="80dp"/>
+
+    <LinearLayout
+        android:id="@+id/lin_seekbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/set_clock_stop"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="30dp"
+        android:visibility="invisible">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="10dp"
+            android:src="@mipmap/sleep_1"/>
+
+        <SeekBar
+            android:id="@+id/seekbar"
+            android:layout_width="80dp"
+            android:layout_height="2dp"
+            android:max="100"
+            android:progress="1"
+            android:paddingEnd="0dp"
+            android:paddingStart="0dp"
+            android:progressDrawable="@drawable/seek_sleep_bg" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:src="@mipmap/sleep_2"/>
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/tx_delay"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:background="@drawable/oval_sleep_bg"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/lin_seekbar"
+        android:layout_marginBottom="75dp"
+        android:text="@string/good_deream_22"
+        android:textSize="@dimen/textsize18"
+        android:textColor="@color/white"
+        android:gravity="center"/>
+
+
+</RelativeLayout>

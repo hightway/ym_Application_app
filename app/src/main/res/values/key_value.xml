@@ -13,4 +13,11 @@
     <string name="ymapp_userEmail">ymapp_userEmail</string>
     <string name="ymapp_userRaw_Audio">ymapp_userRaw_Audio</string>
 
+    <string name="ymapp_user_awaken_time">ymapp_user_awaken_time</string>
+    <string name="ymapp_user_bedtime">ymapp_user_bedtime</string>
+    <string name="ymapp_user_sleep_monitoring">ymapp_user_sleep_monitoring</string>
+    <string name="ymapp_user_painless_arousal">ymapp_user_painless_arousal</string>
+    <string name="ymapp_user_timed_close">ymapp_user_timed_close</string>
+    <string name="ymapp_user_delay">ymapp_user_delay</string>
+
 </resources>

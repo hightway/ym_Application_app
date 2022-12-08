@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import com.example.myapplication.MyApp;
 import com.example.myapplication.R;
+import com.example.myapplication.activity.Alarm_Activity;
+import com.example.myapplication.activity.Sleep_Time_Set_Activity;
 import com.example.myapplication.bean.Raw_Bean;
 import com.example.myapplication.tools.MediaUtil;
 import com.example.myapplication.tools.VibrateUtil;
@@ -29,27 +31,13 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         String act = intent.getAction();
         if (!TextUtils.isEmpty(act) && act.equals(BC_ACTION)) {
-            String audio_name = intent.getStringExtra("audio_name");
+            //String audio_name = intent.getStringExtra("audio_name");
 
-            //开启震动
-            isVirating = true;
-            VibrateUtil.vibrate(context, new long[]{800, 400, 800, 400}, 0);
-            //关闭震动
-            /*if (isVirating) {//防止多次关闭抛出异常，这里加个参数判断一下
-                isVirating = false;
-                VibrateUtil.virateCancle(context);
-            }*/
+            //跳转界面
+            Intent intent_act = new Intent(context, Alarm_Activity.class);
+            intent_act.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent_act);
 
-            //铃声
-            //MediaUtil.playRing(context, MyApp.Audio_Name, MyApp.Audio_Uri);
-
-            if(!TextUtils.isEmpty(audio_name)){
-                //铃声
-                MediaUtil.playRing(context, audio_name, MyApp.Audio_Uri);
-            }else{
-                //铃声
-                MediaUtil.playRing(context, R.raw.ring_song);
-            }
         }
     }
 }
