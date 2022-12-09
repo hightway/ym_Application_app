@@ -89,8 +89,12 @@ public class TabFragment_3 extends BaseLazyFragment{
                             UserConfig.instance().user_bedtime = extends_bean.bedtime;
                             UserConfig.instance().user_sleep_monitoring = extends_bean.sleep_monitoring;
                             UserConfig.instance().user_painless_arousal = extends_bean.painless_arousal;
-                            UserConfig.instance().user_timed_close = extends_bean.timed_close;
-                            UserConfig.instance().user_delay = extends_bean.delay;
+                            if(!TextUtils.isEmpty(extends_bean.timed_close)){
+                                UserConfig.instance().user_timed_close = extends_bean.timed_close;
+                            }
+                            if(!TextUtils.isEmpty(extends_bean.delay)){
+                                UserConfig.instance().user_delay = extends_bean.delay;
+                            }
                         }
 
                         //保存

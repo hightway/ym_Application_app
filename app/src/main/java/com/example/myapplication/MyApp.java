@@ -43,7 +43,7 @@ public class MyApp extends Application {
     public List<Activity> activityList = new LinkedList();
     public static MyApp instance;
     public static AliPlayer app_mAliPlayer;
-    public static Context Aapp_context;
+    public static Context App_context;
     public static HashMap<String, String> city_code_map;
     private int appCount = 0;
     private boolean isRunInBackground = false;
@@ -81,7 +81,7 @@ public class MyApp extends Application {
     public void onCreate() {
         super.onCreate();
         ViewTarget.setTagId(R.id.glide_tag);
-        Aapp_context = getApplicationContext();
+        App_context = getApplicationContext();
         disableAPIDialog();
 
         //获取APP参数
@@ -96,9 +96,9 @@ public class MyApp extends Application {
         OkHttpUtils.initClient(okHttpClient);
 
         //获取用户个人信息
-        UserConfig.instance().getUserConfig(Aapp_context);
+        UserConfig.instance().getUserConfig(App_context);
 
-        AppUtil.setApplicationContext(Aapp_context);
+        AppUtil.setApplicationContext(App_context);
 
         //获取app版本号
         try {
@@ -111,13 +111,13 @@ public class MyApp extends Application {
         }
 
         //初始化微信SDK
-        WxLogin.initWx(Aapp_context);
+        WxLogin.initWx(App_context);
 
         //初始化阿里云播放器播放MP3
         get_app_mAliPlayer();
 
         //获取区域号
-        getJson_data("city_code", Aapp_context);
+        getJson_data("city_code", App_context);
 
         //监听app在前台后台
         register_Background_app();
@@ -218,7 +218,7 @@ public class MyApp extends Application {
     //初始化阿里云播放器播放MP3
     public static AliPlayer get_app_mAliPlayer() {
         if(app_mAliPlayer == null){
-            app_mAliPlayer = AliPlayerFactory.createAliPlayer(Aapp_context);
+            app_mAliPlayer = AliPlayerFactory.createAliPlayer(App_context);
             PlayerConfig config = app_mAliPlayer.getConfig();
             config.mDisableVideo = true;  //设置开启纯音频播放
             app_mAliPlayer.setConfig(config);

@@ -5,6 +5,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     
     <!-- 文字大小 -->
+    <dimen name="textsize80">80.0sp</dimen>
     <dimen name="textsize35">35.0sp</dimen>
     <dimen name="textsize32">32.0sp</dimen>
     <dimen name="textsize30">30.0sp</dimen>

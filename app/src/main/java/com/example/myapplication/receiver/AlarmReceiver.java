@@ -24,18 +24,18 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private String TAG = this.getClass().getSimpleName();
     public static final String BC_ACTION = "com.ex.action.BC_ACTION";
-    private boolean isVirating = false;
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
         String act = intent.getAction();
         if (!TextUtils.isEmpty(act) && act.equals(BC_ACTION)) {
-            //String audio_name = intent.getStringExtra("audio_name");
+            String alarm_time = intent.getStringExtra("alarm_time");
 
             //跳转界面
             Intent intent_act = new Intent(context, Alarm_Activity.class);
             intent_act.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent_act.putExtra("alarm_time", alarm_time);
             context.startActivity(intent_act);
 
         }

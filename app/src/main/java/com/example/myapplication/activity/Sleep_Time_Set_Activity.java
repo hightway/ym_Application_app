@@ -7,12 +7,14 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
@@ -62,16 +64,28 @@ import com.example.myapplication.R;
 import com.example.myapplication.adapter.More_Radio_Adapter;
 import com.example.myapplication.adapter.More_mp3_Adapter;
 import com.example.myapplication.base.BaseActivity;
+import com.example.myapplication.bean.Audio_Detail_Bean;
+import com.example.myapplication.bean.Hor_DateBean;
+import com.example.myapplication.bean.Noise_Bean;
 import com.example.myapplication.bean.Raw_Bean;
 import com.example.myapplication.bean.User_Msg_Bean;
+import com.example.myapplication.bean.Video_Detail_Bean;
+import com.example.myapplication.bean.White_Noise_Bean;
 import com.example.myapplication.custom.AudioRecordDemo;
 import com.example.myapplication.custom.DatePickerAdapter;
+import com.example.myapplication.custom.DialogFragment;
 import com.example.myapplication.custom.ScrollPickerView;
 import com.example.myapplication.http.Api;
 import com.example.myapplication.http.UserConfig;
 import com.example.myapplication.plmd.Alarm_CallBack;
+import com.example.myapplication.plmd.AliPlayer_Noise_Callback;
+import com.example.myapplication.plmd.Radio_Click;
+import com.example.myapplication.plmd.Radio_Click_Set;
+import com.example.myapplication.plmd.White_Noise_Cliack;
+import com.example.myapplication.plmd.White_Noise_Cliack_Set;
 import com.example.myapplication.plmd.setAlarm_CallBack;
 import com.example.myapplication.receiver.AlarmReceiver;
+import com.example.myapplication.receiver.TimeClose_Alarm_Receiver;
 import com.example.myapplication.tools.Aliyun_Login_Util;
 import com.example.myapplication.tools.DialogUtils;
 import com.example.myapplication.tools.Login_Util;
@@ -79,6 +93,8 @@ import com.example.myapplication.tools.MediaUtil;
 import com.example.myapplication.tools.OkHttpUtil;
 import com.example.myapplication.tools.Raw_Util;
 import com.example.myapplication.tools.Utils;
+import com.example.myapplication.videoplayTool.AppUtil;
+import com.example.myapplication.videoplayTool.VideoPlayManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -98,7 +114,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPickerView.OnItemSelectedListener, Alarm_CallBack {
+public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPickerView.OnItemSelectedListener, Alarm_CallBack, White_Noise_Cliack, Radio_Click {
 
     private Sleep_Time_Set_Activity instance;
 
@@ -133,6 +149,8 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
     TextView tx_noise;
     @BindView(R.id.set_clock)
     ImageView set_clock;
+    @BindView(R.id.img_meua)
+    ImageView img_meua;
     @BindView(R.id.set_clock_stop)
     LottieAnimationView set_clock_stop;
     @BindView(R.id.seekbar)
@@ -166,6 +184,8 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
     private boolean painless_arousal_open;
     private UserConfig userConfig;
     private boolean is_start_getTime;
+    private DialogFragment dialogFragment;
+    private Audio_CloseReceiver audio_closeReceiver;
 
     @Override
     protected int getLayoutID() {
@@ -182,6 +202,13 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
     @Override
     protected void initView() {
         ButterKnife.bind(this);
+
+
+        //设置白噪音点击监听事件
+        White_Noise_Cliack_Set.setWhite_Noise_Cliack(this);
+        //设置电台点击事件
+        Radio_Click_Set.setRadio_Cliack(this);
+
 
         userConfig = UserConfig.instance();
         //获取当前时间
@@ -246,6 +273,22 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
 
         //获取权限
         askPermission();
+
+        //注册音频停止播放广播
+        regis_audio_close();
+    }
+
+    private void regis_audio_close() {
+        IntentFilter intentFilter = new IntentFilter("audio_close");
+        audio_closeReceiver = new Audio_CloseReceiver();
+        registerReceiver(audio_closeReceiver, intentFilter);
+    }
+
+    public class Audio_CloseReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            stop_noise_play();
+        }
     }
 
     private void askPermission() {
@@ -405,7 +448,7 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         Thread thread = new Thread(() -> {
             while (is_start_getTime) {
                 try {
-                    Thread.sleep(60*1000);
+                    Thread.sleep(30*1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -440,6 +483,11 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         if (audioRecordDemo != null) {
             audioRecordDemo.sotp();
         }
+        stop_noise_play();
+        //设置白噪音点击监听事件
+        White_Noise_Cliack_Set.setWhite_Noise_Cliack(null);
+        //设置电台点击事件
+        Radio_Click_Set.setRadio_Cliack(null);
         finish();
     }
 
@@ -451,6 +499,16 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         }
         if (set_clock_stop != null) {
             set_clock_stop.cancelAnimation();
+        }
+        //设置白噪音点击监听事件
+        White_Noise_Cliack_Set.setWhite_Noise_Cliack(null);
+        //设置电台点击事件
+        Radio_Click_Set.setRadio_Cliack(null);
+        stop_noise_play();
+
+        if(audio_closeReceiver != null){
+            //关闭广播
+            unregisterReceiver(audio_closeReceiver);
         }
     }
 
@@ -916,7 +974,7 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         String time = tx_clock_time.getText().toString().trim();
         set_awaken_time(time);
         //设置闹钟
-        setMyAlarm();
+        setMyAlarm(time, false);
         //获取环境分贝
         audioRecordDemo = new AudioRecordDemo(Sleep_Time_Set_Activity.this);
         audioRecordDemo.getNoiseLevel();
@@ -972,10 +1030,10 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
     }
 
     //设置定时执行的任务
-    private void setMyAlarm() {
+    private void setMyAlarm(String alarm_time, boolean isdelay) {
         Intent alarm_intent = new Intent(instance, AlarmReceiver.class);
         alarm_intent.setAction(AlarmReceiver.BC_ACTION);
-        //alarm_intent.putExtra("audio_name", MyApp.Audio_Name);
+        alarm_intent.putExtra("alarm_time", alarm_time);
         pendingIntent = PendingIntent.getBroadcast(instance, 0, alarm_intent, 0);
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
@@ -1013,8 +1071,10 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, tt, pendingIntent);
         }
 
-        //更新UI
-        reset_view();
+        if(!isdelay){
+            //更新UI
+            reset_view();
+        }
     }
 
 
@@ -1444,7 +1504,192 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
 
     @Override
     public void Alarm_delay() {
+        //停止计时倒数
+        stop_getTime();
         //停止闹铃
         cancelAlarm();
+
+        //重新开始计算倒计时
+        if(!TextUtils.isEmpty(userConfig.user_delay)){
+            int add_min = Integer.valueOf(userConfig.user_delay);
+            int new_min = date_min += add_min;
+            if(new_min >= 60){
+                date_h++;
+                date_min = new_min - 60;
+                if(date_h >= 24){
+                    date_h -= 24;
+                }
+            }else{
+                date_min = new_min;
+            }
+            tx_set_time();
+
+            mHandle.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //重新设置闹铃
+                    String time = tx_clock_time.getText().toString().trim();
+                    //重新设置闹铃
+                    setMyAlarm(time, true);
+                }
+            }, 300);
+        }
+    }
+
+
+    @OnClick(R.id.img_meua)
+    public void img_meua(){
+        dialogFragment = new DialogFragment();
+        dialogFragment.show(getSupportFragmentManager(), "ss");
+    }
+
+
+    @Override
+    public void audio_click(Hor_DateBean.DataBean.ListBean dataBean) {
+        if(dataBean == null){
+            return;
+        }
+        getradio_station_detail(dataBean.id);
+    }
+
+    @Override
+    public void noise_click(White_Noise_Bean.DataBean dataBean) {
+        if(dataBean == null){
+            return;
+        }
+        getwhite_noise_detail(dataBean.id);
+    }
+
+    /**
+     *  获取电台详情
+     * */
+    private void getradio_station_detail(int id) {
+        DialogUtils.getInstance().showDialog(this, "加载中...");
+        HashMap<String, String> map = new HashMap<>();
+        map.put("detail_id", String.valueOf(id));
+        OkHttpUtil.postRequest(Api.HEAD + "radio_station/detail", map, new OkHttpUtil.OnRequestNetWorkListener() {
+            @Override
+            public void notOk(String err) {
+                new Throwable("请求失败");
+            }
+
+            @Override
+            public void un_login_err() {
+
+            }
+
+            @Override
+            public void ok(String response, JSONObject jsonObject) {
+                try {
+                    int code = jsonObject.getInt("errCode");
+                    if (code == 200) {
+                        Audio_Detail_Bean audio_detail_bean = mGson.fromJson(response, Audio_Detail_Bean.class);
+                        Audio_Detail_Bean.DataBean dataBean = audio_detail_bean.data;
+                        if (dataBean != null) {
+                            //设置url
+                            String resource_url = dataBean.resource_url;
+                            if (!TextUtils.isEmpty(resource_url)) {
+                                stop_noise_play();
+                                start_noise_play(resource_url);
+
+                                if(dialogFragment != null){
+                                    dialogFragment.set_dismiss();
+                                    dialogFragment.dismiss();
+                                }
+                            }
+                        }
+                    } else {
+                        toast(jsonObject.getString("errMsg"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     *  获取白噪音详情
+     * */
+    private void getwhite_noise_detail(int id) {
+        DialogUtils.getInstance().showDialog(this, "加载中...");
+        HashMap<String, String> map = new HashMap<>();
+        map.put("detail_id", String.valueOf(id));
+        OkHttpUtil.postRequest(Api.HEAD + "white_noise/detail", map, new OkHttpUtil.OnRequestNetWorkListener() {
+            @Override
+            public void notOk(String err) {
+                new Throwable("请求失败");
+            }
+
+            @Override
+            public void un_login_err() {
+
+            }
+
+            @Override
+            public void ok(String response, JSONObject jsonObject) {
+                try {
+                    int code = jsonObject.getInt("errCode");
+                    if (code == 200) {
+                        Noise_Bean video_detail_bean = mGson.fromJson(response, Noise_Bean.class);
+                        Noise_Bean.DataBean dataBean = video_detail_bean.data;
+                        if (dataBean != null) {
+                            //设置url
+                            String resource_url = dataBean.resource_url;
+                            if (!TextUtils.isEmpty(resource_url)) {
+                                stop_noise_play();
+                                start_noise_play(resource_url);
+
+                                if(dialogFragment != null){
+                                    dialogFragment.dismiss();
+                                }
+                            }
+                        }
+                    } else {
+                        toast(jsonObject.getString("errMsg"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void start_noise_play(String url) {
+        //开始播放白噪音
+        Utils.init_Aliyun(MyApp.get_app_mAliPlayer(),  url);
+        if(!TextUtils.isEmpty(userConfig.user_timed_close)){
+            int num = Integer.valueOf(userConfig.user_timed_close);
+            if(num > 0){
+                init_TimeClose_Alarm(num);
+            }
+        }
+    }
+
+    private void init_TimeClose_Alarm(int num) {
+        //正常的创建intent，TimeDemoActivity是我要启动的活动
+        Intent intent = new Intent(instance, TimeClose_Alarm_Receiver.class);
+        intent.setAction(TimeClose_Alarm_Receiver.BC_ACTION);
+        long time = System.currentTimeMillis() + (num*60*1000); //得到当前时间并且增加等待时间
+        //创建PendingIntent封装了intent
+        PendingIntent pi = PendingIntent.getActivity(instance,0, intent,0);
+        AlarmManager manager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        //设置了AlarmManager类型参数，时间值，PendingIntent
+        //android Api的改变不同版本中设置有所不同
+        if (Build.VERSION.SDK_INT < 19) {
+            manager.set(AlarmManager.RTC_WAKEUP, time, pi);
+        } else {
+            manager.setExact(AlarmManager.RTC_WAKEUP, time, pi);
+        }
+    }
+
+    /**
+     *  停止音频播放
+     * */
+    private void stop_noise_play() {
+        if (MyApp.app_mAliPlayer != null) {
+            MyApp.app_mAliPlayer.release();
+            MyApp.app_mAliPlayer = null;
+        }
     }
 }

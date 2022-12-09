@@ -33,8 +33,8 @@ public class UserConfig {
 	public String user_bedtime;
 	public String user_sleep_monitoring;
 	public String user_painless_arousal;
-	public String user_timed_close;
-	public String user_delay;
+	public String user_timed_close = "10";
+	public String user_delay = "5";
 	public int age;
 
 	public String wx_openId;
@@ -74,8 +74,8 @@ public class UserConfig {
 		this.user_bedtime = share.getString(context.getString(R.string.ymapp_user_bedtime), "");
 		this.user_sleep_monitoring = share.getString(context.getString(R.string.ymapp_user_sleep_monitoring), "");
 		this.user_painless_arousal = share.getString(context.getString(R.string.ymapp_user_painless_arousal), "");
-		this.user_timed_close = share.getString(context.getString(R.string.ymapp_user_timed_close), "");
-		this.user_delay = share.getString(context.getString(R.string.ymapp_user_delay), "");
+		this.user_timed_close = share.getString(context.getString(R.string.ymapp_user_timed_close), "10");
+		this.user_delay = share.getString(context.getString(R.string.ymapp_user_delay), "5");
 	}
 	
 	public void saveUserConfig(Context context){
@@ -124,8 +124,8 @@ public class UserConfig {
 		this.user_bedtime = "";
 		this.user_sleep_monitoring = "";
 		this.user_painless_arousal = "";
-		this.user_timed_close = "";
-		this.user_delay = "";
+		this.user_timed_close = "10";
+		this.user_delay = "5";
 		this.isloaded = false;
 
 		editor.putInt(context.getString(R.string.ymapp_userId), user_id);

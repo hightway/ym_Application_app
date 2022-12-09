@@ -193,6 +193,18 @@
             android:name="com.example.myapplication.receiver.AlarmReceiver"
             android:enabled="true"
             android:exported="false">
+            <intent-filter android:priority="100">
+                <action android:name="com.ex.action.BC_ACTION"></action>
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="com.example.myapplication.receiver.TimeClose_Alarm_Receiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter android:priority="99">
+                <action android:name="com.ex.action.timeclose"></action>
+            </intent-filter>
         </receiver>
 
 

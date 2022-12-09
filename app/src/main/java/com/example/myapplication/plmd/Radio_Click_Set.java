@@ -11,7 +11,9 @@ public class Radio_Click_Set {
     }
 
     public static void set_Click(Hor_DateBean.DataBean.ListBean dataBean){
-        radio_cliack.audio_click(dataBean);
+        if(radio_cliack != null){
+            radio_cliack.audio_click(dataBean);
+        }
     }
 
 }

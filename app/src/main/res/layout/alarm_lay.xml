@@ -15,7 +15,19 @@
         app_Lottie:lottie_loop="true"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="80dp"/>
+        android:layout_marginBottom="70dp"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp"
+        android:textColor="@color/get_code_cocle_un"
+        android:textSize="@dimen/textsize11"
+        android:text="@string/on_stop"
+        android:layout_centerHorizontal="true"/>
+
 
     <LinearLayout
         android:id="@+id/lin_seekbar"
@@ -25,7 +37,7 @@
         android:orientation="horizontal"
         android:layout_centerHorizontal="true"
         android:gravity="center_vertical"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="20dp"
         android:visibility="invisible">
 
         <ImageView
@@ -60,11 +72,40 @@
         android:background="@drawable/oval_sleep_bg"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/lin_seekbar"
-        android:layout_marginBottom="75dp"
+        android:layout_marginBottom="50dp"
         android:text="@string/good_deream_22"
         android:textSize="@dimen/textsize18"
         android:textColor="@color/white"
         android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/tx_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/good_deream_23"
+        android:textColor="@color/get_code_cocle_un"
+        android:textSize="@dimen/textsize25"
+        android:layout_marginTop="90dp"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/tx_alarm_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tx_title"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textsize80"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/tx_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tx_alarm_time"
+        android:textColor="#FFE0E0E0"
+        android:textSize="@dimen/textsize18"
+        android:layout_centerHorizontal="true"/>
 
 
 </RelativeLayout>

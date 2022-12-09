@@ -62,6 +62,7 @@
     <string name="good_deream_20">计时结束后将暂停</string>
     <string name="good_deream_21">选择铃声</string>
     <string name="good_deream_22">再睡一会</string>
+    <string name="good_deream_23">早上好，该起床啦</string>
 
     <string name="sleep_tip_1">自定义闹钟铃声</string>
     <string name="sleep_tip_2">睡眠监测</string>
@@ -77,6 +78,7 @@
     <string name="sleep_tip_12">请选择铃声</string>
     <string name="sleep_tip_13">闹铃已取消</string>
     <string name="sleep_tip_14">闹钟已关闭</string>
+    <string name="sleep_tip_15">分钟后再响铃</string>
 
     <string name="ok_msg">确定</string>
 
@@ -122,6 +124,8 @@
     <string name="raw_no">暂无铃声可选择</string>
     <string name="time_long">时长：</string>
     <string name="time_min">分钟</string>
+    <string name="yue">月</string>
+    <string name="ri">日</string>
 
     <string-array name="camer_item">
         <item>从相册选择</item>

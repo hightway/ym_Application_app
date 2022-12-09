@@ -479,6 +479,10 @@ public class Video_Detail_Activity extends BaseActivity implements VideoViewPage
         threadFlag = true;
         VideoPlayManager.getInstance(AppUtil.getApplicationContext()).stopPlay();
         stop_noise_play();
+        //设置白噪音点击监听事件
+        White_Noise_Cliack_Set.setWhite_Noise_Cliack(null);
+        //设置电台点击事件
+        Radio_Click_Set.setRadio_Cliack(null);
         //initView_FloatWindow();
         super.onDestroy();
     }
@@ -489,6 +493,10 @@ public class Video_Detail_Activity extends BaseActivity implements VideoViewPage
         threadFlag = true;
         VideoPlayManager.getInstance(AppUtil.getApplicationContext()).stopPlay();
         stop_noise_play();
+        //设置白噪音点击监听事件
+        White_Noise_Cliack_Set.setWhite_Noise_Cliack(null);
+        //设置电台点击事件
+        Radio_Click_Set.setRadio_Cliack(null);
         finish();
     }
 
@@ -853,7 +861,7 @@ public class Video_Detail_Activity extends BaseActivity implements VideoViewPage
         //开始播放白噪音
         is_noise_play = true;
         img_2.setImageResource(R.mipmap.img_play_pause);
-        Utils.init_Aliyun(MyApp.get_app_mAliPlayer(), MyApp.Aapp_context, lin_roll, url, draft_url, new AliPlayer_Noise_Callback(){
+        Utils.init_Aliyun(MyApp.get_app_mAliPlayer(), MyApp.App_context, lin_roll, url, draft_url, new AliPlayer_Noise_Callback(){
             @Override
             public void play_start() {
                 current_pro = 0;

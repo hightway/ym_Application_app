@@ -235,6 +235,18 @@ public class Utils {
     }
 
 
+
+    public static void init_Aliyun(AliPlayer mAliPlayer, String url) {
+        UrlSource urlSource = new UrlSource();
+        urlSource.setUri(url);
+        //设置播放源
+        mAliPlayer.setLoop(true);
+        mAliPlayer.setDataSource(urlSource);
+        mAliPlayer.setAutoPlay(true);
+        mAliPlayer.prepare();
+    }
+
+
     /**
      * list拼接成字符串
      */
@@ -365,6 +377,25 @@ public class Utils {
             code = (data_hour > 0 ? (data_hour+"小时") : "") + (data_min > 0 ? (data_min+"分") : "");
         }
         return code;
+    }
+
+
+
+    /**
+     * 获取当前日期是星期几
+     * @return
+     */
+    public static String getWeekOfDate() {
+
+        Date date = new Date(System.currentTimeMillis());
+
+        String[] weekDays = { "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+        if (w < 0)
+            w = 0;
+        return weekDays[w];
     }
 
 

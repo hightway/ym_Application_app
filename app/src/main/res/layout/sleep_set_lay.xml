@@ -290,6 +290,7 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:id="@+id/img_meua"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:padding="4dp"

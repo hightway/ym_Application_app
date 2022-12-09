@@ -1,5 +1,7 @@
 package com.example.myapplication.activity;
 
+import android.content.Context;
+import android.media.AudioManager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -12,9 +14,13 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.example.myapplication.MyApp;
 import com.example.myapplication.R;
 import com.example.myapplication.base.BaseActivity;
+import com.example.myapplication.http.UserConfig;
 import com.example.myapplication.plmd.setAlarm_CallBack;
 import com.example.myapplication.tools.MediaUtil;
+import com.example.myapplication.tools.Utils;
 import com.example.myapplication.tools.VibrateUtil;
+
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,7 +48,14 @@ public class Alarm_Activity extends BaseActivity {
     SeekBar seekbar;
     @BindView(R.id.tx_delay)
     TextView tx_delay;
+    @BindView(R.id.tx_alarm_time)
+    TextView tx_alarm_time;
+    @BindView(R.id.tx_time)
+    TextView tx_time;
     private boolean isVirating;
+    private Runnable alarm_runnable;
+    private AudioManager mAudioManager;
+    private int current_music;
 
     @Override
     protected int getLayoutID() {
@@ -59,9 +72,22 @@ public class Alarm_Activity extends BaseActivity {
     protected void initView() {
         ButterKnife.bind(this);
 
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        int max_music = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        current_music = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 7, 0);
+
+        Calendar c = Calendar.getInstance();
+        int day = c.get(Calendar.DAY_OF_MONTH);
+        int month = c.get(Calendar.MONTH);
+        int hour = c.get(Calendar.HOUR_OF_DAY);
+        int minute = c.get(Calendar.MINUTE);
+        String date = (month + 1) + getString(R.string.yue) + day + getString(R.string.ri);
+        tx_time.setText(date + "  " + Utils.getWeekOfDate());
+        tx_alarm_time.setText(hour + ":" + minute);
+
         //set_clock_stop.setVisibility(View.VISIBLE);
         set_clock_stop.playAnimation();
-
         set_clock_stop.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
@@ -100,13 +126,25 @@ public class Alarm_Activity extends BaseActivity {
 
         if (!TextUtils.isEmpty(MyApp.Audio_Name)) {
             //铃声
-            MediaUtil.playRing(instance, MyApp.Audio_Name, MyApp.Audio_Uri);
+            MediaUtil.playRing(instance, MyApp.Audio_Name, MyApp.Audio_Uri, UserConfig.instance().user_painless_arousal);
         } else {
             //铃声
-            MediaUtil.playRing(instance, R.raw.ring_song);
+            MediaUtil.playRing(instance, R.raw.ring_song, UserConfig.instance().user_painless_arousal);
         }
 
+
+        alarm_runnable = new Runnable() {
+            @Override
+            public void run() {
+                //关闭闹钟，并重新设置
+                tx_delay();
+            }
+        };
+        mHandle.postDelayed(alarm_runnable, 60*1000);
+
     }
+
+
 
 
     private void start_seekbar() {
@@ -134,11 +172,17 @@ public class Alarm_Activity extends BaseActivity {
 
 
     private void stop_seekbar() {
+        //恢复系统音量
+        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, current_music, 0);
+
+        if(alarm_runnable != null){
+            mHandle.removeCallbacks(alarm_runnable);
+        }
+
         pre_down = false;
         lin_seekbar.setVisibility(View.INVISIBLE);
 
         //暂停json动效
-        //set_clock_stop.setVisibility(View.GONE);
         set_clock_stop.pauseAnimation();
         //停止震动和铃声
         //防止多次关闭抛出异常，加个参数判断一下
@@ -215,9 +259,31 @@ public class Alarm_Activity extends BaseActivity {
 
     @OnClick(R.id.tx_delay)
     public void tx_delay() {
-        pre_down = false;
-        back_pre_down = false;
-        setAlarm_CallBack.Alarm_delay();
+        //恢复系统音量
+        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, current_music, 0);
+
+        if(alarm_runnable != null){
+            mHandle.removeCallbacks(alarm_runnable);
+        }
+
+        set_clock_stop.pauseAnimation();
+        //防止多次关闭抛出异常，加个参数判断一下
+        if (isVirating) {
+            isVirating = false;
+            VibrateUtil.virateCancle(instance);
+        }
+        MediaUtil.stopRing();
+
+        toast(UserConfig.instance().user_delay + getString(R.string.sleep_tip_15));
+        mHandle.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                pre_down = false;
+                back_pre_down = false;
+                setAlarm_CallBack.Alarm_delay();
+                finish();
+            }
+        }, 400);
     }
 
 

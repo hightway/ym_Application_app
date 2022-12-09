@@ -11,7 +11,9 @@ public class White_Noise_Cliack_Set {
     }
 
     public static void set_noise_click(White_Noise_Bean.DataBean dataBean){
-        white_noise_cliack.noise_click(dataBean);
+        if(white_noise_cliack != null){
+            white_noise_cliack.noise_click(dataBean);
+        }
     }
 
 }
