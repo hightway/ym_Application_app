@@ -63,6 +63,9 @@
     <string name="good_deream_21">选择铃声</string>
     <string name="good_deream_22">再睡一会</string>
     <string name="good_deream_23">早上好，该起床啦</string>
+    <string name="good_deream_24">休息的怎么样</string>
+    <string name="good_deream_25">录制梦话</string>
+    <string name="good_deream_26">我知道了</string>
 
     <string name="sleep_tip_1">自定义闹钟铃声</string>
     <string name="sleep_tip_2">睡眠监测</string>
@@ -79,6 +82,8 @@
     <string name="sleep_tip_13">闹铃已取消</string>
     <string name="sleep_tip_14">闹钟已关闭</string>
     <string name="sleep_tip_15">分钟后再响铃</string>
+    <string name="sleep_tip_16">睡眠评分仅记录就寝时长</string>
+    <string name="sleep_tip_17">睡眠时长</string>
 
     <string name="ok_msg">确定</string>
 

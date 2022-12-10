@@ -41,13 +41,16 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/rel_roll"
-            android:layout_marginLeft="12dp">
+            android:layout_toLeftOf="@+id/tx_use"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
 
             <TextView
                 android:id="@+id/txt_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
+                android:singleLine="true"
                 android:textSize="@dimen/textsize16" />
 
             <TextView
@@ -61,6 +64,19 @@
                 android:textSize="@dimen/textsize11" />
 
         </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tx_use"
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/use_bg"
+            android:text="使用"
+            android:gravity="center"
+            android:textColor="@color/get_code_cocle_un"
+            android:textSize="@dimen/textsize14"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 </LinearLayout>

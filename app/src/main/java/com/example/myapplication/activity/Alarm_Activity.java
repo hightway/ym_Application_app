@@ -75,7 +75,7 @@ public class Alarm_Activity extends BaseActivity {
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         int max_music = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         current_music = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 7, 0);
+        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 6, 0);
 
         Calendar c = Calendar.getInstance();
         int day = c.get(Calendar.DAY_OF_MONTH);
@@ -158,11 +158,11 @@ public class Alarm_Activity extends BaseActivity {
         Thread thread = new Thread(() -> {
             while (pre_down && current_pro < current_max) {
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(10);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                current_pro += 100;
+                current_pro += 10;
                 int finalJ = current_pro;
                 runOnUiThread(() -> seekbar.setProgress(finalJ));
             }
@@ -215,15 +215,15 @@ public class Alarm_Activity extends BaseActivity {
         Thread thread = new Thread(() -> {
             while (back_pre_down && current_pro >= 0) {
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(10);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                current_pro -= 200;
+                current_pro -= 40;
                 int finalJ = current_pro;
                 runOnUiThread(() -> seekbar.setProgress(finalJ));
 
-                if (current_pro < 200) {
+                if (current_pro < 40) {
                     back_pre_down = false;
                     runOnUiThread(new Runnable() {
                         @Override

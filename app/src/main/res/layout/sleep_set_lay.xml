@@ -24,6 +24,12 @@
         android:layout_alignParentBottom="true"
         android:background="@mipmap/frag_3"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/transparent_"/>
+
     <RelativeLayout
         android:id="@+id/search_bar"
         android:layout_width="match_parent"

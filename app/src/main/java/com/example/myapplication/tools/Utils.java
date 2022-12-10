@@ -293,7 +293,6 @@ public class Utils {
     public static String time_m;
     //days * (1000 * 60 * 60 * 24)
     public static String transfom_time(int s_h, int s_m, int e_h, int e_m) {
-
         String code;
         if(s_h == 0){
             s_h = 24;
@@ -356,29 +355,27 @@ public class Utils {
             if(e_m > s_m){
                 //当天
                 data_min = e_m - s_m;
-
-                time_h = "0";
-                time_m = String.valueOf(data_min);
-
             }else if(e_m == s_m){
                 data_min = 0;
-
-                time_h = "0";
-                time_m = String.valueOf(data_min);
-
             }else{
                 data_min = 60 - s_m + e_m;
                 data_hour--;
-
-                time_h = String.valueOf(data_hour);
-                time_m = String.valueOf(data_min);
-
             }
             code = (data_hour > 0 ? (data_hour+"小时") : "") + (data_min > 0 ? (data_min+"分") : "");
+
+            time_h = String.valueOf(data_hour > 0 ? (data_hour) : "0");
+            time_m = String.valueOf(data_min > 0 ? (data_min) : "0");
         }
         return code;
     }
 
+    public static String get_time_h() {
+        return time_h;
+    }
+
+    public static String get_time_m() {
+        return time_m;
+    }
 
 
     /**

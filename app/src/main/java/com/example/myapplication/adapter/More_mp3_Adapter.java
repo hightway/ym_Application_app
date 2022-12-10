@@ -31,14 +31,21 @@ public class More_mp3_Adapter extends RecyclerView.Adapter<More_mp3_Adapter.View
     private List<Raw_Bean> list = new ArrayList<>();
     private Context mContext;
     private int pos = -1;
+    private int index_sel;
 
-    public More_mp3_Adapter(Context mContext, List<Raw_Bean> list) {
+    public More_mp3_Adapter(Context mContext, List<Raw_Bean> list, int index) {
         this.mContext = mContext;
         this.list = list;
+        this.index_sel = index;
     }
 
     public void sel_pos(int pos){
         this.pos = pos;
+        notifyDataSetChanged();
+    }
+
+    public void set_sel(int pos){
+        this.index_sel = pos;
         notifyDataSetChanged();
     }
 
@@ -73,9 +80,21 @@ public class More_mp3_Adapter extends RecyclerView.Adapter<More_mp3_Adapter.View
             if(pos == position){
                 viewHolder.voise_icon.setVisibility(View.VISIBLE);
                 viewHolder.voise_icon.start();
+                viewHolder.tx_use.setVisibility(View.VISIBLE);
             }else{
                 viewHolder.voise_icon.setVisibility(View.GONE);
                 viewHolder.voise_icon.stop();
+                viewHolder.tx_use.setVisibility(View.GONE);
+            }
+
+            if(index_sel == position){
+                viewHolder.tx_use.setVisibility(View.VISIBLE);
+                viewHolder.tx_use.setText("已使用");
+                viewHolder.tx_use.setEnabled(false);
+            }else{
+                viewHolder.tx_use.setVisibility(View.GONE);
+                viewHolder.tx_use.setText("使用");
+                viewHolder.tx_use.setEnabled(true);
             }
 
             viewHolder.itemView.setTag(position);
@@ -85,6 +104,17 @@ public class More_mp3_Adapter extends RecyclerView.Adapter<More_mp3_Adapter.View
                     int pos = (int) view.getTag();
                     if(raw_onClick_callBack != null){
                         raw_onClick_callBack.Raw_click(pos);
+                    }
+                }
+            });
+
+            viewHolder.tx_use.setTag(position);
+            viewHolder.tx_use.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int pos = (int) view.getTag();
+                    if(raw_onClick_callBack != null){
+                        raw_onClick_callBack.sel_Raw_click(pos);
                     }
                 }
             });
@@ -105,6 +135,7 @@ public class More_mp3_Adapter extends RecyclerView.Adapter<More_mp3_Adapter.View
         ImageView text_num;
         TextView txt_name;
         TextView txt_msg;
+        TextView tx_use;
         VoisePlayingIcon voise_icon;
 
         public ViewHolder(View itemView) {
@@ -113,6 +144,7 @@ public class More_mp3_Adapter extends RecyclerView.Adapter<More_mp3_Adapter.View
             txt_name = itemView.findViewById(R.id.txt_name);
             txt_msg = itemView.findViewById(R.id.txt_msg);
             voise_icon = itemView.findViewById(R.id.voise_icon);
+            tx_use = itemView.findViewById(R.id.tx_use);
         }
     }
 
@@ -122,6 +154,7 @@ public class More_mp3_Adapter extends RecyclerView.Adapter<More_mp3_Adapter.View
     }
     public interface Raw_OnClick_CallBack{
         void Raw_click(int pos);
+        void sel_Raw_click(int pos);
     }
 
 }

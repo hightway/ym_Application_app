@@ -38,6 +38,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -106,7 +107,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -186,6 +190,7 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
     private boolean is_start_getTime;
     private DialogFragment dialogFragment;
     private Audio_CloseReceiver audio_closeReceiver;
+    private float current_light = 200f;
 
     @Override
     protected int getLayoutID() {
@@ -223,19 +228,19 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         datepicker_year_1.setOnItemSelectedListener(this);
         datepicker_year_2.setOnItemSelectedListener(this);
 
-        if(!TextUtils.isEmpty(userConfig.user_awaken_time)){
+        if (!TextUtils.isEmpty(userConfig.user_awaken_time)) {
             String[] arr = userConfig.user_awaken_time.split(":");
-            if(arr.length == 2){
+            if (arr.length == 2) {
                 String awaken_time_h = arr[0];
                 String awaken_time_min = arr[1];
-                if(!TextUtils.isEmpty(awaken_time_h)){
+                if (!TextUtils.isEmpty(awaken_time_h)) {
                     datepicker_year_1.setSelectedPosition(Integer.valueOf(awaken_time_h));
                 }
-                if(!TextUtils.isEmpty(awaken_time_min)){
+                if (!TextUtils.isEmpty(awaken_time_min)) {
                     datepicker_year_2.setSelectedPosition(Integer.valueOf(awaken_time_min));
                 }
             }
-        }else{
+        } else {
             datepicker_year_1.setSelectedPosition(t_hour);
             datepicker_year_2.setSelectedPosition(t_minute);
         }
@@ -271,11 +276,24 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         MyApp.Audio_Name = UserConfig.instance().get_RawAudio_Sel(instance);
         setAlarm_CallBack.setAlarm_CallBack(this);
 
+        // 获取系统亮度
+        getScreenBrightness(instance);
+
         //获取权限
         askPermission();
 
         //注册音频停止播放广播
         regis_audio_close();
+    }
+
+    /**
+     * 1.获取系统默认屏幕亮度值 屏幕亮度值范围（0-255）
+     * **/
+    private void getScreenBrightness(Context context) {
+        ContentResolver contentResolver = context.getContentResolver();
+        int defVal = 125;
+        int light = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, defVal);
+        current_light = light;
     }
 
     private void regis_audio_close() {
@@ -366,7 +384,6 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
                 //设置闹铃
                 setAlarm();
             }
-
         }
     }
 
@@ -427,7 +444,7 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         String hours;
         if (date_h < 10) {
             hours = "0" + date_h;
-        }else{
+        } else {
             hours = String.valueOf(date_h);
         }
 
@@ -448,7 +465,7 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         Thread thread = new Thread(() -> {
             while (is_start_getTime) {
                 try {
-                    Thread.sleep(30*1000);
+                    Thread.sleep(20 * 1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -461,9 +478,9 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
     }
 
     /**
-     *  停止计时倒数
-     * */
-    public void stop_getTime(){
+     * 停止计时倒数
+     */
+    public void stop_getTime() {
         is_start_getTime = false;
     }
 
@@ -504,9 +521,12 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         White_Noise_Cliack_Set.setWhite_Noise_Cliack(null);
         //设置电台点击事件
         Radio_Click_Set.setRadio_Cliack(null);
+        //停止播放
         stop_noise_play();
+        //停止计算倒计时
+        stop_getTime();
 
-        if(audio_closeReceiver != null){
+        if (audio_closeReceiver != null) {
             //关闭广播
             unregisterReceiver(audio_closeReceiver);
         }
@@ -746,12 +766,22 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         int h = d_height / 9 * 8;
         popupWindow.setHeight(h);
 
-        TextView img_miss = inflate.findViewById(R.id.tx_ok);
+        int index_sel = -1;
+        if(!TextUtils.isEmpty(MyApp.Audio_Name)){
+            for(Raw_Bean raw_bean : list){
+                if(MyApp.Audio_Name.equals(raw_bean.getRawName())){
+                    index_sel = list.indexOf(raw_bean);
+                    break;
+                }
+            }
+        }
+
+        ImageView img_miss = inflate.findViewById(R.id.tx_ok);
 
         RecyclerView recycle_raw = inflate.findViewById(R.id.recycle_raw);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         recycle_raw.setLayoutManager(layoutManager);
-        More_mp3_Adapter listAdapter = new More_mp3_Adapter(mContext, list);
+        More_mp3_Adapter listAdapter = new More_mp3_Adapter(mContext, list, index_sel);
         recycle_raw.setAdapter(listAdapter);
         listAdapter.setRaw_OnClick_CallBack(new More_mp3_Adapter.Raw_OnClick_CallBack() {
             @Override
@@ -759,12 +789,25 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
                 listAdapter.sel_pos(pos);
                 Raw_Bean raw_bean = list.get(pos);
                 if (raw_bean != null) {
-                    img_miss.setTag(raw_bean);
-
+                    //img_miss.setTag(raw_bean);
                     //停止播放
                     MediaUtil.stopRing();
                     //播放音乐
                     MediaUtil.playRing(mContext, raw_bean.getRawName());
+                }
+            }
+
+            @Override
+            public void sel_Raw_click(int pos) {
+                Raw_Bean raw_bean = list.get(pos);
+                if (raw_bean != null) {
+                    MyApp.Audio_Name = raw_bean.getRawName();
+                    MyApp.Audio_Uri = raw_bean.getUri();
+                    tx_raw_name.setText(raw_bean.getRawName());
+
+                    //保存的数据
+                    UserConfig.instance().save_RawAudio_Sel(instance, MyApp.Audio_Name);
+                    listAdapter.set_sel(pos);
                 }
             }
         });
@@ -772,7 +815,12 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         img_miss.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Raw_Bean raw_bean = (Raw_Bean) view.getTag();
+                //停止播放
+                MediaUtil.stopRing();
+                listAdapter.stop_all();
+
+                popupWindow.dismiss();
+                /*Raw_Bean raw_bean = (Raw_Bean) view.getTag();
                 if (raw_bean != null) {
                     //停止播放
                     MediaUtil.stopRing();
@@ -788,7 +836,7 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
                     popupWindow.dismiss();
                 } else {
                     toast(getString(R.string.sleep_tip_12));
-                }
+                }*/
             }
         });
 
@@ -970,6 +1018,10 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         setRing(instance, RingtoneManager.TYPE_ALARM, file.getAbsolutePath(), "gggg");*/
         //get_Write_Setting();
 
+        //获取最新的闹铃时间差（不需要，已有定时刷新功能）
+        /*get_Time();
+        Utils.transfom_time_long(t_hour, t_minute, date_h, date_min);*/
+
         //上传设置早起时间
         String time = tx_clock_time.getText().toString().trim();
         set_awaken_time(time);
@@ -982,17 +1034,17 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
 
 
     private void set_awaken_time(String awaken_time) {
-        if(TextUtils.isEmpty(awaken_time)){
+        if (TextUtils.isEmpty(awaken_time)) {
             return;
         }
         if (!TextUtils.isEmpty(userConfig.user_awaken_time) && userConfig.user_awaken_time.equals(awaken_time)) {
             return;
         }
 
-        DialogUtils.getInstance().showDialog(this, "提交中...");
+        //DialogUtils.getInstance().showDialog(this, "提交中...");
         HashMap<String, String> map = new HashMap<>();
         map.put("awaken_time", awaken_time);
-        OkHttpUtil.postRequest(Api.HEAD + "user/edit_info", map, new OkHttpUtil.OnRequestNetWorkListener() {
+        OkHttpUtil.postRequestNoDialog(Api.HEAD + "user/edit_info", map, new OkHttpUtil.OnRequestNetWorkListener() {
             @Override
             public void notOk(String err) {
                 new Throwable("请求失败");
@@ -1037,13 +1089,13 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         pendingIntent = PendingIntent.getBroadcast(instance, 0, alarm_intent, 0);
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-        Calendar ca = Calendar.getInstance();
+        /*Calendar ca = Calendar.getInstance();
         ca.set(Calendar.HOUR_OF_DAY, date_h);
         ca.set(Calendar.MINUTE, date_min);
         ca.set(Calendar.SECOND, 0);
 
         long tt = ca.getTimeInMillis();
-        long time = System.currentTimeMillis();//获取系统时间的10位的时间戳
+        long time = System.currentTimeMillis();//获取系统的时间戳
         if(tt <= time){
             int h = 0;
             int m = 0;
@@ -1062,20 +1114,100 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
                 int m_mill = m*60*1000;
                 tt += m_mill;
             }
+        }*/
+
+        long time = System.currentTimeMillis();//获取系统的时间戳
+        int h = 0;
+        int m = 0;
+        if (!TextUtils.isEmpty(Utils.get_time_h())) {
+            h = Integer.valueOf(Utils.get_time_h());
         }
+        if (!TextUtils.isEmpty(Utils.get_time_m())) {
+            m = Integer.valueOf(Utils.get_time_m());
+        }
+        if (h > 0) {
+            int h_mill = h * 60 * 60 * 1000;
+            time += h_mill;
+        }
+        if (m > 0) {
+            int m_mill = m * 60 * 1000;
+            time += m_mill;
+        }
+
+        //去除秒数
+        long ss = time % (1000 * 60);
+        time -= ss;
 
         //android Api的改变不同版本中设置有所不同
         if (Build.VERSION.SDK_INT < 19) {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, tt, pendingIntent);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
         } else {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, tt, pendingIntent);
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent);
         }
 
-        if(!isdelay){
+        //修改屏幕亮度
+        changeAppBrightness(15);
+
+        if (!isdelay) {
             //更新UI
             reset_view();
         }
     }
+
+    /*private void setAppBrightness(float num) {
+        Window window = getWindow();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        lp.screenBrightness = num;
+        window.setAttributes(lp);
+    }*/
+
+    // 根据亮度值修改当前window亮度
+    public void changeAppBrightness(int brightness) {
+        if(brightness < 15){
+            return;
+        }
+        Window window = getWindow();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        if (brightness == -1) {
+            lp.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
+        } else {
+            lp.screenBrightness = (brightness <= 0 ? 1 : brightness) / current_light;
+        }
+        window.setAttributes(lp);
+    }
+
+
+
+    /*public String getTime_mill(){
+        long time=System.currentTimeMillis()/1000;//获取系统时间的10位的时间戳
+        String str=String.valueOf(time);
+        return str;
+    }
+    public static void timetodate(String time) {
+        long currentTime = System.currentTimeMillis();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+        Date date = new Date(currentTime);
+        String t = formatter.format(date);
+
+        SimpleDateFormat formatter_1 = new SimpleDateFormat("yyyy-MM-dd HH-mm");
+        Date date_1 = new Date(currentTime);
+        String tt = formatter_1.format(date_1);
+
+        dateToStamp(tt);
+    }
+    public static String dateToStamp(String s) {
+        String res;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        try {
+            date = simpleDateFormat.parse(s);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        long ts = date.getTime();
+        res = String.valueOf(ts);
+        return res;
+    }*/
 
 
     public void set_ring() {
@@ -1235,13 +1367,22 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         Thread thread = new Thread(() -> {
             while (pre_down && current_pro < current_max) {
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(10);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                current_pro += 100;
+                current_pro += 10;
                 int finalJ = current_pro;
-                runOnUiThread(() -> seekbar.setProgress(finalJ));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        seekbar.setProgress(finalJ);
+
+                        //设置亮度变化
+                        float data = finalJ/2500f*current_light;
+                        changeAppBrightness((int)data);
+                    }
+                });
             }
         });
         thread.start();
@@ -1258,20 +1399,30 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         Thread thread = new Thread(() -> {
             while (back_pre_down && current_pro >= 0) {
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(10);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                current_pro -= 200;
+                current_pro -= 40;
                 int finalJ = current_pro;
-                runOnUiThread(() -> seekbar.setProgress(finalJ));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        seekbar.setProgress(finalJ);
 
-                if (current_pro < 200) {
+                        //设置亮度变化
+                        float data = finalJ/2500f*current_light;
+                        changeAppBrightness((int)data);
+                    }
+                });
+
+                if (current_pro < 40) {
                     back_pre_down = false;
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             lin_seekbar.setVisibility(View.GONE);
+                            changeAppBrightness(15);
                         }
                     });
                 }
@@ -1500,6 +1651,9 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         rel_time.setVisibility(View.VISIBLE);
         tx_set_time.setVisibility(View.VISIBLE);
         rel_data.setVisibility(View.GONE);
+
+        //跳转录制梦话界面
+        //startActivity(new Intent(instance, Sleep_Talk_Recorder.class));
     }
 
     @Override
@@ -1510,16 +1664,16 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         cancelAlarm();
 
         //重新开始计算倒计时
-        if(!TextUtils.isEmpty(userConfig.user_delay)){
+        if (!TextUtils.isEmpty(userConfig.user_delay)) {
             int add_min = Integer.valueOf(userConfig.user_delay);
             int new_min = date_min += add_min;
-            if(new_min >= 60){
+            if (new_min >= 60) {
                 date_h++;
                 date_min = new_min - 60;
-                if(date_h >= 24){
+                if (date_h >= 24) {
                     date_h -= 24;
                 }
-            }else{
+            } else {
                 date_min = new_min;
             }
             tx_set_time();
@@ -1538,7 +1692,7 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
 
 
     @OnClick(R.id.img_meua)
-    public void img_meua(){
+    public void img_meua() {
         dialogFragment = new DialogFragment();
         dialogFragment.show(getSupportFragmentManager(), "ss");
     }
@@ -1546,7 +1700,7 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
 
     @Override
     public void audio_click(Hor_DateBean.DataBean.ListBean dataBean) {
-        if(dataBean == null){
+        if (dataBean == null) {
             return;
         }
         getradio_station_detail(dataBean.id);
@@ -1554,15 +1708,15 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
 
     @Override
     public void noise_click(White_Noise_Bean.DataBean dataBean) {
-        if(dataBean == null){
+        if (dataBean == null) {
             return;
         }
         getwhite_noise_detail(dataBean.id);
     }
 
     /**
-     *  获取电台详情
-     * */
+     * 获取电台详情
+     */
     private void getradio_station_detail(int id) {
         DialogUtils.getInstance().showDialog(this, "加载中...");
         HashMap<String, String> map = new HashMap<>();
@@ -1592,7 +1746,7 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
                                 stop_noise_play();
                                 start_noise_play(resource_url);
 
-                                if(dialogFragment != null){
+                                if (dialogFragment != null) {
                                     dialogFragment.set_dismiss();
                                     dialogFragment.dismiss();
                                 }
@@ -1609,8 +1763,8 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
     }
 
     /**
-     *  获取白噪音详情
-     * */
+     * 获取白噪音详情
+     */
     private void getwhite_noise_detail(int id) {
         DialogUtils.getInstance().showDialog(this, "加载中...");
         HashMap<String, String> map = new HashMap<>();
@@ -1640,7 +1794,7 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
                                 stop_noise_play();
                                 start_noise_play(resource_url);
 
-                                if(dialogFragment != null){
+                                if (dialogFragment != null) {
                                     dialogFragment.dismiss();
                                 }
                             }
@@ -1657,10 +1811,10 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
 
     private void start_noise_play(String url) {
         //开始播放白噪音
-        Utils.init_Aliyun(MyApp.get_app_mAliPlayer(),  url);
-        if(!TextUtils.isEmpty(userConfig.user_timed_close)){
+        Utils.init_Aliyun(MyApp.get_app_mAliPlayer(), url);
+        if (!TextUtils.isEmpty(userConfig.user_timed_close)) {
             int num = Integer.valueOf(userConfig.user_timed_close);
-            if(num > 0){
+            if (num > 0) {
                 init_TimeClose_Alarm(num);
             }
         }
@@ -1670,10 +1824,10 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         //正常的创建intent，TimeDemoActivity是我要启动的活动
         Intent intent = new Intent(instance, TimeClose_Alarm_Receiver.class);
         intent.setAction(TimeClose_Alarm_Receiver.BC_ACTION);
-        long time = System.currentTimeMillis() + (num*60*1000); //得到当前时间并且增加等待时间
+        long time = System.currentTimeMillis() + (num * 60 * 1000); //得到当前时间并且增加等待时间
         //创建PendingIntent封装了intent
-        PendingIntent pi = PendingIntent.getActivity(instance,0, intent,0);
-        AlarmManager manager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        PendingIntent pi = PendingIntent.getBroadcast(instance, 0, intent, 0);
+        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
         //设置了AlarmManager类型参数，时间值，PendingIntent
         //android Api的改变不同版本中设置有所不同
         if (Build.VERSION.SDK_INT < 19) {
@@ -1684,8 +1838,8 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
     }
 
     /**
-     *  停止音频播放
-     * */
+     * 停止音频播放
+     */
     private void stop_noise_play() {
         if (MyApp.app_mAliPlayer != null) {
             MyApp.app_mAliPlayer.release();
