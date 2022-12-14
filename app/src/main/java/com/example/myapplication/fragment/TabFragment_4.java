@@ -4,10 +4,15 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.myapplication.R;
+import com.example.myapplication.activity.History_Activity;
 import com.example.myapplication.base.BaseLazyFragment;
 import com.example.myapplication.bean.UserBean;
 import com.example.myapplication.http.Api;
@@ -46,6 +51,12 @@ public class TabFragment_4 extends BaseLazyFragment {
     RelativeLayout rel_search_bar;
     @BindView(R.id.img_msg)
     ImageView img_msg;
+    @BindView(R.id.user_account)
+    ImageView user_account;
+    @BindView(R.id.tx_username)
+    TextView tx_username;
+    @BindView(R.id.lin_history)
+    LinearLayout lin_history;
 
 
     @Override
@@ -57,6 +68,19 @@ public class TabFragment_4 extends BaseLazyFragment {
     @Override
     protected void initView(View view) {
         ButterKnife.bind(this, view);
+
+        UserConfig userConfig = UserConfig.instance();
+        tx_username.setText(userConfig.name);
+        Glide.with(getActivity())
+                .load(userConfig.avatar)
+                .apply(RequestOptions
+                        .bitmapTransform(new CircleCrop())
+                        .error(R.mipmap.loading_icon)
+                        .placeholder(R.mipmap.loading_icon))
+                .into(user_account);
+
+
+
 
         /*toolbar.getBackground().setAlpha(0);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -104,6 +128,12 @@ public class TabFragment_4 extends BaseLazyFragment {
             tx_login.setVisibility(View.VISIBLE);
             tx_unlogin.setVisibility(View.GONE);
         }
+    }
+
+
+    @OnClick(R.id.lin_history)
+    public void lin_history(){
+        startActivity(new Intent(getActivity(), History_Activity.class));
     }
 
 

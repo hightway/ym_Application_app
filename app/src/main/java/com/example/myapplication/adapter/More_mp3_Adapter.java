@@ -32,6 +32,7 @@ public class More_mp3_Adapter extends RecyclerView.Adapter<More_mp3_Adapter.View
     private Context mContext;
     private int pos = -1;
     private int index_sel;
+    private boolean stop_music = false;
 
     public More_mp3_Adapter(Context mContext, List<Raw_Bean> list, int index) {
         this.mContext = mContext;
@@ -39,8 +40,9 @@ public class More_mp3_Adapter extends RecyclerView.Adapter<More_mp3_Adapter.View
         this.index_sel = index;
     }
 
-    public void sel_pos(int pos){
+    public void sel_pos(int pos, boolean stop_music){
         this.pos = pos;
+        this.stop_music = stop_music;
         notifyDataSetChanged();
     }
 
@@ -49,8 +51,14 @@ public class More_mp3_Adapter extends RecyclerView.Adapter<More_mp3_Adapter.View
         notifyDataSetChanged();
     }
 
+    public void stop_music(boolean stop_music){
+        this.stop_music = stop_music;
+        notifyDataSetChanged();
+    }
+
     public void stop_all(){
         this.pos = -1;
+        this.index_sel = -1;
         notifyDataSetChanged();
     }
 
@@ -77,24 +85,37 @@ public class More_mp3_Adapter extends RecyclerView.Adapter<More_mp3_Adapter.View
                             .placeholder(R.mipmap.loading_icon))
                     .into(viewHolder.text_num);
 
+            /*if(index_sel == position){
+                viewHolder.tx_use.setVisibility(View.VISIBLE);
+                viewHolder.tx_use.setText(mContext.getString(R.string.use_ing));
+                viewHolder.tx_use.setEnabled(false);
+            }*/
+
             if(pos == position){
                 viewHolder.voise_icon.setVisibility(View.VISIBLE);
                 viewHolder.voise_icon.start();
                 viewHolder.tx_use.setVisibility(View.VISIBLE);
+                if(index_sel == position){
+                    viewHolder.tx_use.setVisibility(View.VISIBLE);
+                    viewHolder.tx_use.setText(mContext.getString(R.string.use_ing));
+                    viewHolder.tx_use.setEnabled(false);
+                }
             }else{
+                viewHolder.tx_use.setEnabled(true);
+                viewHolder.tx_use.setText(mContext.getString(R.string.sleep_tip_11));
                 viewHolder.voise_icon.setVisibility(View.GONE);
                 viewHolder.voise_icon.stop();
                 viewHolder.tx_use.setVisibility(View.GONE);
+                if(index_sel == position){
+                    viewHolder.tx_use.setVisibility(View.VISIBLE);
+                    viewHolder.tx_use.setText(mContext.getString(R.string.use_ing));
+                    viewHolder.tx_use.setEnabled(false);
+                }
             }
-
-            if(index_sel == position){
-                viewHolder.tx_use.setVisibility(View.VISIBLE);
-                viewHolder.tx_use.setText("已使用");
-                viewHolder.tx_use.setEnabled(false);
-            }else{
-                viewHolder.tx_use.setVisibility(View.GONE);
-                viewHolder.tx_use.setText("使用");
-                viewHolder.tx_use.setEnabled(true);
+            //停止播放
+            if(stop_music){
+                viewHolder.voise_icon.setVisibility(View.GONE);
+                viewHolder.voise_icon.stop();
             }
 
             viewHolder.itemView.setTag(position);

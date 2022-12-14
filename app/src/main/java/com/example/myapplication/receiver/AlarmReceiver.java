@@ -31,11 +31,13 @@ public class AlarmReceiver extends BroadcastReceiver {
         String act = intent.getAction();
         if (!TextUtils.isEmpty(act) && act.equals(BC_ACTION)) {
             String alarm_time = intent.getStringExtra("alarm_time");
+            float alarm_light = intent.getFloatExtra("alarm_light", 0f);
 
             //跳转界面
             Intent intent_act = new Intent(context, Alarm_Activity.class);
             intent_act.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent_act.putExtra("alarm_time", alarm_time);
+            intent_act.putExtra("alarm_light", alarm_light);
             context.startActivity(intent_act);
 
         }

@@ -190,7 +190,8 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
     private boolean is_start_getTime;
     private DialogFragment dialogFragment;
     private Audio_CloseReceiver audio_closeReceiver;
-    private float current_light = 200f;
+    private float current_light;
+    private float max_light = 255f;
 
     @Override
     protected int getLayoutID() {
@@ -786,14 +787,24 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         listAdapter.setRaw_OnClick_CallBack(new More_mp3_Adapter.Raw_OnClick_CallBack() {
             @Override
             public void Raw_click(int pos) {
-                listAdapter.sel_pos(pos);
+                listAdapter.sel_pos(pos, false);
                 Raw_Bean raw_bean = list.get(pos);
                 if (raw_bean != null) {
                     //img_miss.setTag(raw_bean);
                     //停止播放
                     MediaUtil.stopRing();
                     //播放音乐
-                    MediaUtil.playRing(mContext, raw_bean.getRawName());
+                    MediaPlayer mMediaPlayer = MediaUtil.playRing(mContext, raw_bean.getRawName());
+                    if(mMediaPlayer != null){
+                        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mediaPlayer) {
+                                if(listAdapter != null){
+                                    listAdapter.stop_music(true);
+                                }
+                            }
+                        });
+                    }
                 }
             }
 
@@ -1086,6 +1097,7 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         Intent alarm_intent = new Intent(instance, AlarmReceiver.class);
         alarm_intent.setAction(AlarmReceiver.BC_ACTION);
         alarm_intent.putExtra("alarm_time", alarm_time);
+        alarm_intent.putExtra("alarm_light", current_light);
         pendingIntent = PendingIntent.getBroadcast(instance, 0, alarm_intent, 0);
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
@@ -1146,7 +1158,7 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         }
 
         //修改屏幕亮度
-        changeAppBrightness(15);
+        changeAppBrightness(10);
 
         if (!isdelay) {
             //更新UI
@@ -1163,7 +1175,7 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
 
     // 根据亮度值修改当前window亮度
     public void changeAppBrightness(int brightness) {
-        if(brightness < 15){
+        if(brightness < 10){
             return;
         }
         Window window = getWindow();
@@ -1171,7 +1183,7 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         if (brightness == -1) {
             lp.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
         } else {
-            lp.screenBrightness = (brightness <= 0 ? 1 : brightness) / current_light;
+            lp.screenBrightness = (brightness <= 0 ? 1 : brightness) / max_light;
         }
         window.setAttributes(lp);
     }
@@ -1341,6 +1353,7 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         }
         //停止闹铃
         cancelAlarm();
+        changeAppBrightness((int)current_light);
         //停止计算倒计时
         stop_getTime();
         set_clock.setVisibility(View.VISIBLE);
@@ -1422,7 +1435,7 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
                         @Override
                         public void run() {
                             lin_seekbar.setVisibility(View.GONE);
-                            changeAppBrightness(15);
+                            changeAppBrightness(10);
                         }
                     });
                 }
@@ -1641,6 +1654,7 @@ public class Sleep_Time_Set_Activity extends BaseActivity implements ScrollPicke
         }
         //停止闹铃
         cancelAlarm();
+        changeAppBrightness((int)current_light);
 
         set_clock.setVisibility(View.VISIBLE);
         set_clock_stop.setVisibility(View.GONE);

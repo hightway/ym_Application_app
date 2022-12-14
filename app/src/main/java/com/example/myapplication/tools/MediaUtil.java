@@ -100,7 +100,7 @@ public class MediaUtil {
     }
 
     //开始播放
-    public static void playRing(Context context, String name) {
+    public static MediaPlayer playRing(Context context, String name) {
         try {
             //用于本地资源
             mMediaPlayer = new MediaPlayer();
@@ -114,6 +114,8 @@ public class MediaUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return mMediaPlayer;
     }
 
     //停止播放

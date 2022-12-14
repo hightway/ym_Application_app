@@ -1,11 +1,15 @@
 package com.example.myapplication.activity;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.media.AudioManager;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -56,6 +60,8 @@ public class Alarm_Activity extends BaseActivity {
     private Runnable alarm_runnable;
     private AudioManager mAudioManager;
     private int current_music;
+    private float current_light;
+    private float max_light = 255f;
 
     @Override
     protected int getLayoutID() {
@@ -71,6 +77,8 @@ public class Alarm_Activity extends BaseActivity {
     @Override
     protected void initView() {
         ButterKnife.bind(this);
+
+        current_light = getIntent().getFloatExtra("alarm_light", 0f);
 
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         int max_music = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
@@ -142,10 +150,35 @@ public class Alarm_Activity extends BaseActivity {
         };
         mHandle.postDelayed(alarm_runnable, 60*1000);
 
+        // 获取系统亮度
+        //getScreenBrightness(instance);
+        changeAppBrightness(10);
     }
 
+    /**
+     * 1.获取系统默认屏幕亮度值 屏幕亮度值范围（0-255）
+     * **/
+    /*private void getScreenBrightness(Context context) {
+        ContentResolver contentResolver = context.getContentResolver();
+        int defVal = 125;
+        int light = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, defVal);
+        current_light = light;
+    }*/
 
-
+    // 根据亮度值修改当前window亮度
+    public void changeAppBrightness(int brightness) {
+        if(brightness < 10){
+            return;
+        }
+        Window window = getWindow();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        if (brightness == -1) {
+            lp.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
+        } else {
+            lp.screenBrightness = (brightness <= 0 ? 1 : brightness) / max_light;
+        }
+        window.setAttributes(lp);
+    }
 
     private void start_seekbar() {
         pre_down = true;
@@ -164,7 +197,16 @@ public class Alarm_Activity extends BaseActivity {
                 }
                 current_pro += 10;
                 int finalJ = current_pro;
-                runOnUiThread(() -> seekbar.setProgress(finalJ));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        seekbar.setProgress(finalJ);
+
+                        //设置亮度变化
+                        float data = finalJ/2500f*current_light;
+                        changeAppBrightness((int)data);
+                    }
+                });
             }
         });
         thread.start();
@@ -191,6 +233,8 @@ public class Alarm_Activity extends BaseActivity {
             VibrateUtil.virateCancle(instance);
         }
         MediaUtil.stopRing();
+
+        changeAppBrightness((int)current_light);
 
         toast(getString(R.string.sleep_tip_14));
         mHandle.postDelayed(new Runnable() {
@@ -221,7 +265,16 @@ public class Alarm_Activity extends BaseActivity {
                 }
                 current_pro -= 40;
                 int finalJ = current_pro;
-                runOnUiThread(() -> seekbar.setProgress(finalJ));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        seekbar.setProgress(finalJ);
+
+                        //设置亮度变化
+                        float data = finalJ/2500f*current_light;
+                        changeAppBrightness((int)data);
+                    }
+                });
 
                 if (current_pro < 40) {
                     back_pre_down = false;
@@ -229,6 +282,7 @@ public class Alarm_Activity extends BaseActivity {
                         @Override
                         public void run() {
                             lin_seekbar.setVisibility(View.INVISIBLE);
+                            changeAppBrightness(10);
                         }
                     });
                 }

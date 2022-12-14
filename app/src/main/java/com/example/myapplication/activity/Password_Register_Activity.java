@@ -90,7 +90,7 @@ public class Password_Register_Activity extends BaseActivity {
         HashMap<String, String> map = new HashMap<>();
         map.put("phone", phone);
         map.put("type", "register");
-        OkHttpUtil.postRequest(Api.HEAD + "sendVerificationCode", map, new OkHttpUtil.OnRequestNetWorkListener() {
+        OkHttpUtil.postRequest(Api.HEAD + "send_code", map, new OkHttpUtil.OnRequestNetWorkListener() {
             @Override
             public void notOk(String err) {
                 new Throwable("请求失败");
